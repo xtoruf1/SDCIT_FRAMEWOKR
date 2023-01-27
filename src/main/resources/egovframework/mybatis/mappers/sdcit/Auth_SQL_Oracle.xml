@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="AuthSQL">
+
+	<select id="selectSettingList" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectSettingList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.SYSTEM_MENU_ID
+			, A.SYSTEM_MENU_NAME
+			, A.AUTH_ID
+			, A.AUTH_NAME
+			, A.CRE_BY
+			, TO_CHAR(A.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						A.SYSTEM_MENU_ID
+						, B.SYSTEM_MENU_NAME
+						, A.AUTH_ID
+						, A.AUTH_NAME
+						, A.CRE_BY
+						, A.CRE_DATE
+					FROM AUTH_ADMIN_SETTING A INNER JOIN SYSTEM_MENU B
+						ON A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+					WHERE 1 = 1
+					<if test='searchSystemMenuId != null and searchSystemMenuId != ""'>
+						AND A.SYSTEM_MENU_ID = #{searchSystemMenuId}
+					</if>
+					<if test='searchAuthName != null and searchAuthName != ""'>
+						AND UPPER(REPLACE(A.AUTH_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchAuthName}, ' ', '')) || '%'
+					</if>
+					ORDER BY B.SORT_SEQ ASC, A.AUTH_ID
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectSettingTotalCnt" parameterType="searchVO" resultType="int">
+		/* AuthSQL.selectSettingTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM AUTH_ADMIN_SETTING A
+		WHERE 1 = 1
+		<if test='searchSystemMenuId != null and searchSystemMenuId != ""'>
+			AND A.SYSTEM_MENU_ID = #{searchSystemMenuId}
+		</if>
+		<if test='searchAuthName != null and searchAuthName != ""'>
+			AND UPPER(REPLACE(A.AUTH_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchAuthName}, ' ', '')) || '%'
+		</if>
+	</select>
+
+	<select id="selectSettingAuthList" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectSettingAuthList */
+		SELECT
+			A.MENU_SET_ID
+			, A.SYSTEM_MENU_ID
+			, A.PGM_ID
+			, A.MENU_DEPTH
+			, A.MENU_SEQ
+			, DECODE(A.MENU_DEPTH, 1, B.PGM_NAME) AS LEV1_NAME
+			, DECODE(A.MENU_DEPTH, 2, B.PGM_NAME) AS LEV2_NAME
+			, DECODE(A.MENU_DEPTH, 3, B.PGM_NAME) AS LEV3_NAME
+			, B.URL
+			, C.AUTH_ID
+			, NVL(C.ACCESS_AUTH_YN, 'N') AS ACCESS_AUTH_YN
+			, NVL(C.MODIFY_AUTH_YN, 'N') AS MODIFY_AUTH_YN
+		FROM MENU_ADMIN_SETTING A, PGM_ADMIN_LIST B, (
+				SELECT *
+				FROM AUTH_ADMIN_SETTING_DET
+				WHERE AUTH_ID = #{authId}
+			) C, (
+				SELECT
+					ROW_NUMBER() OVER(PARTITION BY SYSTEM_MENU_ID ORDER BY MENU_SEQ) AS RANK_NO
+					, MENU_SET_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE MENU_DEPTH = 1
+			) D
+			, MENU_ADMIN_SETTING E
+		WHERE A.SYSTEM_MENU_ID = #{systemMenuId}
+		AND A.PGM_ID = B.PGM_ID(+)
+		AND A.SYSTEM_MENU_ID = C.SYSTEM_MENU_ID(+)
+		AND A.MENU_SET_ID = C.MENU_SET_ID(+)
+		AND A.MENU_SET_ID = D.MENU_SET_ID(+)
+		AND A.UPPER_ID = E.PGM_ID(+)
+		START WITH A.UPPER_ID IS NULL
+		CONNECT BY PRIOR A.PGM_ID = A.UPPER_ID
+		ORDER SIBLINGS BY A.MENU_SEQ ASC
+	</select>
+
+	<select id="selectSettingView" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectSettingView */
+		SELECT
+			A.SYSTEM_MENU_ID
+			, A.SYSTEM_MENU_NAME
+			, B.AUTH_ID
+			, B.AUTH_NAME
+			, B.ETC_CODE
+			, B.DSCR
+			, A.CRE_BY
+			, A.CRE_DATE
+		FROM SYSTEM_MENU A LEFT OUTER JOIN AUTH_ADMIN_SETTING B
+			ON A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+			AND B.AUTH_ID = #{authId}
+		WHERE A.SYSTEM_MENU_ID = #{systemMenuId}
+		ORDER BY A.SORT_SEQ ASC, B.AUTH_ID
+	</select>
+
+	<insert id="insertAuthSetting" parameterType="searchVO">
+		<selectKey keyProperty="authId" resultType="int" order="BEFORE">
+			SELECT AUTH_SETTING_S.NEXTVAL
+			FROM DUAL
+		</selectKey>
+
+		/* AuthSQL.insertAuthSetting */
+		INSERT INTO AUTH_ADMIN_SETTING (
+			SYSTEM_MENU_ID
+			, AUTH_ID
+			, AUTH_NAME
+			, ETC_CODE
+			, DSCR
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			#{systemMenuId}
+			, #{authId}
+			, #{authName}
+			, #{etcCode}
+			, #{dscr}
+			, #{regId}
+			, SYSDATE
+		)
+	</insert>
+
+	<update id="updateAuthSetting" parameterType="searchVO">
+		/* AuthSQL.updateAuthSetting */
+		UPDATE AUTH_ADMIN_SETTING SET
+			AUTH_NAME = #{authName}
+			, ETC_CODE = #{etcCode}
+			, DSCR = #{dscr}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE SYSTEM_MENU_ID = #{systemMenuId}
+		AND AUTH_ID = #{authId}
+	</update>
+
+	<update id="mergeAuthSettingDetail" parameterType="searchVO">
+		/* AuthSQL.mergeAuthSettingDetail */
+		MERGE INTO AUTH_ADMIN_SETTING_DET T USING DUAL
+			ON (
+				T.SYSTEM_MENU_ID = #{systemMenuId}
+				AND T.AUTH_ID = #{authId}
+				AND T.MENU_SET_ID = #{menuSetId}
+			)
+			WHEN MATCHED THEN
+				UPDATE SET
+					T.ACCESS_AUTH_YN = #{accessAuthYn}
+					, T.MODIFY_AUTH_YN = #{modifyAuthYn}
+					, T.UPD_BY = #{updId}
+					, T.UPD_DATE = SYSDATE
+			WHEN NOT MATCHED THEN
+				INSERT (
+					SYSTEM_MENU_ID
+					, AUTH_ID
+					, MENU_SET_ID
+					, ACCESS_AUTH_YN
+					, MODIFY_AUTH_YN
+					, CRE_BY
+					, CRE_DATE
+				) VALUES (
+					#{systemMenuId}
+					, #{authId}
+					, #{menuSetId}
+					, #{accessAuthYn}
+					, #{modifyAuthYn}
+					, #{regId}
+					, SYSDATE
+				)
+	</update>
+
+	<delete id="deleteAuthSettingList" parameterType="searchVO">
+		/* AuthSQL.deleteAuthSettingList */
+		<if test='deleteAuthList != null and deleteAuthList.size != 0'>
+			DELETE FROM AUTH_ADMIN_SETTING
+			WHERE 1 = 1
+			AND (SYSTEM_MENU_ID, AUTH_ID) IN
+			<foreach item="auth" collection="deleteAuthList" open="(" close=")" separator=",">
+				(#{auth.systemMenuId}, #{auth.authId})
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteAuthSettingDetailList" parameterType="searchVO">
+		/* AuthSQL.deleteAuthSettingDetailList */
+		<if test='deleteAuthList != null and deleteAuthList.size != 0'>
+			DELETE FROM AUTH_ADMIN_SETTING_DET
+			WHERE 1 = 1
+			AND (SYSTEM_MENU_ID, AUTH_ID) IN
+			<foreach item="auth" collection="deleteAuthList" open="(" close=")" separator=",">
+				(#{auth.systemMenuId}, #{auth.authId})
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteGrantDetailList" parameterType="searchVO">
+		/* AuthSQL.deleteGrantDetailList */
+		<if test='deleteAuthList != null and deleteAuthList.size != 0'>
+			DELETE FROM AUTH_ADMIN_GRANT_DET
+			WHERE 1 = 1
+			AND (SYSTEM_MENU_ID, AUTH_ID) IN
+			<foreach item="auth" collection="deleteAuthList" open="(" close=")" separator=",">
+				(#{auth.systemMenuId}, #{auth.authId})
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectGrantList" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectGrantList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.USER_ID
+			, A.USER_NM
+			, A.INFO_CHECK_YN
+			, (
+				SELECT SUBSTR(XMLAGG(XMLELEMENT(COL, ',', D.AUTH_NAME) ORDER BY D.AUTH_ID).EXTRACT('//text()').GETSTRINGVAL(), 2)
+				FROM AUTH_ADMIN_GRANT_DET C INNER JOIN AUTH_ADMIN_SETTING D
+					ON C.SYSTEM_MENU_ID = D.SYSTEM_MENU_ID
+					AND C.AUTH_ID = D.AUTH_ID
+				WHERE C.USER_ID = A.USER_ID
+			) AS AUTH_NAME
+			, A.CRE_BY
+			, TO_CHAR(A.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						USER_ID
+						, F_PERSON_MASK_DATA(USER_NM, 'NAME', #{infoCheckYn}) AS USER_NM
+						, INFO_CHECK_YN
+						, CRE_BY
+						, CRE_DATE
+					FROM AUTH_ADMIN_GRANT
+					WHERE 1 = 1
+					<if test='searchNameId != null and searchNameId != ""'>
+						AND (
+							UPPER(REPLACE(USER_ID, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchNameId}, ' ', '')) || '%'
+							OR UPPER(REPLACE(USER_NM, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchNameId}, ' ', '')) || '%'
+						)
+					</if>
+					<if test='searchAuthName != null and searchAuthName != ""'>
+						AND USER_ID IN (
+							SELECT USER_ID
+							FROM (
+								SELECT C.USER_ID, SUBSTR(XMLAGG(XMLELEMENT(COL, ',', D.AUTH_NAME) ORDER BY D.AUTH_ID).EXTRACT('//text()').GETSTRINGVAL(), 2) AS AUTH_NAME
+								FROM AUTH_ADMIN_GRANT_DET C INNER JOIN AUTH_ADMIN_SETTING D
+									ON C.SYSTEM_MENU_ID = D.SYSTEM_MENU_ID
+									AND C.AUTH_ID = D.AUTH_ID
+								GROUP BY C.USER_ID
+							)
+							WHERE UPPER(REPLACE(AUTH_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchAuthName}, ' ', '')) || '%'
+						)
+					</if>
+					ORDER BY CRE_DATE DESC
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectGrantTotalCnt" parameterType="searchVO" resultType="int">
+		/* AuthSQL.selectGrantTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM AUTH_ADMIN_GRANT
+		WHERE 1 = 1
+		<if test='searchNameId != null and searchNameId != ""'>
+			AND (
+				UPPER(REPLACE(USER_ID, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchNameId}, ' ', '')) || '%'
+				OR UPPER(REPLACE(USER_NM, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchNameId}, ' ', '')) || '%'
+			)
+		</if>
+		<if test='searchAuthName != null and searchAuthName != ""'>
+			AND USER_ID IN (
+				SELECT USER_ID
+				FROM (
+					SELECT C.USER_ID, SUBSTR(XMLAGG(XMLELEMENT(COL, ',', D.AUTH_NAME) ORDER BY D.AUTH_ID).EXTRACT('//text()').GETSTRINGVAL(), 2) AS AUTH_NAME
+					FROM AUTH_ADMIN_GRANT_DET C INNER JOIN AUTH_ADMIN_SETTING D
+						ON C.SYSTEM_MENU_ID = D.SYSTEM_MENU_ID
+						AND C.AUTH_ID = D.AUTH_ID
+					GROUP BY C.USER_ID
+				)
+				WHERE UPPER(REPLACE(AUTH_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchAuthName}, ' ', '')) || '%'
+			)
+		</if>
+	</select>
+
+	<select id="selectAuthList" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectAuthList */
+		SELECT
+			B.SYSTEM_MENU_ID
+			, A.SYSTEM_MENU_NAME
+			, B.AUTH_ID
+			, B.AUTH_NAME
+			, TO_CHAR(B.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM SYSTEM_MENU A INNER JOIN AUTH_ADMIN_SETTING B
+			ON A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+		WHERE 1 = 1
+		<if test='searchSystemMenuId != null and searchSystemMenuId != ""'>
+			AND B.SYSTEM_MENU_ID = #{searchSystemMenuId}
+		</if>
+		<if test='exceptIdList != null and exceptIdList.size != 0'>
+			AND B.AUTH_ID NOT IN
+			<foreach item="auth" collection="exceptIdList" open="(" close=")" separator=",">
+				#{auth}
+			</foreach>
+		</if>
+		ORDER BY B.SYSTEM_MENU_ID ASC, B.AUTH_ID ASC
+	</select>
+
+	<update id="mergeAuthGrant" parameterType="searchVO">
+		/* AuthSQL.mergeAuthGrant */
+		MERGE INTO AUTH_ADMIN_GRANT T USING DUAL
+			ON (
+				T.USER_ID = #{userId}
+			)
+			WHEN MATCHED THEN
+				UPDATE SET
+					T.INFO_CHECK_YN = #{infoCheckYn}
+					<if test='infoCheckYn == "Y"'>
+						, T.USER_NM = #{userNm}
+					</if>
+					, T.UPD_BY = #{updId}
+					, T.UPD_DATE = SYSDATE
+			WHEN NOT MATCHED THEN
+				INSERT (
+					USER_ID
+					, USER_NM
+					, INFO_CHECK_YN
+					, CRE_BY
+					, CRE_DATE
+				) VALUES (
+					#{userId}
+					, #{userNm}
+					, #{infoCheckYn}
+					, #{regId}
+					, SYSDATE
+				)
+	</update>
+
+	<update id="mergeAuthGrantOnlyInsert" parameterType="searchVO">
+		/* AuthSQL.mergeAuthGrantOnlyInsert */
+		MERGE INTO AUTH_ADMIN_GRANT T USING DUAL
+			ON (
+				T.USER_ID = #{userId}
+			)
+			WHEN NOT MATCHED THEN
+				INSERT (
+					USER_ID
+					, USER_NM
+					, INFO_CHECK_YN
+					, CRE_BY
+					, CRE_DATE
+				) VALUES (
+					#{userId}
+					, #{userNm}
+					, 'Y'
+					, #{regId}
+					, SYSDATE
+				)
+	</update>
+
+	<insert id="insertAuthGrantDetail" parameterType="searchVO">
+		/* AuthSQL.insertAuthGrantDetail */
+		INSERT INTO AUTH_ADMIN_GRANT_DET (
+			USER_ID
+			, SYSTEM_MENU_ID
+			, AUTH_ID
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			#{userId}
+			, #{systemMenuId}
+			, #{authId}
+			, #{regId}
+			, SYSDATE
+		)
+	</insert>
+
+	<delete id="deleteAuthGrantDetail" parameterType="searchVO">
+		/* AuthSQL.deleteAuthGrantDetail */
+		DELETE FROM AUTH_ADMIN_GRANT_DET
+		WHERE USER_ID = #{userId}
+		AND SYSTEM_MENU_ID = #{systemMenuId}
+		AND AUTH_ID = #{authId}
+	</delete>
+
+	<select id="selectGrantView" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectGrantView */
+		SELECT
+			A.USER_ID
+			, A.USER_NM
+			, F_PERSON_MASK_DATA(A.USER_NM, 'NAME', 'Y') AS MASK_USER_NM
+			, A.INFO_CHECK_YN
+			, A.CRE_BY
+			, A.CRE_DATE
+			, B.FUND_DEPT_CD
+			, B.AWARD_DEPT_CD
+			, B.TEL_NO
+			, B.FAX_NO
+		FROM AUTH_ADMIN_GRANT A, TFMS.TFMS_USER_DEPT@TRADE B
+		WHERE A.USER_ID = B.MEMBER_ID(+)
+		AND A.USER_ID = #{userId}
+	</select>
+
+	<select id="selectGrantAuthList" parameterType="searchVO" resultType="commonMap">
+		/* AuthSQL.selectGrantAuthList */
+		SELECT
+			A.SYSTEM_MENU_ID
+			, A.AUTH_ID
+			, B.SYSTEM_MENU_NAME
+			, C.AUTH_NAME
+			, TO_CHAR(A.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM AUTH_ADMIN_GRANT_DET A INNER JOIN SYSTEM_MENU B
+			ON A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+			INNER JOIN AUTH_ADMIN_SETTING C
+			ON A.SYSTEM_MENU_ID = C.SYSTEM_MENU_ID
+			AND A.AUTH_ID = C.AUTH_ID
+		WHERE A.USER_ID = #{userId}
+		ORDER BY A.SYSTEM_MENU_ID ASC, A.AUTH_ID ASC
+	</select>
+
+	<delete id="deleteAuthGrant" parameterType="searchVO">
+		/* AuthSQL.deleteAuthGrant */
+		DELETE FROM AUTH_ADMIN_GRANT
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<delete id="deleteAuthGrantDetailList" parameterType="searchVO">
+		/* AuthSQL.deleteAuthGrantDetailList */
+		DELETE FROM AUTH_ADMIN_GRANT_DET
+		WHERE USER_ID = #{userId}
+	</delete>
+
+	<select id="selectAuthSubList" resultType="commonMap">
+		/* AuthSQL.selectAuthSubList */
+		SELECT
+			TO_CHAR(A.AUTH_ID) AS AUTH_ID
+			, A.AUTH_SUB
+		FROM USER_AUTH A, AUTH_LIST B
+		WHERE A.AUTH_ID = B.AUTH_ID
+		AND A.USER_ID = #{userId}
+ 	</select>
+
+ 	<select id="selectParticularGrantCnt" parameterType="searchVO" resultType="int">
+		/* AuthSQL.selectParticularGrantCnt */
+		SELECT COUNT(*)
+		FROM AUTH_ADMIN_GRANT_DET
+		WHERE USER_ID = #{userId}
+		AND SYSTEM_MENU_ID = #{systemMenuId}
+		AND AUTH_ID = #{authId}
+	</select>
+
+	<select id="selectUserGrantCnt" parameterType="searchVO" resultType="int">
+		/* AuthSQL.selectUserGrantCnt */
+		SELECT COUNT(*)
+		FROM AUTH_ADMIN_GRANT_DET
+		WHERE USER_ID = #{userId}
+	</select>
+
+</mapper>

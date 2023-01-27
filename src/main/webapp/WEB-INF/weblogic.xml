@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app http://xmlns.oracle.com/weblogic/weblogic-web-app/1.0/weblogic-web-app.xsd">
+	<session-descriptor>
+		<cookie-name>JSESSIONID_membershipadmin</cookie-name>
+		<url-rewriting-enabled>false</url-rewriting-enabled>
+	</session-descriptor>
+	<jsp-descriptor>
+		<debug>true</debug>
+		<keepgenerated>true</keepgenerated>
+		<page-check-seconds>3</page-check-seconds>
+		<print-nulls>false</print-nulls>
+	</jsp-descriptor>
+	<charset-params>
+		<input-charset>
+			<resource-path>/*</resource-path>
+			<java-charset-name>utf-8</java-charset-name>
+		</input-charset>
+	</charset-params>
+	<context-root>/</context-root>
+</weblogic-web-app>

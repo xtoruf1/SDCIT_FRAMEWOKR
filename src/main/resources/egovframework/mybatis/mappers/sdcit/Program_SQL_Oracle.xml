@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ProgramSQL">
+
+	<select id="getTestData" resultType="commonMap">
+		SELECT LOGIN_ID
+			   , PWD
+			   , MEMBER_NM 
+		  FROM TB_MEMBER
+	</select>
+
+	<select id="selectAdminProgramList" parameterType="searchVO" resultType="commonMap">
+		/* ProgramSQL.selectAdminProgramList */		
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.PGM_ID
+			, A.PGM_NAME
+			, A.URL
+			, A.LINK_TARGET
+			, A.DSCR
+			, DECODE((
+				SELECT COUNT(*)
+				FROM MENU_ADMIN_SETTING
+				WHERE PGM_ID = A.PGM_ID
+			), 0, 'N', 'Y') AS SETTING_YN
+			, A.CRE_BY
+			, TO_CHAR(A.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						PGM_ID
+						, PGM_NAME
+						, URL
+						, LINK_TARGET
+						, DSCR
+						, CRE_BY
+						, CRE_DATE
+					FROM PGM_ADMIN_LIST
+					WHERE 1 = 1
+					<if test='searchPgmName != null and searchPgmName != ""'>
+						AND (
+							UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+							<if test='searchDetailYn == "Y"'>
+								OR PGM_ID IN (
+									SELECT PGM_ID
+									FROM PGM_ADMIN_LIST_DET
+									WHERE UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+								)
+							</if>
+						)
+					</if>
+					<if test='searchUrl != null and searchUrl != ""'>
+						AND UPPER(URL) LIKE '%' || UPPER(#{searchUrl}) || '%'
+					</if>
+					ORDER BY PGM_NAME ASC
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectAdminProgramTotalCnt" parameterType="searchVO" resultType="int">
+		/* ProgramSQL.selectAdminProgramTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM PGM_LIST
+		WHERE 1 = 1
+		<if test='searchPgmName != null and searchPgmName != ""'>
+			AND (
+				UPPER(REPLACE(PGM_NM, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+				<if test='searchDetailYn == "Y"'>
+					OR PGM_ID IN (
+						SELECT PGM_ID
+						FROM PGM_LIST_DET
+						WHERE UPPER(REPLACE(PGM_NM, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+					)
+				</if>
+			)
+		</if>
+		<if test='searchUrl != null and searchUrl != ""'>
+			AND UPPER(URL) LIKE '%' || UPPER(#{searchUrl}) || '%'
+		</if>
+	</select>
+
+	<select id="selectAdminPopupProgramList" parameterType="searchVO" resultType="commonMap">
+		/* ProgramSQL.selectAdminPopupProgramList */
+		SELECT
+			PGM_ID
+			, PGM_NAME
+			, URL
+			, LINK_TARGET
+			, DSCR
+			, CRE_BY
+			, TO_CHAR(CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM PGM_ADMIN_LIST
+		WHERE 1 = 1
+		AND PGM_ID NOT IN (
+			SELECT PGM_ID
+			FROM MENU_ADMIN_SETTING
+		)
+		<if test='searchPgmName != null and searchPgmName != ""'>
+			AND (
+				UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+				OR UPPER(URL) LIKE '%' || UPPER(#{searchPgmName}) || '%'
+			)
+		</if>
+		<if test='searchDscr != null and searchDscr != ""'>
+			AND UPPER(REPLACE(DSCR, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchDscr}, ' ', '')) || '%'
+		</if>
+		ORDER BY PGM_NAME ASC
+	</select>
+
+	<select id="selectAdminProgramView" resultType="commonMap">
+		/* ProgramSQL.selectAdminProgramView */
+		SELECT
+			PGM_ID
+			, PGM_NAME
+			, URL
+			, LINK_TARGET
+			, DSCR
+		FROM PGM_ADMIN_LIST
+		WHERE PGM_ID = #{pgmId}
+	</select>
+
+	<select id="selectAdminSubProgramList" parameterType="searchVO" resultType="commonMap">
+		/* ProgramSQL.selectAdminSubProgramList */
+		SELECT
+			PGM_ID
+			, SEQ
+			, PGM_NAME
+			, URL
+		FROM PGM_ADMIN_LIST_DET
+		WHERE PGM_ID = #{pgmId}
+		ORDER BY PGM_NAME ASC
+	</select>
+
+	<select id="getAdminProgramDuplicateCnt" parameterType="searchVO" resultType="int">
+		/* ProgramSQL.getAdminProgramDuplicateCnt */
+		SELECT COUNT(*) AS CNT
+		FROM (
+			SELECT
+				PGM_ID
+				, URL
+			FROM PGM_ADMIN_LIST
+			UNION ALL
+			SELECT
+				PGM_ID
+				, URL
+			FROM PGM_ADMIN_LIST_DET
+		)
+		WHERE URL IS NOT NULL
+		AND URL = #{url}
+		<if test='pgmId != null and pgmId != ""'>
+			AND PGM_ID <![CDATA[<>]]> #{pgmId}
+		</if>
+	</select>
+
+	<select id="getAdminProgramListDuplicateCnt" parameterType="searchVO" resultType="int">
+		/* ProgramSQL.getAdminProgramListDuplicateCnt */
+		SELECT COUNT(*) AS CNT
+		FROM (
+			SELECT
+				PGM_ID
+				, NULL AS SEQ
+				, URL
+			FROM PGM_ADMIN_LIST
+			UNION ALL
+			SELECT
+				PGM_ID
+				, SEQ
+				, URL
+			FROM PGM_ADMIN_LIST_DET
+		)
+		WHERE URL IS NOT NULL
+		AND URL = #{url}
+		<if test='seq != null and seq != ""'>
+			AND (PGM_ID, SEQ) NOT IN ((#{pgmId}, #{seq}))
+		</if>
+	</select>
+
+	<insert id="insertAdminProgram" parameterType="searchVO">
+		<selectKey keyProperty="pgmId" resultType="int" order="BEFORE">
+			SELECT PGM_LIST_S.NEXTVAL
+			FROM DUAL
+		</selectKey>
+
+		/* ProgramSQL.insertAdminProgram */
+		INSERT INTO PGM_ADMIN_LIST (
+			PGM_ID
+			, PGM_NAME
+			, URL
+			, LINK_TARGET
+			, DSCR
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			#{pgmId}
+			, #{pgmName}
+			, #{url}
+			, #{linkTarget}
+			, #{dscr}
+			, #{regId}
+			, SYSDATE
+		)
+	</insert>
+
+	<update id="updateAdminProgram" parameterType="searchVO">
+		/* ProgramSQL.updateAdminProgram */
+		UPDATE PGM_ADMIN_LIST SET
+			PGM_NAME = #{pgmName}
+			, URL = #{url}
+			, LINK_TARGET = #{linkTarget}
+			, DSCR = #{dscr}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE PGM_ID = #{pgmId}
+	</update>
+
+	<delete id="deleteAdminProgram" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminProgram */
+		DELETE FROM PGM_ADMIN_LIST
+		WHERE PGM_ID = #{pgmId}
+	</delete>
+
+	<delete id="deleteAdminSubAllProgram" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminSubAllProgram */
+		DELETE FROM PGM_ADMIN_LIST_DET
+		WHERE PGM_ID = #{pgmId}
+	</delete>
+
+	<delete id="deleteAdminMenuSetting" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminMenuSetting */
+		DELETE FROM MENU_ADMIN_SETTING
+		WHERE MENU_SET_ID IN (
+			SELECT MENU_SET_ID
+			FROM MENU_ADMIN_SETTING
+			WHERE PGM_ID = #{pgmId}
+			UNION ALL
+			SELECT MENU_SET_ID
+			FROM MENU_ADMIN_SETTING
+			WHERE UPPER_ID = #{pgmId}
+			UNION ALL
+			SELECT MENU_SET_ID
+			FROM MENU_ADMIN_SETTING
+			WHERE UPPER_ID IN (
+				SELECT PGM_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE UPPER_ID = #{pgmId}
+			)
+		)
+	</delete>
+
+	<insert id="insertAdminSubProgram" parameterType="searchVO">
+ 		/* ProgramSQL.insertAdminSubProgram */
+		INSERT INTO PGM_ADMIN_LIST_DET (
+			PGM_ID
+			, SEQ
+			, PGM_NAME
+			, URL
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			#{pgmId}
+			, (
+				SELECT NVL(MAX(SEQ), 0) + 1
+				FROM PGM_ADMIN_LIST_DET
+				WHERE PGM_ID = #{pgmId}
+			)
+			, #{pgmName}
+			, #{url}
+			, #{regId}
+			, SYSDATE
+		)
+ 	</insert>
+
+	<update id="updateAdminSubProgram" parameterType="searchVO">
+		/* ProgramSQL.updateAdminSubProgram */
+		UPDATE PGM_ADMIN_LIST_DET SET
+			PGM_NAME = #{pgmName}
+			, URL = #{url}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE PGM_ID = #{pgmId}
+		AND SEQ = #{seq}
+	</update>
+
+	<delete id="deleteAdminSubProgramList" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminSubProgramList */
+		<if test='deleteSubList != null and deleteSubList.size != 0'>
+			DELETE FROM PGM_ADMIN_LIST_DET
+			WHERE PGM_ID = #{pgmId}
+			AND SEQ IN
+			<foreach item="sub" collection="deleteSubList" open="(" close=")" separator=",">
+				#{sub.seq}
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteAdminMenuSettingList" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminMenuSettingList */
+		<if test='deleteList != null and deleteList.size != 0'>
+			DELETE FROM MENU_ADMIN_SETTING
+			WHERE MENU_SET_ID IN (
+				SELECT MENU_SET_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE PGM_ID IN
+				<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+					#{program.pgmId}
+				</foreach>
+				UNION ALL
+				SELECT MENU_SET_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE UPPER_ID IN
+				<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+					#{program.pgmId}
+				</foreach>
+				UNION ALL
+				SELECT MENU_SET_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE UPPER_ID IN (
+					SELECT PGM_ID
+					FROM MENU_ADMIN_SETTING
+					WHERE UPPER_ID IN
+					<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+						#{program.pgmId}
+					</foreach>
+				)
+			)
+		</if>
+	</delete>
+
+	<delete id="deleteAdminProgramList" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminProgramList */
+		<if test='deleteList != null and deleteList.size != 0'>
+			DELETE FROM PGM_ADMIN_LIST
+			WHERE 1 = 1
+			AND PGM_ID IN
+			<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+				#{program.pgmId}
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteAdminSubAllProgramList" parameterType="searchVO">
+		/* ProgramSQL.deleteAdminSubAllProgramList */
+		<if test='deleteList != null and deleteList.size != 0'>
+			DELETE FROM PGM_ADMIN_LIST_DET
+			WHERE 1 = 1
+			AND PGM_ID IN
+			<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+				#{program.pgmId}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectUserProgramList" parameterType="searchVO" resultType="commonMap">
+		/* ProgramSQL.selectUserProgramList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.PGM_ID
+			, A.PGM_NAME
+			, A.URL
+			, A.LINK_TARGET
+			, A.DSCR
+			, DECODE((
+				SELECT COUNT(*)
+				FROM USER_MENU_SETTING
+				WHERE PGM_ID = A.PGM_ID
+			), 0, 'N', 'Y') AS SETTING_YN
+			, A.CRE_BY
+			, TO_CHAR(A.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						PGM_ID
+						, PGM_NAME
+						, URL
+						, LINK_TARGET
+						, DSCR
+						, CRE_BY
+						, CRE_DATE
+					FROM USER_PGM_LIST
+					WHERE 1 = 1
+					<if test='searchPgmName != null and searchPgmName != ""'>
+						AND (
+							UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+							<if test='searchDetailYn == "Y"'>
+								OR PGM_ID IN (
+									SELECT PGM_ID
+									FROM USER_PGM_LIST_DET
+									WHERE UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+								)
+							</if>
+						)
+					</if>
+					<if test='searchUrl != null and searchUrl != ""'>
+						AND UPPER(URL) LIKE '%' || UPPER(#{searchUrl}) || '%'
+					</if>
+					ORDER BY PGM_NAME ASC
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectUserProgramTotalCnt" parameterType="searchVO" resultType="int">
+		/* ProgramSQL.selectUserProgramTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM USER_PGM_LIST
+		WHERE 1 = 1
+		<if test='searchPgmName != null and searchPgmName != ""'>
+			AND (
+				UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+				<if test='searchDetailYn == "Y"'>
+					OR PGM_ID IN (
+						SELECT PGM_ID
+						FROM USER_PGM_LIST_DET
+						WHERE UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPgmName}, ' ', '')) || '%'
+					)
+				</if>
+			)
+		</if>
+		<if test='searchUrl != null and searchUrl != ""'>
+			AND UPPER(URL) LIKE '%' || UPPER(#{searchUrl}) || '%'
+		</if>
+	</select>
+
+	<select id="selectUserPopupProgramList" parameterType="searchVO" resultType="commonMap">
+		/* ProgramSQL.selectUserPopupProgramList */
+		SELECT
+			PGM_ID
+			, PGM_NAME
+			, URL
+			, LINK_TARGET
+			, DSCR
+			, CRE_BY
+			, TO_CHAR(CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM USER_PGM_LIST
+		WHERE 1 = 1
+		AND PGM_ID NOT IN (
+			SELECT PGM_ID
+			FROM USER_MENU_SETTING
+		)
+		<choose>
+			<when test='searchPopupCondition == null or searchPopupCondition == ""'>
+				<if test='searchPopupKeyword != null and searchPopupKeyword != ""'>
+					AND (
+						UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPopupKeyword}, ' ', '')) || '%'
+						OR UPPER(URL) LIKE '%' || UPPER(#{searchPopupKeyword}) || '%'
+					)
+				</if>
+			</when>
+			<otherwise>
+				<if test='searchPopupKeyword != null and searchPopupKeyword != ""'>
+					<if test='searchPopupCondition == "pgmName"'>
+						AND UPPER(REPLACE(PGM_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchPopupKeyword}, ' ', '')) || '%'
+					</if>
+					<if test='searchPopupCondition == "url"'>
+						AND UPPER(URL) LIKE '%' || UPPER(#{searchPopupKeyword}) || '%'
+					</if>
+				</if>
+			</otherwise>
+		</choose>
+		ORDER BY PGM_NAME ASC
+	</select>
+
+	<select id="selectUserProgramView" resultType="commonMap">
+		/* ProgramSQL.selectUserProgramView */
+		SELECT
+			PGM_ID
+			, PGM_NAME
+			, URL
+			, LINK_TARGET
+			, MOBILE_YN
+			, NVL(ICON_IMG1, 'N') AS ICON_IMG1
+			, NVL(ICON_IMG2, 'N') AS ICON_IMG2
+			, NVL(ICON_IMG3, 'N') AS ICON_IMG3
+			, NVL(ICON_FEE, 'N') AS ICON_FEE
+			, DSCR
+			, BBS_ID
+			, DESCRIPTION
+			, IMG_PATH
+		FROM USER_PGM_LIST
+		WHERE PGM_ID = #{pgmId}
+	</select>
+
+	<select id="selectUserSubProgramList" parameterType="searchVO" resultType="commonMap">
+		/* ProgramSQL.selectUserSubProgramList */
+		SELECT
+			PGM_ID
+			, SEQ
+			, PGM_NAME
+			, URL
+			, DSCR
+		FROM USER_PGM_LIST_DET
+		WHERE PGM_ID = #{pgmId}
+		ORDER BY PGM_NAME ASC
+	</select>
+
+	<select id="getUserProgramDuplicateCnt" parameterType="searchVO" resultType="int">
+		/* ProgramSQL.getUserProgramDuplicateCnt */
+		SELECT COUNT(*) AS CNT
+		FROM (
+			SELECT
+				PGM_ID
+				, URL
+			FROM USER_PGM_LIST
+			UNION ALL
+			SELECT
+				PGM_ID
+				, URL
+			FROM USER_PGM_LIST_DET
+		)
+		WHERE URL IS NOT NULL
+		AND URL = #{url}
+		<if test='pgmId != null and pgmId != ""'>
+			AND PGM_ID <![CDATA[<>]]> #{pgmId}
+		</if>
+	</select>
+
+	<select id="getUserProgramListDuplicateCnt" parameterType="searchVO" resultType="int">
+		/* ProgramSQL.getUserProgramListDuplicateCnt */
+		SELECT COUNT(*) AS CNT
+		FROM (
+			SELECT
+				PGM_ID
+				, NULL AS SEQ
+				, URL
+			FROM USER_PGM_LIST
+			UNION ALL
+			SELECT
+				PGM_ID
+				, SEQ
+				, URL
+			FROM USER_PGM_LIST_DET
+		)
+		WHERE URL IS NOT NULL
+		AND URL = #{url}
+		<if test='seq != null and seq != ""'>
+			AND (PGM_ID, SEQ) NOT IN ((#{pgmId}, #{seq}))
+		</if>
+	</select>
+
+	<insert id="insertUserProgram" parameterType="searchVO">
+		<selectKey keyProperty="pgmId" resultType="int" order="BEFORE">
+			SELECT USER_PGM_LIST_S.NEXTVAL
+			FROM DUAL
+		</selectKey>
+
+		/* ProgramSQL.insertUserProgram */
+		INSERT INTO USER_PGM_LIST (
+			PGM_ID
+			, PGM_NAME
+			, URL
+			, LINK_TARGET
+			, MOBILE_YN
+			, SSL
+			, ICON_IMG1
+			, ICON_IMG2
+			, ICON_IMG3
+			, ICON_FEE
+			, DSCR
+			, CRE_BY
+			, CRE_DATE
+			, DESCRIPTION
+			, IMG_PATH
+		) VALUES (
+			#{pgmId}
+			, #{pgmName}
+			, #{url}
+			, #{linkTarget}
+			, #{mobileYn}
+			, 'https://'
+			, #{iconImg1}
+			, #{iconImg2}
+			, #{iconImg3}
+			, #{iconFee}
+			, #{dscr}
+			, #{regId}
+			, SYSDATE
+			, #{description}
+			, #{imgPath}
+		)
+	</insert>
+
+	<update id="updateUserProgram" parameterType="searchVO">
+		/* ProgramSQL.updateUserProgram */
+		UPDATE USER_PGM_LIST SET
+			PGM_NAME = #{pgmName}
+			, URL = #{url}
+			, LINK_TARGET = #{linkTarget}
+			, MOBILE_YN = #{mobileYn}
+			, ICON_IMG1 = #{iconImg1}
+			, ICON_IMG2 = #{iconImg2}
+			, ICON_IMG3 = #{iconImg3}
+			, ICON_FEE = #{iconFee}
+			, DSCR = #{dscr}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+			, DESCRIPTION = #{description}
+			, IMG_PATH = #{imgPath}
+		WHERE PGM_ID = #{pgmId}
+	</update>
+
+	<delete id="deleteUserProgramList" parameterType="searchVO">
+		/* ProgramSQL.deleteUserProgramList */
+		<if test='deleteList != null and deleteList.size != 0'>
+			DELETE FROM USER_PGM_LIST
+			WHERE 1 = 1
+			AND PGM_ID IN
+			<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+				#{program.pgmId}
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteUserSubAllProgramList" parameterType="searchVO">
+		/* ProgramSQL.deleteUserSubAllProgramList */
+		<if test='deleteList != null and deleteList.size != 0'>
+			DELETE FROM USER_PGM_LIST_DET
+			WHERE 1 = 1
+			AND PGM_ID IN
+			<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+				#{program.pgmId}
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteUserMenuSettingList" parameterType="searchVO">
+		/* ProgramSQL.deleteUserMenuSettingList */
+		<if test='deleteList != null and deleteList.size != 0'>
+			DELETE FROM USER_MENU_SETTING
+			WHERE MENU_SET_ID IN (
+				SELECT MENU_SET_ID
+				FROM USER_MENU_SETTING
+				WHERE PGM_ID IN
+				<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+					#{program.pgmId}
+				</foreach>
+				UNION ALL
+				SELECT MENU_SET_ID
+				FROM USER_MENU_SETTING
+				WHERE UPPER_ID IN
+				<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+					#{program.pgmId}
+				</foreach>
+				UNION ALL
+				SELECT MENU_SET_ID
+				FROM USER_MENU_SETTING
+				WHERE UPPER_ID IN (
+					SELECT PGM_ID
+					FROM USER_MENU_SETTING
+					WHERE UPPER_ID IN
+					<foreach item="program" collection="deleteList" open="(" close=")" separator=",">
+						#{program.pgmId}
+					</foreach>
+				)
+			)
+		</if>
+	</delete>
+
+	<delete id="deleteUserProgram" parameterType="searchVO">
+		/* ProgramSQL.deleteUserProgram */
+		DELETE FROM USER_PGM_LIST
+		WHERE PGM_ID = #{pgmId}
+	</delete>
+	<delete id="deleteUserSubAllProgram" parameterType="searchVO">
+		/* ProgramSQL.deleteUserSubAllProgram */
+		DELETE FROM USER_PGM_LIST_DET
+		WHERE PGM_ID = #{pgmId}
+	</delete>
+
+	<delete id="deleteUserMenuSetting" parameterType="searchVO">
+		/* ProgramSQL.deleteUserMenuSetting */
+		DELETE FROM USER_MENU_SETTING
+		WHERE MENU_SET_ID IN (
+			SELECT MENU_SET_ID
+			FROM USER_MENU_SETTING
+			WHERE PGM_ID = #{pgmId}
+			UNION ALL
+			SELECT MENU_SET_ID
+			FROM USER_MENU_SETTING
+			WHERE UPPER_ID = #{pgmId}
+			UNION ALL
+			SELECT MENU_SET_ID
+			FROM USER_MENU_SETTING
+			WHERE UPPER_ID IN (
+				SELECT PGM_ID
+				FROM USER_MENU_SETTING
+				WHERE UPPER_ID = #{pgmId}
+			)
+		)
+	</delete>
+
+ 	<insert id="insertUserSubProgram" parameterType="searchVO">
+ 		/* ProgramSQL.insertUserSubProgram */
+		INSERT INTO USER_PGM_LIST_DET (
+			PGM_ID
+			, SEQ
+			, PGM_NAME
+			, URL
+			, DSCR
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			#{pgmId}
+			, (
+				SELECT NVL(MAX(SEQ), 0) + 1
+				FROM USER_PGM_LIST_DET
+				WHERE PGM_ID = #{pgmId}
+			)
+			, #{pgmName}
+			, #{url}
+			, #{dscr}
+			, #{regId}
+			, SYSDATE
+		)
+ 	</insert>
+
+	<update id="updateUserSubProgram" parameterType="searchVO">
+		/* ProgramSQL.updateUserSubProgram */
+		UPDATE USER_PGM_LIST_DET SET
+			PGM_NAME = #{pgmName}
+			, URL = #{url}
+			, DSCR = #{dscr}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE PGM_ID = #{pgmId}
+		AND SEQ = #{seq}
+	</update>
+
+	<delete id="deleteUserSubProgramList" parameterType="searchVO">
+		/* ProgramSQL.deleteUserSubProgramList */
+		<if test='deleteSubList != null and deleteSubList.size != 0'>
+			DELETE FROM USER_PGM_LIST_DET
+			WHERE PGM_ID = #{pgmId}
+			AND SEQ IN
+			<foreach item="sub" collection="deleteSubList" open="(" close=")" separator=",">
+				#{sub.seq}
+			</foreach>
+		</if>
+	</delete>
+
+</mapper>

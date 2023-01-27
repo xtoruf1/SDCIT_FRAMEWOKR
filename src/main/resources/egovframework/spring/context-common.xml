@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<context:component-scan base-package="egovframework" name-generator="egovframework.common.bean.FullBeanNameGenerator">
+    	<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- registered for JavaConfig -->
+	<context:annotation-config />
+
+	<!-- global properties setting -->
+	<bean id="egov.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/egovframework/properties/globals.properties</value>
+				<value>classpath:/egovframework/properties/#{systemProperties['spring.profiles.active']}/db.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<util:properties id="globals" location="classpath:/egovframework/properties/globals.properties" />
+	<util:properties id="variables" location="classpath:/egovframework/properties/#{systemProperties['spring.profiles.active']}/variables.properties" />
+
+	<bean id="leaveaTrace" class="org.egovframe.rte.fdl.cmmn.trace.LeaveaTrace">
+		<property name="traceHandlerServices">
+			<list>
+				<ref bean="traceHandlerService" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="traceHandlerService" class="org.egovframe.rte.fdl.cmmn.trace.manager.DefaultTraceHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="antPathMater" />
+		</property>
+		<property name="patterns">
+			<list>
+				<value>*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="defaultTraceHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="antPathMater" class="org.springframework.util.AntPathMatcher" />
+	<bean id="defaultTraceHandler" class="org.egovframe.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
+
+	<!-- MultipartResolver 설정 -->
+	<bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000000" />
+		<property name="maxInMemorySize" value="100000000" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+	<bean id="passwordEncoder" class="org.egovframe.rte.fdl.cryptography.EgovPasswordEncoder">
+		<!-- default : SHA-256 -->
+		<property name="algorithm" value="${crypto.password.algorithm}" />
+		<property name="hashedPassword" value="${crypto.hashed.password}" />
+	</bean>
+
+	<bean id="ARIACryptoService" class="org.egovframe.rte.fdl.cryptography.impl.EgovARIACryptoServiceImpl">
+		<property name="passwordEncoder" ref="passwordEncoder" />
+		<!-- default : 1024 -->
+		<property name="blockSize" value="1025" />
+	</bean>
+
+	<!-- navermail설정 -->
+<!--	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	 <property name="host" value="smtp.naver.com"/> &lt;!&ndash; 메이서버 호스트 &ndash;&gt;
+	 <property name="port" value="465"/> &lt;!&ndash; 메이서버 포트번호 &ndash;&gt;
+	 <property name="username" value="destiny891116"/> &lt;!&ndash; 자신의 이메일 아이디 &ndash;&gt;
+	 <property name="password" value="dheldh12!!"/> &lt;!&ndash; 자신의 비밀번호 &ndash;&gt;
+	 <property name="defaultEncoding" value="utf-8" />
+	   &lt;!&ndash; 보안연결 SSL과 관련된 설정 &ndash;&gt;
+	 <property name="javaMailProperties">
+	  <props>
+	  <prop key="mail.smtp.auth">true</prop>
+	  <prop key="mail.smtp.starttls.enable">true</prop>
+	  <prop key="mail.smtps.checkserveridentity">true</prop>
+	  <prop key="mail.smtps.ssl.trust">*</prop>
+	  <prop key="mail.debug">true</prop>
+	  <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+	  </props>
+	 </property>
+	</bean>-->
+
+	<!-- 메일플러그_mail설정 -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	 <property name="host" value="smtp.mailplug.co.kr"/> <!-- 메이서버 호스트 -->
+	 <property name="port" value="465"/> <!-- 메이서버 포트번호 -->
+	 <property name="username" value="yongsei"/> <!-- 자신의 이메일 아이디 -->
+	 <property name="password" value="qkrkwl12!!"/> <!-- 자신의 비밀번호 -->
+	 <property name="defaultEncoding" value="utf-8" />
+	   <!-- 보안연결 SSL과 관련된 설정 -->
+	 <property name="javaMailProperties">
+	  <props>
+	  <prop key="mail.smtp.auth">true</prop>
+	  <prop key="mail.smtp.starttls.enable">true</prop>
+	  <prop key="mail.smtps.checkserveridentity">true</prop>
+	  <prop key="mail.smtps.ssl.trust">*</prop>
+	  <prop key="mail.debug">true</prop>
+	  <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+	  </props>
+	 </property>
+	</bean>
+
+</beans>

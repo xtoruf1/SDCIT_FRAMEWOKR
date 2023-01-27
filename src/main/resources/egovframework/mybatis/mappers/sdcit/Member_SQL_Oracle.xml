@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MemberSQL">
+
+	<select id="selectMemberInfo" resultType="loginUserVO">
+		/* MemberSQL.selectMemberInfo */
+		SELECT
+			A.USER_NO
+			, A.USER_NM
+			, A.LOGIN_ID
+			, A.HP_NO
+			, A.USER_EMAIL
+			, STR_TO_DATE(A.JAC_DT, '%y-%m-%d') AS JAC_DT
+			, STR_TO_DATE(A.RTR_DT, '%y-%m-%d') AS RTR_DT
+			, A.WORK_YN
+			, A.DEPT_CD
+			, A.CLSF_CD
+			, A.CNTRT_CD
+		FROM TBCM_USERINFO A
+	   WHERE A.LOGIN_ID = #{loginId}
+		 AND A.LOGIN_PWD = #{pwd}
+	</select>
+
+	<select id="selectPersonalInfoAuth" resultType="loginUserVO">
+		/* MemberSQL.selectPersonalInfoAuth */
+		SELECT
+			 USER_ID
+			, USER_NM
+			, INFO_CHECK_YN
+		FROM AUTH_ADMIN_GRANT
+		WHERE USER_ID = #{userId}
+	</select>
+
+	<update id="updateLoginDt">
+		/* MemberSQL.updateLoginDt */
+		UPDATE TB_MEMBER SET
+			LOGIN_DATE = NOW()
+		WHERE MEMBER_SEQ = #{memberSeq}
+	</update>
+
+	<select id="selectMemberList" parameterType="searchVO" resultType="commonMap">
+		/* MemberSQL.selectMemberList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.*
+			, (SELECT ORGANIZATION_NM FROM TB_ORGANIZATION WHERE ORGANIZATION_ID = A.DEPT_ID) AS DEPT_NM
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						MEMBER_SEQ
+						, LOGIN_ID
+						, MEMBER_NM
+						, MEMBER_TYPE
+						, EMAIL
+						, HP_TEL
+						, DEPT_ID
+						, TO_CHAR(JOIN_DATE, 'YYYY-MM-DD HH24:MI:SS') AS JOIN_DATE
+						, DORMANT_YN
+						, TO_CHAR(DORMANT_DATE, 'YYYY-MM-DD HH24:MI:SS') AS DORMANT_DATE
+						, LEAVE_YN
+						, TO_CHAR(LEAVE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS LEAVE_DATE
+						, TO_CHAR(LOGIN_DATE, 'YYYY-MM-DD HH24:MI:SS') AS LOGIN_DATE
+						, REG_ID
+						, TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+						, UPD_ID
+						, TO_CHAR(UPD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPD_DATE
+					FROM TB_MEMBER
+					WHERE 1 = 1
+					<choose>
+						<when test='searchCondition == null or searchCondition == ""'>
+							<if test='searchKeyword != null and searchKeyword != ""'>
+								AND (
+									MEMBER_NM LIKE '%' || #{searchKeyword} || '%'
+									OR LOGIN_ID LIKE '%' || #{searchKeyword} || '%'
+								)
+							</if>
+						</when>
+						<otherwise>
+							<if test='searchKeyword != null and searchKeyword != ""'>
+								<if test='searchCondition == "memberNm"'>
+									AND MEMBER_NM LIKE '%' || #{searchKeyword} || '%'
+								</if>
+								<if test='searchCondition == "loginId"'>
+									AND LOGIN_ID LIKE '%' || #{searchKeyword} || '%'
+								</if>
+							</if>
+						</otherwise>
+					</choose>
+					ORDER BY REG_DATE DESC
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectMemberTotalCnt" parameterType="searchVO" resultType="int">
+		/* MemberSQL.selectMemberTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM TB_MEMBER
+		WHERE 1 = 1
+		<choose>
+			<when test='searchCondition == null or searchCondition == ""'>
+				<if test='searchKeyword != null and searchKeyword != ""'>
+					AND (
+						MEMBER_NM LIKE '%' || #{searchKeyword} || '%'
+						OR LOGIN_ID LIKE '%' || #{searchKeyword} || '%'
+					)
+				</if>
+			</when>
+			<otherwise>
+				<if test='searchKeyword != null and searchKeyword != ""'>
+					<if test='searchCondition == "memberNm"'>
+						AND MEMBER_NM LIKE '%' || #{searchKeyword} || '%'
+					</if>
+					<if test='searchCondition == "loginId"'>
+						AND LOGIN_ID LIKE '%' || #{searchKeyword} || '%'
+					</if>
+				</if>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectMemberView" resultType="commonMap">
+		/* MemberSQL.selectMemberView */
+		SELECT
+			MEMBER_SEQ
+			, LOGIN_ID
+			, MEMBER_NM
+			, MEMBER_TYPE
+			, EMAIL
+			, HP_TEL
+			, DEPT_ID
+			, (SELECT A.ORGANIZATION_NM FROM TB_ORGANIZATION A WHERE A.ORGANIZATION_ID = DEPT_ID) AS DEPT_NM
+			, TO_CHAR(JOIN_DATE, 'YYYY-MM-DD HH24:MI:SS') AS JOIN_DATE
+			, DORMANT_YN
+			, TO_CHAR(DORMANT_DATE, 'YYYY-MM-DD HH24:MI:SS') AS DORMANT_DATE
+			, LEAVE_YN
+			, TO_CHAR(LEAVE_DATE, 'YYYY-MM-DD HH24:MI:SS') AS LEAVE_DATE
+			, TO_CHAR(LOGIN_DATE, 'YYYY-MM-DD HH24:MI:SS') AS LOGIN_DATE
+			, REG_ID
+			, TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+			, UPD_ID
+			, TO_CHAR(UPD_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPD_DATE
+		FROM TB_MEMBER
+		WHERE MEMBER_SEQ = #{memberSeq}
+	</select>
+
+	<insert id="insertMemeber" parameterType="searchVO">
+		/* MemberSQL.insertMemeber */
+		INSERT INTO TB_MEMBER (
+			MEMBER_SEQ
+			, LOGIN_ID
+			, PWD
+			, MEMBER_NM
+			, MEMBER_TYPE
+			, EMAIL
+			, HP_TEL
+			, DEPT_ID
+			, REG_ID
+			, UPD_ID
+		)
+		SELECT
+			(SELECT NVL(MAX(MEMBER_SEQ), 0) + 1 FROM TB_MEMBER) AS MEMBER_SEQ
+			, #{loginId} AS LOGIN_ID
+			, #{pwd} AS PWD
+			, #{memberNm} AS MEMBER_NM
+			, #{memberType} AS MEMBER_TYPE
+			, #{email} AS EMAIL
+			, #{hpTel} AS HP_TEL
+			, #{deptId} AS DEPT_ID
+			, #{regId} AS REG_ID
+			, #{updId} AS UPD_ID
+		FROM DUAL
+	</insert>
+
+	<update id="updateMemeber" parameterType="searchVO">
+		/* MemberSQL.updateMemeber */
+		UPDATE TB_MEMBER SET
+			MEMBER_NM = #{memberNm}
+			, MEMBER_TYPE = #{memberType}
+			<if test='pwd != null and pwd != ""'>
+				, PWD = #{pwd}
+			</if>
+			, EMAIL = #{email}
+			, HP_TEL = #{hpTel}
+			, DEPT_ID = #{deptId}
+			, UPD_ID = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE MEMBER_SEQ = #{memberSeq}
+	</update>
+
+	<update id="updateMemeberDormant" parameterType="searchVO">
+		/* MemberSQL.updateMemeberDormant */
+		UPDATE TB_MEMBER SET
+			DORMANT_YN = 'Y'
+			, DORMANT_DATE = SYSDATE
+		WHERE MEMBER_SEQ = #{memberSeq}
+	</update>
+
+	<update id="updateMemeberLeave" parameterType="searchVO">
+		/* MemberSQL.updateMemeberLeave */
+		UPDATE TB_MEMBER SET
+			LEAVE_YN = 'Y'
+			, LEAVE_DATE = SYSDATE
+		WHERE MEMBER_SEQ = #{memberSeq}
+	</update>
+
+</mapper>

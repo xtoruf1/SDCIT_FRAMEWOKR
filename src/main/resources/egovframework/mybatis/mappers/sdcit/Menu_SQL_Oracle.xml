@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="MenuSQL">
+
+	<select id="selectSystemTopList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectSystemTopList */
+		WITH PGM AS (
+			SELECT *
+			FROM (
+				SELECT
+					PGM_ID
+					, 0 AS SEQ
+					, PGM_NAME
+					, '' AS DET_PGM_NAME
+					, URL
+					, LINK_TARGET
+				FROM PGM_ADMIN_LIST
+				UNION ALL
+				SELECT
+					B.PGM_ID
+					, B.SEQ
+					, A.PGM_NAME
+					, B.PGM_NAME AS DET_PGM_NAME
+					, B.URL
+					, A.LINK_TARGET
+				FROM PGM_ADMIN_LIST A INNER JOIN PGM_ADMIN_LIST_DET B
+					ON A.PGM_ID = B.PGM_ID
+			)
+			WHERE URL IS NOT NULL
+		)
+		SELECT
+			B.MENU_SET_ID
+			, NVL(B.SYSTEM_MENU_ID, D.SYSTEM_MENU_ID) AS SYSTEM_MENU_ID
+			, D.SORT_SEQ
+			, B.PGM_ID
+			, B.UPPER_ID
+			, B.MENU_DEPTH
+			, A.MODIFY_AUTH_YN
+			, D.SYSTEM_MENU_NAME
+			, (
+				SELECT PGM_NAME
+				FROM PGM_ADMIN_LIST
+				WHERE PGM_ID = B.UPPER_ID
+			) AS UPPER_PGM_NAME
+			, C.PGM_NAME
+			, C.DET_PGM_NAME
+			, C.URL
+			, C.LINK_TARGET
+		FROM (
+				SELECT
+					SYSTEM_MENU_ID
+					, MENU_SET_ID
+					, CASE WHEN INSTR(MODIFY_AUTH_YN, 'Y') > 0 THEN 'Y' ELSE 'N' END MODIFY_AUTH_YN
+				FROM (
+					SELECT
+						B.SYSTEM_MENU_ID
+						, C.MENU_SET_ID
+						, SUBSTR(XMLAGG(XMLELEMENT(COL, ',', C.MODIFY_AUTH_YN) ORDER BY B.SYSTEM_MENU_ID, C.MENU_SET_ID).EXTRACT('//text()').GETSTRINGVAL(), 2) MODIFY_AUTH_YN
+					FROM AUTH_ADMIN_GRANT A INNER JOIN AUTH_ADMIN_GRANT_DET B
+						ON A.USER_ID = B.USER_ID
+						INNER JOIN AUTH_ADMIN_SETTING_DET C
+						ON B.SYSTEM_MENU_ID = C.SYSTEM_MENU_ID
+						AND B.AUTH_ID = C.AUTH_ID
+					WHERE A.USER_ID = #{userId}
+					AND C.ACCESS_AUTH_YN = 'Y'
+					GROUP BY B.SYSTEM_MENU_ID, C.MENU_SET_ID
+				)
+			) A, MENU_ADMIN_SETTING B, PGM C, SYSTEM_MENU D, (
+				SELECT MENU_SET_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE MENU_DEPTH = 1
+			) E
+			, MENU_ADMIN_SETTING F
+		WHERE C.URL IS NOT NULL
+		AND D.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID(+)
+		AND B.PGM_ID = C.PGM_ID(+)
+		AND B.MENU_SET_ID = E.MENU_SET_ID(+)
+		AND B.UPPER_ID = F.PGM_ID(+)
+		AND A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+		AND A.MENU_SET_ID = B.MENU_SET_ID
+		AND A.SYSTEM_MENU_ID = D.SYSTEM_MENU_ID
+		START WITH B.UPPER_ID IS NULL
+		CONNECT BY PRIOR B.PGM_ID = B.UPPER_ID
+		ORDER SIBLINGS BY DECODE(D.SYSTEM_MENU_NAME, '시스템관리', '히', D.SYSTEM_MENU_NAME), D.SORT_SEQ ASC, B.MENU_SEQ ASC, C.SEQ ASC
+	</select>
+
+	<select id="selectSystemLeftList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectSystemLeftList */
+		SELECT
+			A.SYSTEM_MENU_ID
+			, A.MENU_SET_ID
+			, A.SORT_SEQ
+			, A.PGM_ID
+			, A.UPPER_ID
+			, A.MENU_DEPTH
+			, A.MENU_SEQ
+			, A.SYSTEM_MENU_NAME
+			, A.PGM_NAME
+			, A.URL
+			, A.LINK_TARGET
+			, DECODE(A.MENU_URL, NULL, A.URL, A.URL || ',' || A.MENU_URL) AS MENU_URL
+			, CONNECT_BY_ISLEAF AS LEAF
+		FROM (
+			SELECT *
+			FROM (
+				SELECT
+					NVL(D.SYSTEM_MENU_ID, F.SYSTEM_MENU_ID) AS SYSTEM_MENU_ID
+					, D.MENU_SET_ID
+					, F.SORT_SEQ
+					, D.PGM_ID
+					, D.UPPER_ID
+					, D.MENU_DEPTH
+					, D.MENU_SEQ
+					, F.SYSTEM_MENU_NAME
+					, E.PGM_NAME
+					, E.URL
+					, E.LINK_TARGET
+					, (
+						SELECT SUBSTR(XMLAGG(XMLELEMENT(COL, ',', URL) ORDER BY PGM_ID).EXTRACT('//text()').GETSTRINGVAL(), 2)
+						FROM PGM_ADMIN_LIST_DET
+						WHERE PGM_ID = E.PGM_ID
+					) AS MENU_URL
+					, ROW_NUMBER() OVER(PARTITION BY D.MENU_SET_ID ORDER BY B.AUTH_ID ASC) AS RN
+				FROM AUTH_ADMIN_GRANT A INNER JOIN AUTH_ADMIN_GRANT_DET B
+					ON A.USER_ID = B.USER_ID
+					INNER JOIN AUTH_ADMIN_SETTING_DET C
+					ON B.SYSTEM_MENU_ID = C.SYSTEM_MENU_ID
+					AND B.AUTH_ID = C.AUTH_ID
+					INNER JOIN MENU_ADMIN_SETTING D
+					ON C.MENU_SET_ID = D.MENU_SET_ID
+					INNER JOIN PGM_ADMIN_LIST E
+					ON D.PGM_ID = E.PGM_ID
+					INNER JOIN SYSTEM_MENU F
+					ON D.SYSTEM_MENU_ID = F.SYSTEM_MENU_ID
+				WHERE A.USER_ID = #{userId}
+				AND B.SYSTEM_MENU_ID = #{systemMenuId}
+				AND C.ACCESS_AUTH_YN = 'Y'
+			) A
+			WHERE A.RN = 1
+		) A
+		START WITH A.UPPER_ID IS NULL
+		CONNECT BY PRIOR A.PGM_ID = A.UPPER_ID
+		ORDER SIBLINGS BY A.SORT_SEQ ASC, A.MENU_SEQ ASC
+	</select>
+
+	<select id="selectSystemList">
+		SELECT SYS_MENU_NO
+			   , MENU_NM
+			   , RMK
+			   , MENU_SORT
+			   , WRITNG_DATE
+		  FROM TBCM_SYSMENU
+	</select>
+
+	<select id="selectAdminSystemList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectAdminSystemList */
+		SELECT COUNT(*) OVER() AS TOTAL_CNT
+			 , A.*
+		  FROM (
+				<include refid="sqlAdminSystemList"/>
+			   ) A
+			LIMIT #{firstIndex}, #{recordCountPerPage}
+	</select>
+
+	<sql id="sqlAdminSystemList">
+		SELECT @ROWNUM := @ROWNUM +1 AS RN
+			 , SYS_MENU_NO
+			 , MENU_NM
+			 , NVL(RMK, '') AS RMK
+			 , MENU_SORT
+			 , WRITNG_DT
+			/*, DECODE(( SELECT COUNT(*)
+						 FROM MENU_ADMIN_SETTING
+						WHERE SYSTEM_MENU_ID = A.SYSTEM_MENU_ID
+					  ), 0, 'N', 'Y') AS SETTING_YN*/
+		  FROM TBCM_SYSMENU
+	INNER JOIN (
+				SELECT @ROWNUM := 0
+			   ) TMP
+		 WHERE 1 = 1
+			<if test='searchSystemMenuName != null and searchSystemMenuName != ""'>
+			   AND UPPER(REPLACE(MENU_NM, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchSystemMenuName}, ' ', '')) || '%'
+			</if>
+			<if test='searchRmk != null and searchRmk != ""'>
+			   AND UPPER(REPLACE(RMK, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchDscr}, ' ', '')) || '%'
+			</if>
+	  ORDER BY MENU_SORT ASC
+	</sql>
+
+	<select id="selectAdminSystemView" resultType="commonMap">
+		/* MenuSQL.selectAdminSystemView */
+		SELECT
+			SYS_MENU_NO
+			, MENU_NM
+			, RMK
+		FROM TBCM_SYSMENU
+		WHERE SYS_MENU_NO = #{sysMenuNo}
+	</select>
+
+	<select id="getAdminSystemDuplicateCnt" parameterType="searchVO" resultType="int">
+		/* MenuSQL.getAdminSystemDuplicateCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM TBCM_SYSMENU
+		WHERE MENU_NM = #{menuMn}
+		<if test="sysMenuNo != null and sysMenuNo != ''">
+			AND	SYS_MENU_NO <![CDATA[<>]]> #{sysMenuNo}
+		</if>
+	</select>
+
+	<insert id="insertAdminSystem" parameterType="searchVO">
+		<selectKey keyProperty="sysMenuNo" resultType="int" order="BEFORE">
+			SELECT NEXTVAL(SQCM_SYSMENU)
+		</selectKey>
+
+		/* MenuSQL.insertAdminSystem */
+		INSERT INTO TBCM_SYSMENU (
+			SYS_MENU_NO
+			, MENU_NM
+			, RMK_CNTN
+			, SORT_SEQ
+		) VALUES (
+			#{sysMenuNo}
+			, #{menuMn}
+			, #{rmkCntn}
+			, (
+				SELECT NVL(MAX(MENU_SORT), 0) + 1
+				FROM TBCM_SYSMENU
+			)
+		)
+	</insert>
+
+	<update id="updateAdminSystem" parameterType="searchVO">
+		/* MenuSQL.updateAdminSystem */
+		UPDATE SYSTEM_MENU SET
+			SYSTEM_MENU_NAME = #{systemMenuName}
+			, DSCR = #{dscr}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE SYSTEM_MENU_ID = #{systemMenuId}
+	</update>
+
+	<delete id="deleteAdminSystem" parameterType="searchVO">
+		/* MenuSQL.deleteAdminSystem */
+		DELETE FROM SYSTEM_MENU
+		WHERE SYSTEM_MENU_ID = #{systemMenuId}
+	</delete>
+
+	<delete id="deleteAdminSystemList" parameterType="searchVO">
+		/* MenuSQL.deleteAdminSystemList */
+		<if test='deleteMenuList != null and deleteMenuList.size != 0'>
+			DELETE FROM SYSTEM_MENU
+			WHERE 1 = 1
+			AND SYSTEM_MENU_ID IN
+			<foreach item="menu" collection="deleteMenuList" open="(" close=")" separator=",">
+				#{menu.systemMenuId}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectUserSystemList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectUserSystemList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.TOP_MENU_ID
+			, A.TOP_MENU_NAME
+			, A.AUTH_TYPE
+			, A.IMG_ON
+			, A.IMG_OFF
+			, A.SORT_SEQ
+			, DECODE((
+				SELECT COUNT(*)
+				FROM USER_MENU_SETTING
+				WHERE TOP_MENU_ID = A.TOP_MENU_ID
+			), 0, 'N', 'Y') AS SETTING_YN
+			, A.CRE_BY
+			, TO_CHAR(A.CRE_DATE, 'YYYY-MM-DD HH24:MI') AS CRE_DATE
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						TOP_MENU_ID
+						, TOP_MENU_NAME
+						, DECODE(AUTH_TYPE, 'USER', '사용자', 'ADMIN', '관리자') AS AUTH_TYPE
+						, IMG_ON
+						, IMG_OFF
+						, SORT_SEQ
+						, CRE_BY
+						, CRE_DATE
+					FROM USER_TOP_MENU
+					WHERE AUTH_TYPE = 'USER'
+					<if test="searchKeyword != null and searchKeyword != ''">
+						AND	UPPER(REPLACE(TOP_MENU_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchKeyword}, ' ', '')) || '%'
+					</if>
+					ORDER BY AUTH_TYPE DESC, SORT_SEQ ASC
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectUserSystemTotalCnt" parameterType="searchVO" resultType="int">
+		/* MenuSQL.selectUserSystemTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM USER_TOP_MENU
+		WHERE AUTH_TYPE = 'USER'
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND	UPPER(REPLACE(TOP_MENU_NAME, ' ', '')) LIKE '%' || UPPER(REPLACE(#{searchKeyword}, ' ', '')) || '%'
+		</if>
+	</select>
+
+	<select id="selectUserSystemView" resultType="commonMap">
+		/* MenuSQL.selectUserSystemView */
+		SELECT
+			TOP_MENU_ID
+			, TOP_MENU_NAME
+			, AUTH_TYPE
+			, IMG_ON
+			, IMG_OFF
+			, SORT_SEQ
+			, CRE_BY
+			, CRE_DATE
+			, MENU_TYPE
+			, DSCR
+		FROM USER_TOP_MENU
+		WHERE TOP_MENU_ID = #{topMenuId}
+	</select>
+
+	<select id="getUserSystemDuplicateCnt" parameterType="searchVO" resultType="int">
+		/* MenuSQL.getUserSystemDuplicateCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM USER_TOP_MENU
+		WHERE TOP_MENU_NAME = #{topMenuName}
+		<if test="topMenuId != null and topMenuId != ''">
+			AND	TOP_MENU_ID <![CDATA[<>]]> #{topMenuId}
+		</if>
+	</select>
+
+	<insert id="insertUserSystem" parameterType="searchVO">
+		<selectKey keyProperty="topMenuId" resultType="int" order="BEFORE">
+			SELECT USER_TOP_MENU_S.NEXTVAL AS TOP_MENU_ID
+			FROM DUAL
+		</selectKey>
+
+		/* MenuSQL.insertUserSystem */
+		INSERT INTO USER_TOP_MENU (
+			TOP_MENU_ID
+			, TOP_MENU_NAME
+			, AUTH_TYPE
+			, IMG_ON
+			, IMG_OFF
+			, SORT_SEQ
+			, CRE_BY
+			, CRE_DATE
+			, MENU_TYPE
+			, DSCR
+		) VALUES (
+			#{topMenuId}
+			, #{topMenuName}
+			, 'USER'
+			, #{imgOn}
+			, #{imgOff}
+			, NVL(#{sortSeq}, (
+				SELECT NVL(MAX(SORT_SEQ), 0) + 1
+				FROM USER_TOP_MENU
+				WHERE AUTH_TYPE = 'USER'
+			))
+			, #{regId}
+			, SYSDATE
+			, #{menuType}
+			, #{dscr}
+		)
+	</insert>
+
+	<update id="updateUserSystem" parameterType="searchVO">
+		/* MenuSQL.updateUserSystem */
+		UPDATE USER_TOP_MENU SET
+			TOP_MENU_NAME = #{topMenuName}
+			, IMG_ON = #{imgOn}
+			, IMG_OFF = #{imgOff}
+			, SORT_SEQ = #{sortSeq}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+			, MENU_TYPE = #{menuType}
+			, DSCR = #{dscr}
+		WHERE TOP_MENU_ID = #{topMenuId}
+	</update>
+
+	<delete id="deleteUserSystem" parameterType="searchVO">
+		/* MenuSQL.deleteUserSystem */
+		DELETE FROM USER_TOP_MENU
+		WHERE TOP_MENU_ID = #{topMenuId}
+	</delete>
+
+	<delete id="deleteUserSystemList" parameterType="searchVO">
+		/* MenuSQL.deleteUserSystemList */
+		<if test='deleteMenuList != null and deleteMenuList.size != 0'>
+			DELETE FROM USER_TOP_MENU
+			WHERE 1 = 1
+			AND TOP_MENU_ID IN
+			<foreach item="menu" collection="deleteMenuList" open="(" close=")" separator=",">
+				#{menu.topMenuId}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectAdminSystemMenuList" resultType="commonMap">
+		/* MenuSQL.selectAdminSystemMenuList */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY SORT_SEQ DESC, SYSTEM_MENU_ID DESC) AS RN
+			, SYSTEM_MENU_ID
+			, SYSTEM_MENU_NAME
+			, DSCR
+		FROM SYSTEM_MENU
+		WHERE 1 = 1
+		ORDER BY SORT_SEQ ASC, SYSTEM_MENU_ID ASC
+	</select>
+
+	<select id="selectAdminMenuList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectAdminMenuList */
+		SELECT
+			A.MENU_SET_ID
+			, NVL(A.SYSTEM_MENU_ID, C.SYSTEM_MENU_ID) AS SYSTEM_MENU_ID
+			, C.SORT_SEQ
+			, A.PGM_ID
+			, A.UPPER_ID
+			, E.UPPER_ID AS UPPER_ID2
+			, A.MENU_DEPTH
+			, 2 AS SUB_SORT
+			, C.SYSTEM_MENU_NAME
+			, DECODE(A.MENU_DEPTH, 1, B.PGM_NAME) AS LEV1_NAME
+			, DECODE(A.MENU_DEPTH, 2, B.PGM_NAME) AS LEV2_NAME
+			, DECODE(A.MENU_DEPTH, 3, B.PGM_NAME) AS LEV3_NAME
+			, B.URL
+		FROM MENU_ADMIN_SETTING A, PGM_ADMIN_LIST B, SYSTEM_MENU C, (
+				SELECT
+					ROW_NUMBER() OVER(PARTITION BY SYSTEM_MENU_ID ORDER BY MENU_SEQ) AS RANK_NO
+					, MENU_SET_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE MENU_DEPTH = 1
+			) D
+			, MENU_ADMIN_SETTING E
+		WHERE C.SYSTEM_MENU_ID = A.SYSTEM_MENU_ID(+)
+		AND A.PGM_ID = B.PGM_ID(+)
+		AND A.MENU_SET_ID = D.MENU_SET_ID(+)
+		AND A.UPPER_ID = E.PGM_ID(+)
+		<if test='searchCondition != null and searchCondition != ""'>
+			AND C.SYSTEM_MENU_ID = #{searchCondition}
+		</if>
+		START WITH A.UPPER_ID IS NULL
+		CONNECT BY PRIOR A.PGM_ID = A.UPPER_ID
+		ORDER SIBLINGS BY C.SORT_SEQ ASC, A.MENU_SEQ ASC
+	</select>
+
+	<insert id="insertAdminMenuProgram" parameterType="searchVO">
+		/* MenuSQL.insertAdminMenuProgram */
+		INSERT INTO MENU_ADMIN_SETTING (
+			MENU_SET_ID
+			, SYSTEM_MENU_ID
+			, PGM_ID
+			, UPPER_ID
+			, MENU_DEPTH
+			, MENU_SEQ
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			MENU_SETTING_S.NEXTVAL
+			, #{systemMenuId}
+			, #{pgmId}
+			, (
+				SELECT PGM_ID AS UPPER_ID
+				FROM MENU_ADMIN_SETTING
+				WHERE MENU_SET_ID = #{menuSetId}
+			)
+			, (
+				SELECT NVL(MAX(MENU_DEPTH), 0) + 1
+				FROM MENU_ADMIN_SETTING
+				WHERE MENU_SET_ID = #{menuSetId}
+			)
+			, (
+				CASE WHEN #{menuSetId} IS NULL THEN (
+					SELECT NVL(MAX(MENU_SEQ), 0) + 1
+					FROM MENU_ADMIN_SETTING
+					WHERE SYSTEM_MENU_ID = #{systemMenuId}
+					AND MENU_DEPTH = 1
+				) ELSE (
+					SELECT NVL(MAX(B.MENU_SEQ), 0) + 1
+					FROM MENU_ADMIN_SETTING A, MENU_ADMIN_SETTING B
+					WHERE A.MENU_SET_ID = #{menuSetId}
+					AND A.PGM_ID = B.UPPER_ID
+				) END
+			)
+			, #{regId}
+			, SYSDATE
+		)
+	</insert>
+
+	<select id="selectAdminMenuDepthList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectAdminMenuDepthList */
+		<choose>
+			<when test='menuGb == "A"'>
+				SELECT
+					ROW_NUMBER() OVER(ORDER BY SORT_SEQ DESC) AS RN
+					, SYSTEM_MENU_ID
+					, SYSTEM_MENU_NAME
+					, DSCR
+				FROM SYSTEM_MENU
+				ORDER BY SORT_SEQ ASC
+			</when>
+			<otherwise>
+				<choose>
+					<when test='upperId == null or upperId == ""'>
+						SELECT
+							ROW_NUMBER() OVER(ORDER BY B.MENU_SEQ DESC) AS RN
+							, B.MENU_SET_ID
+							, C.PGM_NAME
+						FROM MENU_ADMIN_SETTING A, MENU_ADMIN_SETTING B, PGM_ADMIN_LIST C
+						WHERE A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+						AND B.PGM_ID = C.PGM_ID
+						AND B.UPPER_ID IS NULL
+						AND A.MENU_SET_ID = #{menuSetId}
+						ORDER BY B.MENU_SEQ ASC
+					</when>
+					<otherwise>
+						SELECT
+							ROW_NUMBER() OVER(ORDER BY B.MENU_SEQ DESC) AS RN
+							, B.MENU_SET_ID
+							, C.PGM_NAME
+							, C.URL
+						FROM MENU_ADMIN_SETTING A, MENU_ADMIN_SETTING B, PGM_ADMIN_LIST C
+						WHERE A.UPPER_ID = B.UPPER_ID
+						AND B.PGM_ID = C.PGM_ID
+						AND A.MENU_SET_ID = #{menuSetId}
+						ORDER BY B.MENU_SEQ ASC
+					</otherwise>
+				</choose>
+			</otherwise>
+		</choose>
+	</select>
+
+	<update id="updateAdminMenuSort" parameterType="searchVO">
+		/* MenuSQL.updateAdminMenuSort */
+		<choose>
+			<when test='menuGb == "A"'>
+				UPDATE SYSTEM_MENU SET
+					SORT_SEQ = #{sortSeq}
+					, UPD_BY = #{updId}
+					, UPD_DATE = SYSDATE
+				WHERE SYSTEM_MENU_ID = #{systemMenuId}
+			</when>
+			<otherwise>
+				UPDATE MENU_ADMIN_SETTING SET
+					MENU_SEQ = #{menuSeq}
+					, UPD_BY = #{updId}
+					, UPD_DATE = SYSDATE
+				WHERE MENU_SET_ID = #{menuSetId}
+			</otherwise>
+		</choose>
+	</update>
+
+	<delete id="deleteAdminMenuList" parameterType="searchVO">
+		/* MenuSQL.deleteAdminMenuList */
+		<if test='deleteMenuList != null and deleteMenuList.size != 0'>
+			DELETE FROM MENU_ADMIN_SETTING
+			WHERE 1 = 1
+			AND MENU_SET_ID IN
+			<foreach item="menu" collection="deleteMenuList" open="(" close=")" separator=",">
+				#{menu.menuSetId}
+			</foreach>
+		</if>
+	</delete>
+
+	<delete id="deleteAuthSettingDetailList" parameterType="searchVO">
+		/* MenuSQL.deleteAuthSettingDetailList */
+		<if test='deleteMenuList != null and deleteMenuList.size != 0'>
+			DELETE FROM AUTH_ADMIN_SETTING_DET
+			WHERE 1 = 1
+			AND MENU_SET_ID IN
+			<foreach item="menu" collection="deleteMenuList" open="(" close=")" separator=",">
+				#{menu.menuSetId}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectUserTopMenuList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectUserTopMenuList */
+		SELECT
+			TOP_MENU_ID
+			, TOP_MENU_NAME
+		FROM USER_TOP_MENU
+		WHERE AUTH_TYPE = 'USER'
+		ORDER BY SORT_SEQ ASC, TOP_MENU_ID ASC
+	</select>
+
+	<select id="selectUserAuthList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectUserAuthList */
+		SELECT
+			AUTH_ID
+			, AUTH_NAME
+			, AUTH_SEQ
+			, DSCR
+		FROM AUTH_LIST
+		WHERE NVL(ADMIN_YN, 'N') = 'N'
+		ORDER BY AUTH_SEQ
+	</select>
+
+	<select id="selectUserMenuList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectUserMenuList */
+		SELECT
+			A.MENU_SET_ID
+			, NVL(A.TOP_MENU_ID, C.TOP_MENU_ID) AS TOP_MENU_ID
+			, C.SORT_SEQ
+			, A.PGM_ID
+			, A.UPPER_ID
+			, E.UPPER_ID AS UPPER_ID2
+			, A.MENU_DEPTH
+			, 2 AS SUB_SORT
+			, C.TOP_MENU_NAME
+			, DECODE(A.MENU_DEPTH, 1, B.PGM_NAME) AS LEV1_NAME
+			, DECODE(A.MENU_DEPTH, 2, B.PGM_NAME) AS LEV2_NAME
+			, DECODE(A.MENU_DEPTH, 3, B.PGM_NAME) AS LEV3_NAME
+			, A.AUTH_1
+			, A.AUTH_2
+			, A.AUTH_3
+			, A.AUTH_4
+			, A.AUTH_5
+			, A.AUTH_6
+			, A.AUTH_7
+			, A.AUTH_8
+			, A.AUTH_9
+			, A.AUTH_10
+			, A.AUTH_11
+			, A.AUTH_12
+			, A.AUTH_13
+			, A.AUTH_14
+			, A.AUTH_15
+			, A.AUTH_16
+			, A.AUTH_17
+			, A.AUTH_18
+			, A.AUTH_19
+			, A.AUTH_20
+		FROM USER_MENU_SETTING A, USER_PGM_LIST B, USER_TOP_MENU C, (
+				SELECT
+					ROW_NUMBER() OVER(PARTITION BY TOP_MENU_ID ORDER BY MENU_SEQ) AS RANK_NO
+					, MENU_SET_ID
+				FROM USER_MENU_SETTING
+				WHERE MENU_DEPTH = 1
+			) D
+			, USER_MENU_SETTING E
+		WHERE C.TOP_MENU_ID = A.TOP_MENU_ID(+)
+		AND C.AUTH_TYPE = 'USER'
+		AND A.PGM_ID = B.PGM_ID(+)
+		AND A.MENU_SET_ID = D.MENU_SET_ID(+)
+		AND A.UPPER_ID = E.PGM_ID(+)
+		<if test='searchCondition != null and searchCondition != ""'>
+			AND C.TOP_MENU_ID = #{searchCondition}
+		</if>
+		START WITH A.UPPER_ID IS NULL
+		CONNECT BY PRIOR A.PGM_ID = A.UPPER_ID
+		ORDER SIBLINGS BY C.SORT_SEQ ASC, A.MENU_SEQ ASC
+	</select>
+
+	<insert id="insertUserMenuProgram" parameterType="searchVO">
+		/* MenuSQL.insertUserMenuProgram */
+		INSERT INTO USER_MENU_SETTING (
+			MENU_SET_ID
+			, TOP_MENU_ID
+			, PGM_ID
+			, UPPER_ID
+			, MENU_DEPTH
+			, MENU_SEQ
+			, CRE_BY
+			, CRE_DATE
+		) VALUES (
+			USER_MENU_SETTING_S.NEXTVAL
+			, #{topMenuId}
+			, #{pgmId}
+			, (
+				SELECT PGM_ID AS UPPER_ID
+				FROM USER_MENU_SETTING
+				WHERE MENU_SET_ID = #{menuSetId}
+			)
+			, (
+				SELECT NVL(MAX(MENU_DEPTH), 0) + 1
+				FROM USER_MENU_SETTING
+				WHERE MENU_SET_ID = #{menuSetId}
+			)
+			, (
+				CASE WHEN #{menuSetId} IS NULL THEN (
+					SELECT NVL(MAX(MENU_SEQ), 0) + 1
+					FROM USER_MENU_SETTING
+					WHERE TOP_MENU_ID = #{topMenuId}
+					AND MENU_DEPTH = 1
+				) ELSE (
+					SELECT NVL(MAX(B.MENU_SEQ), 0) + 1
+					FROM USER_MENU_SETTING A, USER_MENU_SETTING B
+					WHERE A.MENU_SET_ID = #{menuSetId}
+					AND A.PGM_ID = B.UPPER_ID
+				) END
+			)
+			, #{regId}
+			, SYSDATE
+		)
+	</insert>
+
+	<select id="selectUserMenuDepthList" parameterType="searchVO" resultType="commonMap">
+		/* MenuSQL.selectUserMenuDepthList */
+		<choose>
+			<when test='upperId == null or upperId == ""'>
+				SELECT
+					ROW_NUMBER() OVER(ORDER BY B.MENU_SEQ DESC) AS RN
+					, B.MENU_SET_ID
+					, C.PGM_NAME
+				FROM USER_MENU_SETTING A, USER_MENU_SETTING B, USER_PGM_LIST C
+				WHERE A.TOP_MENU_ID = B.TOP_MENU_ID
+				AND B.PGM_ID = C.PGM_ID
+				AND B.UPPER_ID IS NULL
+				AND A.MENU_SET_ID = #{menuSetId}
+				ORDER BY B.MENU_SEQ ASC
+			</when>
+			<otherwise>
+				SELECT
+					ROW_NUMBER() OVER(ORDER BY B.MENU_SEQ DESC) AS RN
+					, B.MENU_SET_ID
+					, C.PGM_NAME
+					, C.URL
+				FROM USER_MENU_SETTING A, USER_MENU_SETTING B, USER_PGM_LIST C
+				WHERE A.UPPER_ID = B.UPPER_ID
+				AND B.PGM_ID = C.PGM_ID
+				AND A.MENU_SET_ID = #{menuSetId}
+				ORDER BY B.MENU_SEQ ASC
+			</otherwise>
+		</choose>
+	</select>
+
+	<update id="updateUserMenuSort" parameterType="searchVO">
+		/* MenuSQL.updateUserMenuSort */
+		UPDATE USER_MENU_SETTING SET
+			MENU_SEQ = #{menuSeq}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE MENU_SET_ID = #{menuSetId}
+	</update>
+
+	<delete id="deleteUserMenuList" parameterType="searchVO">
+		/* MenuSQL.deleteUserMenuList */
+		<if test='deleteMenuList != null and deleteMenuList.size != 0'>
+			DELETE FROM USER_MENU_SETTING
+			WHERE 1 = 1
+			AND MENU_SET_ID IN
+			<foreach item="menu" collection="deleteMenuList" open="(" close=")" separator=",">
+				#{menu.menuSetId}
+			</foreach>
+		</if>
+	</delete>
+
+	<update id="updateUserMenu" parameterType="searchVO">
+		/* MenuSQL.updateUserMenu */
+		UPDATE USER_MENU_SETTING SET
+			AUTH_1 = #{auth1}
+			, AUTH_2 = #{auth2}
+			, AUTH_3 = #{auth3}
+			, AUTH_4 = #{auth4}
+			, AUTH_5 = #{auth5}
+			, AUTH_6 = #{auth6}
+			, AUTH_7 = #{auth7}
+			, AUTH_8 = #{auth8}
+			, AUTH_9 = #{auth9}
+			, AUTH_10 = #{auth10}
+			, AUTH_11 = #{auth11}
+			, AUTH_12 = #{auth12}
+			, AUTH_13 = #{auth13}
+			, AUTH_14 = #{auth14}
+			, AUTH_15 = #{auth15}
+			, AUTH_16 = #{auth16}
+			, AUTH_17 = #{auth17}
+			, AUTH_18 = #{auth18}
+			, AUTH_19 = #{auth19}
+			, AUTH_20 = #{auth20}
+			, UPD_BY = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE MENU_SET_ID = #{menuSetId}
+	</update>
+
+	<select id="selectAdminUrlProgramCnt" parameterType="searchVO" resultType="int">
+		/* MenuSQL.selectAdminProgramList */
+		SELECT COUNT(*)
+		FROM (
+			SELECT URL
+			FROM PGM_ADMIN_LIST
+			UNION ALL
+			SELECT B.URL
+			FROM PGM_ADMIN_LIST A INNER JOIN PGM_ADMIN_LIST_DET B
+				ON A.PGM_ID = B.PGM_ID
+		)
+		WHERE URL = #{url}
+	</select>
+
+	<select id="selectAdminMenuAuthExist" parameterType="searchVO" resultType="int">
+		/* MenuSQL.selectAdminMenuExist */
+		SELECT COUNT(*) AS CNT
+		FROM (
+				SELECT
+					SYSTEM_MENU_ID
+					, MENU_SET_ID
+				FROM (
+					SELECT
+						B.SYSTEM_MENU_ID
+						, C.MENU_SET_ID
+					FROM AUTH_ADMIN_GRANT A INNER JOIN AUTH_ADMIN_GRANT_DET B
+						ON A.USER_ID = B.USER_ID
+						INNER JOIN AUTH_ADMIN_SETTING_DET C
+						ON B.SYSTEM_MENU_ID = C.SYSTEM_MENU_ID
+						AND B.AUTH_ID = C.AUTH_ID
+					WHERE A.USER_ID = #{userId}
+					AND C.ACCESS_AUTH_YN = 'Y'
+				)
+			) A, MENU_ADMIN_SETTING B, (
+				SELECT
+					PGM_ID
+					, URL
+				FROM (
+					SELECT
+						PGM_ID
+						, URL
+					FROM PGM_ADMIN_LIST
+					UNION ALL
+					SELECT
+						B.PGM_ID
+						, B.URL
+					FROM PGM_ADMIN_LIST A INNER JOIN PGM_ADMIN_LIST_DET B
+						ON A.PGM_ID = B.PGM_ID
+				)
+				WHERE URL IS NOT NULL
+			) C
+		WHERE C.URL = #{url}
+		AND A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+		AND A.MENU_SET_ID = B.MENU_SET_ID
+		AND B.PGM_ID = C.PGM_ID
+	</select>
+
+	<select id="getAwardAndFundAuthType" parameterType="searchVO" resultType="commonMap">
+		SELECT  MAX(A.SYSTEM_MENU_ID) AS SYSTEM_MENU_ID
+		        ,MAX(B.ETC_CODE) AS ETC_CODE
+		FROM    AUTH_ADMIN_GRANT_DET A
+		        ,AUTH_ADMIN_SETTING B
+		        ,AUTH_ADMIN_SETTING_DET C
+		        ,MENU_ADMIN_SETTING D
+		        ,PGM_ADMIN_LIST E
+		WHERE   A.SYSTEM_MENU_ID = B.SYSTEM_MENU_ID
+		AND     A.AUTH_ID = B.AUTH_ID
+		AND     A.SYSTEM_MENU_ID = C.SYSTEM_MENU_ID
+		AND     A.AUTH_ID = C.AUTH_ID
+		AND     C.MENU_SET_ID = D.MENU_SET_ID
+		AND     D.PGM_ID = E.PGM_ID
+		AND     A.USER_ID = #{userId}
+		AND     E.URL = #{url}
+	</select>
+</mapper>

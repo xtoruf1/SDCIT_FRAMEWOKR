@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMKSchema-instace"
+	xsi:noNamespaceSchemaLocatioin="http://ehcache.org/ehcache.xsd"
+	updateCheck="true" monitoring="autodetect" dynamicConfig="true">
+
+	<cache name="COMMON_CODE_CACHE"
+		   maxElementsInMemory="1000"
+		   eternal="true"
+		   overflowToDisk="false"
+		   memoryStoreEvictionPolicy="LFU"
+		   transactionalMode="off" />
+
+</ehcache>

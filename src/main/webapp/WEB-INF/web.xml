@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+	<display-name>KITA</display-name>
+    
+	<filter>
+		<filter-name>EncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>EncodingFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>MultipartFilter</filter-name>
+		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>MultipartFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+    
+    <!-- 멀티파트 XSS 적용때문에 추가 -->
+    <!-- 
+	<filter>
+		<filter-name>XssEscapeServletFilter</filter-name>
+		<filter-class>com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>XssEscapeServletFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	-->
+	
+	<filter>
+		<filter-name>HTMLTagFilter</filter-name>
+		<filter-class>egovframework.common.filter.HTMLTagFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HTMLTagFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:egovframework/spring/context-*.xml</param-value>
+	</context-param>
+    
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    
+	<context-param>
+		<param-name>log4jConfiguration</param-name>
+		<param-value>classpath:/egovframework/logger/${spring.profiles.active}/log4j2.xml</param-value>
+	</context-param>
+	 
+	<listener>  
+		<listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>  
+	</listener>
+	
+	<context-param>
+		<param-name>log4jdbcLog4j2ConfigLocation</param-name>
+		<param-value>/egovframework/logger/${spring.profiles.active}/log4jdbc.log4j2.properties</param-value>
+	</context-param>
+	
+	<listener>  
+		<listener-class>egovframework.common.web.context.Log4jdbcLog4j2ConfigListener</listener-class>  
+	</listener>
+	
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/config/springmvc/dispatcher-servlet.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>dispatchOptionsRequest</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+    
+    <security-constraint>
+		<display-name>Forbidden</display-name>
+		<web-resource-collection>
+			<web-resource-name>Protected Context</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>HEAD</http-method>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>PATCH</http-method>
+		</web-resource-collection>
+		<auth-constraint></auth-constraint>
+	</security-constraint>
+	
+    <jsp-config>
+		<taglib>
+			<taglib-uri>http://www.springframework.org/tags</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/spring.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://www.springframework.org/tags/form</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/spring-form.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>http://tiles.apache.org/tags-tiles</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/tiles-jsp.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+    
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+    
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
+    
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/common/error/throwable.do</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<location>/common/error/exception.do</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/common/error/404.do</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/common/error/403.do</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/common/error/500.do</location>
+	</error-page>
+	<error-page>
+		<error-code>503</error-code>
+		<location>/common/error/503.do</location>
+	</error-page>
+	<error-page>
+		<error-code>400</error-code>
+		<location>/common/error/400.do</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/common/error/405.do</location>
+	</error-page>
+    
+</web-app>

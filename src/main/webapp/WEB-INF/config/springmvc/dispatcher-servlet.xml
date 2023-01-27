@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<context:component-scan base-package="egovframework" name-generator="egovframework.common.bean.FullBeanNameGenerator">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="egovframework.common.web.EgovBindingInitializer" />
+        </property>
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <ref bean="localeChangeInterceptor" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
+    <!-- 쿠키를 이용한 Locale 이용시 <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/> -->
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        <property name="paramName" value="language" />
+    </bean>
+
+	<!-- Exception Resolver -->
+	<bean class="egovframework.common.exception.ExceptionResolver">
+        <property name="defaultErrorView" value="/common/error/defaultError" />
+        <property name="ajaxRequestHeaderKey" value="AJAX" />
+        <property name="ajaxErrorView" value="jsonView" />
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">/common/error/dataAccessError</prop>
+                <prop key="org.springframework.security.AccessDeniedException">/common/error/defaultAuthError</prop>
+                <prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">/common/error/commonError</prop>
+                <prop key="egovframework.common.exception.CommonException">/common/error/commonError</prop>
+                <prop key="egovframework.com.cmm.exception.DownloadFileNotFoundException">/common/error/downloadFileNotFoundError</prop>
+            </props>
+        </property>
+    </bean>
+
+	<!-- for JFile -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0" />
+	</bean>
+
+	<bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView" />
+		<property name="order" value="1" />
+	</bean>
+
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/tiles/tiles-layout.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver"
+    	p:order="2"
+	    p:viewClass="org.springframework.web.servlet.view.JstlView"
+	    p:prefix="/WEB-INF/jsp/"
+	    p:suffix=".jsp" />
+
+    <!-- For Pagination Tag -->
+    <bean id="imageRenderer" class="egovframework.common.web.EgovImgPaginationRenderer" />
+
+    <bean id="paginationManager" class="org.egovframe.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager">
+        <property name="rendererType">
+            <map>
+				<entry key="image" value-ref="imageRenderer" />
+            </map>
+        </property>
+    </bean>
+	<!-- // For Pagination Tag -->
+
+	<!-- 메소드 위치를 찾기 쉽게 로깅(Controller) -->
+	<aop:aspectj-autoproxy />
+	<bean id="loggerAspect" class="egovframework.common.logger.LoggerAspect" />
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<mvc:exclude-mapping path="/auth/**" />
+			<mvc:exclude-mapping path="/common/error/*.do" />
+			<mvc:exclude-mapping path="/login.do" />
+			<mvc:exclude-mapping path="/processLogin.do" />
+			<mvc:exclude-mapping path="/tfms/ssm/fundFaxSendPopup.do" />
+			<mvc:exclude-mapping path="/common/fileDownload.do" />
+			<mvc:exclude-mapping path="/common/util/noticeFileDownload.do" />
+			<mvc:exclude-mapping path="/insurance/insuranceFileDownload.do" />
+			<mvc:exclude-mapping path="/supves/supvesFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/exp/expertFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/scene/tradeSOSFileDownload.do" />
+			<mvc:exclude-mapping path="/voucher/voucherFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/com/fileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/com/directFileDownload.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/consult-confirm.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/*/consult-info.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/confirmExpertPrvtConsultAPI.do" />
+			<mvc:exclude-mapping path="/tradeSOS/exp/cancelExpertPrvtConsultMobile.do" />
+			<mvc:exclude-mapping path="/api/ocr/nameCardApi.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocApi.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocList.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocInfo.do" />
+			<bean class="egovframework.common.login.LoginAuthInterceptor" />
+		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<mvc:exclude-mapping path="/" />
+			<mvc:exclude-mapping path="/auth/**" />
+			<mvc:exclude-mapping path="/common/error/*.do" />
+			<mvc:exclude-mapping path="/login.do" />
+			<mvc:exclude-mapping path="/processLogin.do" />
+			<mvc:exclude-mapping path="/tfms/ssm/fundFaxSendPopup.do" />
+			<mvc:exclude-mapping path="/common/fileDownload.do" />
+			<mvc:exclude-mapping path="/common/util/noticeFileDownload.do" />
+			<mvc:exclude-mapping path="/insurance/insuranceFileDownload.do" />
+			<mvc:exclude-mapping path="/supves/supvesFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/exp/expertFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/scene/tradeSOSFileDownload.do" />
+			<mvc:exclude-mapping path="/voucher/voucherFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/com/fileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/com/directFileDownload.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/consult-confirm.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/*/consult-info.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/confirmExpertPrvtConsultAPI.do" />
+			<mvc:exclude-mapping path="/tradeSOS/exp/cancelExpertPrvtConsultMobile.do" />
+			<mvc:exclude-mapping path="/api/ocr/nameCardApi.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocApi.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocList.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocInfo.do" />
+			<bean class="egovframework.common.login.LoginSessionCheckInterceptor" />
+		</mvc:interceptor>
+
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do" />
+			<mvc:exclude-mapping path="/" />
+			<mvc:exclude-mapping path="/auth/**" />
+			<mvc:exclude-mapping path="/common/error/*.do" />
+			<mvc:exclude-mapping path="/login.do" />
+			<mvc:exclude-mapping path="/processLogin.do" />
+			<mvc:exclude-mapping path="/tfms/ssm/fundFaxSendPopup.do" />
+			<mvc:exclude-mapping path="/common/fileDownload.do" />
+			<mvc:exclude-mapping path="/common/util/noticeFileDownload.do" />
+			<mvc:exclude-mapping path="/insurance/insuranceFileDownload.do" />
+			<mvc:exclude-mapping path="/supves/supvesFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/exp/expertFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/scene/tradeSOSFileDownload.do" />
+			<mvc:exclude-mapping path="/voucher/voucherFileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/com/fileDownload.do" />
+			<mvc:exclude-mapping path="/tradeSOS/com/directFileDownload.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/consult-confirm.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/*/consult-info.do" />
+			<mvc:exclude-mapping path="/system/tradeSOS/api/confirmExpertPrvtConsultAPI.do" />
+			<mvc:exclude-mapping path="/tradeSOS/exp/cancelExpertPrvtConsultMobile.do" />
+			<mvc:exclude-mapping path="/api/ocr/nameCardApi.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocApi.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocList.do" />
+			<mvc:exclude-mapping path="/api/ktnet/searchElecDocInfo.do" />
+			<bean class="egovframework.common.auth.AuthenticInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- XmlWorker -->
+	<bean id="xmlWorker" class="egovframework.common.util.XmlWorker">
+		<property name="encoding" value="UTF-8"></property>
+	</bean>
+
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+
+    <bean id="commonPOIExcel" class="egovframework.common.bean.CommonPOIExcel" />
+	<bean id="egovPOIExcel" class="egovframework.common.web.EgovPOIExcel" />
+
+</beans>

@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KmemberSQL">
+
+	<select id="selectSampleList" parameterType="searchVO" resultType="commonMap">
+		/* KmemberSQL.selectSampleList */
+		SELECT
+			LOCATION
+			, TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+		FROM TB_MULTICONNECTION
+		WHERE 1 = 1
+		ORDER BY REG_DATE ASC
+	</select>
+
+	<select id="selectBoardList" parameterType="searchVO" resultType="commonMap">
+		/* KmemberSQL.selectBoardList */
+		SELECT A.ROWNUM
+		     , A.BOARD_SEQ
+		     , A.ARTICLE_SEQ
+		     , A.TITLE
+		     , A.CONTENTS
+		     , A.ATTACH_SEQ
+		     , A.VIEW_CNT
+		     , A.REG_ID
+		     , A.REG_DATE
+		     , A.UPD_ID
+		     , A.UPD_DATE
+		  FROM (
+			 	SELECT COUNT(*) OVER() AS TOTAL_CNT
+					 , TB.*
+				FROM (
+					SELECT BOARD_SEQ
+						 , ARTICLE_SEQ
+					     , @ROWNUM := @ROWNUM +1 as ROWNUM
+						 , TITLE
+						 , CONTENTS
+						 , ATTACH_SEQ
+						 , VIEW_CNT
+						 , REG_ID
+						 , TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI') AS REG_DATE
+						 , UPD_ID
+						 , TO_CHAR(UPD_DATE, 'YYYY-MM-DD HH24:MI') AS UPD_DATE
+				 	  FROM TB_BOARD
+			    INNER JOIN (
+				            SELECT @ROWNUM := 0
+				           ) TMP
+					 WHERE BOARD_SEQ = #{boardSeq}
+					   AND DELETE_YN = 'N'
+					<choose>
+						<when test='searchCondition == null or searchCondition == ""'>
+							<if test='searchKeyword != null and searchKeyword != ""'>
+								AND (
+									TITLE LIKE '%' || #{searchKeyword} || '%'
+									OR CONTENTS LIKE '%' || #{searchKeyword} || '%'
+								)
+							</if>
+						</when>
+						<otherwise>
+							<if test='searchKeyword != null and searchKeyword != ""'>
+								<if test='searchCondition == "title"'>
+									AND TITLE LIKE '%' || #{searchKeyword} || '%'
+								</if>
+								<if test='searchCondition == "contents"'>
+									AND CONTENTS LIKE '%' || #{searchKeyword} || '%'
+								</if>
+							</if>
+						</otherwise>
+					</choose>
+					ORDER BY REG_DATE DESC, ARTICLE_SEQ DESC
+				) TB
+			) A
+	 ORDER BY A.ROWNUM DESC
+		LIMIT #{firstIndex}, #{recordCountPerPage}
+	</select>
+
+	<select id="selectBoardTotalCnt" parameterType="searchVO" resultType="int">
+		/* KmemberSQL.selectBoardTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM TB_BOARD
+		WHERE BOARD_SEQ = #{boardSeq}
+		AND DELETE_YN = 'N'
+		<choose>
+			<when test='searchCondition == null or searchCondition == ""'>
+				<if test='searchKeyword != null and searchKeyword != ""'>
+					AND (
+						TITLE LIKE '%' || #{searchKeyword} || '%'
+						OR CONTENTS LIKE '%' || #{searchKeyword} || '%'
+					)
+				</if>
+			</when>
+			<otherwise>
+				<if test='searchKeyword != null and searchKeyword != ""'>
+					<if test='searchCondition == "title"'>
+						AND TITLE LIKE '%' || #{searchKeyword} || '%'
+					</if>
+					<if test='searchCondition == "contents"'>
+						AND CONTENTS LIKE '%' || #{searchKeyword} || '%'
+					</if>
+				</if>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectBoardExcelList" parameterType="searchVO" resultType="commonMap">
+		/* KmemberSQL.selectBoardExcelList */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) AS RN
+			, BOARD_SEQ
+			, ARTICLE_SEQ
+			, TITLE
+			, VIEW_CNT
+			, REG_ID
+			, TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+		FROM TB_BOARD
+		WHERE BOARD_SEQ = #{boardSeq}
+		AND DELETE_YN = 'N'
+		<choose>
+			<when test='searchCondition == null or searchCondition == ""'>
+				<if test='searchKeyword != null and searchKeyword != ""'>
+					AND (
+						TITLE LIKE '%' || #{searchKeyword} || '%'
+						OR CONTENTS LIKE '%' || #{searchKeyword} || '%'
+					)
+				</if>
+			</when>
+			<otherwise>
+				<if test='searchKeyword != null and searchKeyword != ""'>
+					<if test='searchCondition == "title"'>
+						AND TITLE LIKE '%' || #{searchKeyword} || '%'
+					</if>
+					<if test='searchCondition == "contents"'>
+						AND CONTENTS LIKE '%' || #{searchKeyword} || '%'
+					</if>
+				</if>
+			</otherwise>
+		</choose>
+		ORDER BY REG_DATE DESC
+	</select>
+
+	<select id="selectBoardView" resultType="commonMap">
+		/* KmemberSQL.selectBoardView */
+		SELECT BOARD_SEQ
+			, ARTICLE_SEQ
+			, TITLE
+			, CONTENTS
+			, ATTACH_SEQ
+			, VIEW_CNT
+			, REG_ID
+			, TO_CHAR(REG_DATE, 'YYYY-MM-DD HH24:MI:SS') AS REG_DATE
+		FROM TB_BOARD
+		WHERE BOARD_SEQ = #{boardSeq}
+		AND ARTICLE_SEQ = #{articleSeq}
+	</select>
+
+	<update id="updateBoardViewCnt" parameterType="searchVO">
+		/* KmemberSQL.updateBoardViewCnt */
+		UPDATE TB_BOARD SET
+			VIEW_CNT = VIEW_CNT + 1
+		WHERE BOARD_SEQ = #{boardSeq}
+		AND ARTICLE_SEQ = #{articleSeq}
+	</update>
+
+	<insert id="insertBoardArticle" parameterType="searchVO">
+		<selectKey keyProperty="articleSeq" resultType="int" order="BEFORE">
+			SELECT NEXTVAL(SQTB_BOARD_ARTICLE_SEQ) AS ARTICLE_SEQ
+			FROM DUAL
+		</selectKey>
+
+		/* KmemberSQL.insertBoardArticle */
+		INSERT INTO TB_BOARD (
+			BOARD_SEQ
+			, ARTICLE_SEQ
+			, TITLE
+			, CONTENTS
+			, ATTACH_SEQ
+			, REG_ID
+			, UPD_ID
+		) VALUES (
+			  #{boardSeq}
+			, #{articleSeq}
+			, #{title}
+			, #{contents}
+			, #{attachSeq}
+			, #{regId}
+			, #{updId}
+		)
+	</insert>
+
+	<update id="updateBoardArticle" parameterType="searchVO">
+		/* KmemberSQL.updateBoardArticle */
+		UPDATE TB_BOARD SET
+			  TITLE = #{title}
+			, CONTENTS = #{contents}
+			, ATTACH_SEQ = #{attachSeq}
+			, UPD_ID = #{updId}
+			, UPD_DATE = NOW()
+		WHERE BOARD_SEQ = #{boardSeq}
+		AND ARTICLE_SEQ = #{articleSeq}
+	</update>
+
+	<update id="deleteBoardArticle" parameterType="searchVO">
+		/* KmemberSQL.deleteBoardArticle */
+		UPDATE TB_BOARD SET
+			  DELETE_YN = 'Y'
+			, UPD_ID = #{updId}
+			, UPD_DATE = NOW()
+		WHERE BOARD_SEQ = #{boardSeq}
+		AND ARTICLE_SEQ = #{articleSeq}
+	</update>
+
+	<select id="selectExcelForHeaderList" parameterType="searchVO" resultType="commonMap">
+		/* KmemberSQL.selectExcelForHeaderList */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY B.REQ_DATE DESC, B.CORP_NAME_KR) AS RNUM
+			, B.INS_REQ_ID
+			, B.INS_ID
+			, B.TRADE_NO
+			, B.CORP_NO
+			, B.CORP_ZIPCODE || ' ' || B.CORP_ADDR1 || ' ' || B.CORP_ADDR2 AS CORP_ADDR
+			, B.CORP_NAME_KR
+			, B.CORP_REG_NO
+			, B.REPRE_NAME_KR
+			, B.MAN_NAME
+			, B.MAN_POS
+			, B.MAN_DEPT
+			, CASE WHEN	B.MAN_TELNO1 IS NOT NULL AND B.MAN_TELNO2 IS NOT NULL AND B.MAN_TELNO3 IS NOT NULL
+				THEN B.MAN_TELNO1 || '-' || B.MAN_TELNO2 || '-' || B.MAN_TELNO3 END AS MAN_TELNO
+			, CASE WHEN	B.MAN_FAXNO1 IS NOT NULL AND B.MAN_FAXNO2 IS NOT NULL AND B.MAN_FAXNO3 IS NOT NULL
+				THEN B.MAN_FAXNO1 || '-' || B.MAN_FAXNO2 || '-' || B.MAN_FAXNO3 END AS MAN_FAXNO
+			, CASE WHEN	B.MAN_HPNO1 IS NOT NULL AND B.MAN_HPNO2 IS NOT NULL AND B.MAN_HPNO3 IS NOT NULL
+				THEN B.MAN_HPNO1||'-'||B.MAN_HPNO2||'-'||B.MAN_HPNO3 END AS MAN_HPNO
+			, CASE WHEN	B.MAN_EMAIL01 IS NOT NULL AND B.MAN_EMAIL02 IS NOT NULL
+				THEN B.MAN_EMAIL01||'@'||B.MAN_EMAIL02 END AS MAN_EMAIL
+			, F_GET_CODE_NM('COM077', B.MEMBER_LEV) AS MEMBER_LEV
+			, B.DUES_YEAR
+			, B.EXP_AMT
+			, B.INS_SEQ
+			, F_GET_CODE_NM('INS001', B.INS_CODE) AS INS_NAME
+			, B.SELF_COST
+			, TO_CHAR(B.PAY_DATE, 'YYYY-MM-DD') AS PAY_DATE
+			, TO_CHAR(B.REQ_DATE, 'YYYY-MM-DD') AS REQ_DATE
+			, TO_CHAR(B.APPLY_DATE, 'YYYY-MM-DD') AS APPLY_DATE
+			, TO_CHAR(B.LAST_INS_START_DATE, 'YYYY-MM-DD') AS LAST_INS_START_DATE
+			, TO_CHAR(B.LAST_INS_END_DATE, 'YYYY-MM-DD') AS LAST_INS_END_DATE
+			, TO_CHAR(B.INS_START_DATE, 'YYYY-MM-DD') AS INS_START_DATE
+			, TO_CHAR(B.INS_END_DATE, 'YYYY-MM-DD') AS INS_END_DATE
+			, F_GET_CODE_NM('INS002', B.STATUS_CD) AS STATUS_NM
+			, B.RETURN_RSN
+			, B.INS_AMT
+		FROM INS_INFO A, INS_REQ_INFO B
+		WHERE A.INS_ID = B.INS_ID
+		AND A.BASE_YEAR = '2020'
+	</select>
+
+	<select id="selectExcelForDoubleList" resultType="commonMap">
+		/* KmemberSQL.selectExcelForDoubleList */
+		SELECT
+			ROW_NUMBER() OVER(ORDER BY B.CORP_NAME_KR ASC, A.SEQ DESC) AS RNUM
+			, B.TRADE_NO
+			, B.CORP_REG_NO
+			, B.CORP_NAME_KR
+			, B.REPRE_NAME_KR
+			, B.MAN_NAME
+			, B.MAN_POS
+			, B.MAN_DEPT
+			, NVL(B.MAN_TELNO1, '') || '-' || NVL(B.MAN_TELNO2, '') || '-' || NVL(B.MAN_TELNO3, '') AS MAN_TELNO
+			, NVL(B.MAN_HPNO1, '') || '-' || NVL(B.MAN_HPNO2, '') || '-' || NVL(B.MAN_HPNO3, '') AS MAN_HPNO
+			, NVL(B.MAN_EMAIL01, '')||'@'||NVL(B.MAN_EMAIL02, '') AS MAN_EMAIL
+			, (CASE WHEN A.BIZ001_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ001_REQ_YN
+			, (CASE WHEN A.BIZ002_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ002_REQ_YN
+			, (CASE WHEN A.BIZ003_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ003_REQ_YN
+			, (CASE WHEN A.BIZ004_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ004_REQ_YN
+			, (CASE WHEN A.BIZ005_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ005_REQ_YN
+			, (CASE WHEN A.BIZ006_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ006_REQ_YN
+			, (CASE WHEN A.BIZ101_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ101_REQ_YN
+			, (CASE WHEN A.BIZ102_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ102_REQ_YN
+			, (CASE WHEN A.BIZ103_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ103_REQ_YN
+			, (CASE WHEN A.BIZ104_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ104_REQ_YN
+			, (CASE WHEN A.BIZ105_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ105_REQ_YN
+			, (CASE WHEN A.BIZ106_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ106_REQ_YN
+			, (CASE WHEN A.BIZ107_REQ_CNT > 0 THEN 'Y' ELSE '' END) AS BIZ107_REQ_YN
+			, B.VOUCHER_LEV
+			, (SELECT CODE_NM FROM COMTCCMMNDETAILCODE WHERE CODE = B.VOUCHER_LEV AND CODE_ID = 'COM077') AS VOUCHER_LEV_NM
+			, B.DUES_YEAR
+			, (CASE WHEN B.KITA_CARD_CD = 'Y' THEN '발급완료' WHEN B.KITA_CARD_CD = 'N' THEN '미발급' WHEN B.KITA_CARD_CD = 'E' THEN '발급예정' END) AS KITA_CARD_CD
+			, NVL(B.BASE_SUPP_AMT, 0) + NVL(B.ADD_SUPP_AMT, 0) AS SUM_SUPP_AMT
+			, NVL(D.ALREADY_ACC_AMT, 0) AS ALREADY_ACC_AMT
+			, (NVL(B.BASE_SUPP_AMT, 0) + NVL(B.ADD_SUPP_AMT, 0)) - NVL(D.ALREADY_ACC_AMT, 0) AS BALANCE_AMT
+			, NVL(A.REQ_AMT, 0) AS REQ_AMT
+			, NVL(A.FIX_AMT, 0) AS FIX_AMT
+			, E.BANK_CD
+			, E.ACCOUNT_NUM
+			, E.ACCOUNT_HOLDER
+			, TO_CHAR(A.REG_DT, 'YYYY-MM-DD') AS REG_DT
+			, A.ACC_STATUS_CD
+			, (DECODE(A.ACC_STATUS_CD, '20', NVL2(A.RETURN_RSN, '재승인요청', A.ACC_STATUS_CD_NM), A.ACC_STATUS_CD_NM)) AS ACC_STATUS_CD_NM
+			, SUBSTR(NVL(MI.REG_RE_MEM_DATE,MI.REG_DATE),1,4) AS REG_DATE
+		FROM (
+			SELECT
+				TRADE_NO
+				, VMST_SEQ
+				, SEQ
+				, ACC_STATUS_CD
+				, (SELECT CODE_NM FROM COMTCCMMNDETAILCODE WHERE CODE = ACC_STATUS_CD AND CODE_ID = 'COM081') AS ACC_STATUS_CD_NM
+				, SUM(NVL(REQ_AMT,0)) AS REQ_AMT
+				, SUM(NVL(FIX_AMT,0)) AS FIX_AMT
+				, REG_DT
+				, RETURN_RSN
+				, SUM(BIZ001_REQ_CNT) AS BIZ001_REQ_CNT
+				, SUM(BIZ002_REQ_CNT) AS BIZ002_REQ_CNT
+				, SUM(BIZ003_REQ_CNT) AS BIZ003_REQ_CNT
+				, SUM(BIZ004_REQ_CNT) AS BIZ004_REQ_CNT
+				, SUM(BIZ005_REQ_CNT) AS BIZ005_REQ_CNT
+				, SUM(BIZ006_REQ_CNT) AS BIZ006_REQ_CNT
+				, SUM(BIZ101_REQ_CNT) AS BIZ101_REQ_CNT
+				, SUM(BIZ102_REQ_CNT) AS BIZ102_REQ_CNT
+				, SUM(BIZ103_REQ_CNT) AS BIZ103_REQ_CNT
+				, SUM(BIZ104_REQ_CNT) AS BIZ104_REQ_CNT
+				, SUM(BIZ105_REQ_CNT) AS BIZ105_REQ_CNT
+				, SUM(BIZ106_REQ_CNT) AS BIZ106_REQ_CNT
+				, SUM(BIZ107_REQ_CNT) AS BIZ107_REQ_CNT
+			FROM (
+				SELECT
+					A.TRADE_NO
+					, A.VMST_SEQ
+					, A.SEQ
+					, A.ACC_STATUS_CD
+					, NVL(A.REQ_AMT,0) AS REQ_AMT
+					, NVL(A.FIX_AMT,0) AS FIX_AMT
+					, A.REG_DT
+					, A.RETURN_RSN
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ001' THEN 1 ELSE 0 END) AS BIZ001_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ002' THEN 1 ELSE 0 END) AS BIZ002_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ003' THEN 1 ELSE 0 END) AS BIZ003_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ004' THEN 1 ELSE 0 END) AS BIZ004_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ005' THEN 1 ELSE 0 END) AS BIZ005_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ006' THEN 1 ELSE 0 END) AS BIZ006_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ101' THEN 1 ELSE 0 END) AS BIZ101_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ102' THEN 1 ELSE 0 END) AS BIZ102_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ103' THEN 1 ELSE 0 END) AS BIZ103_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ104' THEN 1 ELSE 0 END) AS BIZ104_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ105' THEN 1 ELSE 0 END) AS BIZ105_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ106' THEN 1 ELSE 0 END) AS BIZ106_REQ_CNT
+					, (CASE WHEN A.VOUCHER_CD = 'BIZ107' THEN 1 ELSE 0 END) AS BIZ107_REQ_CNT
+				FROM VOU0230T A
+			)
+			GROUP BY TRADE_NO, VMST_SEQ, SEQ, REG_DT, ACC_STATUS_CD, RETURN_RSN
+		) A INNER JOIN VOU0200T B
+			ON A.VMST_SEQ = B.VMST_SEQ
+			AND A.TRADE_NO = B.TRADE_NO
+			INNER JOIN VOU0100T C
+			ON A.VMST_SEQ = C.VMST_SEQ
+			INNER JOIN MEMBER_INFO@KMDS MI
+			ON A.TRADE_NO = MI.MEMBER_ID
+			INNER JOIN (
+				SELECT
+					TRADE_NO
+					, VMST_SEQ
+					, SUM(NVL(REQ_AMT,0)) AS REQ_AMT
+					, SUM(NVL(FIX_AMT,0)) AS FIX_AMT
+					, SUM(NVL(ALREADY_ACC_AMT,0)) AS ALREADY_ACC_AMT
+				FROM (
+					SELECT
+						TRADE_NO
+						, VMST_SEQ
+						, REQ_AMT
+						, FIX_AMT
+						, (CASE WHEN ACC_STATUS_CD IN ('80', '90') THEN NVL(FIX_AMT,0) ELSE 0 END) AS ALREADY_ACC_AMT
+					FROM VOU0230T
+				)
+				GROUP BY TRADE_NO, VMST_SEQ
+			) D
+			ON A.VMST_SEQ = D.VMST_SEQ
+			AND A.TRADE_NO = D.TRADE_NO
+			LEFT OUTER JOIN (
+				SELECT
+					AC.*
+					, ROW_NUMBER() OVER(PARTITION BY AC.VMST_SEQ, AC.TRADE_NO ORDER BY AC.SEQ DESC) AS RNUM
+				FROM VOU0240T AC
+				ORDER BY AC.SEQ DESC
+			) E
+			ON B.VMST_SEQ = E.VMST_SEQ
+			AND B.TRADE_NO = E.TRADE_NO
+			AND E.RNUM = 1
+		WHERE A.ACC_STATUS_CD IN ('20', '40')
+	</select>
+
+	<select id="selectExcelForMultiList1" resultType="commonMap">
+		/* KmemberSQL.selectExcelForMultiList1 */
+		WITH BASE AS (
+			SELECT
+				T1.CODE AS VOUCHER_LEV
+				, T1.CODE_NM AS VOUCHER_LEV_NM
+				, SUM(NVL(T2.REQ_CORP_CNT, 0)) AS REQ_CORP_CNT
+				, SUM(NVL(T2.REQ_CNT, 0)) AS REQ_CNT
+				, SUM(NVL(T2.REQ_AMT, 0)) AS REQ_AMT
+				, SUM(NVL(T2.APRV_CORP_CNT, 0)) AS APRV_CORP_CNT
+				, SUM(NVL(T2.APRV_CNT, 0)) AS APRV_CNT
+				, SUM(NVL(T2.APRV_AMT, 0)) AS APRV_AMT
+				, SUM(NVL(T2.PAY_CORP_CNT, 0)) AS PAY_CORP_CNT
+				, SUM(NVL(T2.PAY_CNT, 0)) AS PAY_CNT
+				, SUM(NVL(T2.PAY_AMT, 0)) AS PAY_AMT
+				, (CASE WHEN T1.CODE = 'silver' THEN 1 WHEN T1.CODE = 'gold' THEN 2 WHEN T1.CODE = 'royal' THEN 3 WHEN T1.CODE = 'jumpup' THEN 4 WHEN T1.CODE = 'bang' THEN 5 END) AS SORT_SEQ
+				, '2020' AS BASE_YEAR
+				FROM (SELECT CODE, CODE_NM FROM COMTCCMMNDETAILCODE WHERE CODE_ID = 'COM077') T1 LEFT OUTER JOIN (
+					SELECT
+						A.VOUCHER_LEV
+						, (CASE WHEN B.REQ_RNUM = 1 THEN 1 ELSE 0 END) AS REQ_CORP_CNT
+						, B.REQ_CNT AS REQ_CNT
+						, B.REQ_AMT AS REQ_AMT
+						, (CASE WHEN B.ACC_STATUS_CD IN ('80', '90') AND B.APRV_RNUM = 1 THEN 1 ELSE 0 END) AS APRV_CORP_CNT
+						, (CASE WHEN B.ACC_STATUS_CD IN ('80', '90') THEN B.REQ_CNT ELSE 0 END) AS APRV_CNT
+						, (CASE WHEN B.ACC_STATUS_CD IN ('80', '90') THEN B.FIX_AMT ELSE 0 END) AS APRV_AMT
+						, (CASE WHEN B.ACC_STATUS_CD = '90' AND B.PAY_RNUM = 1 THEN 1 ELSE 0 END) AS PAY_CORP_CNT
+						, (CASE WHEN B.ACC_STATUS_CD = '90' THEN B.REQ_CNT ELSE 0 END) AS PAY_CNT
+						, (CASE WHEN B.ACC_STATUS_CD = '90' THEN B.FIX_AMT ELSE 0 END) AS PAY_AMT
+					FROM VOU0200T A LEFT OUTER JOIN (
+						SELECT
+							TRADE_NO
+							, VMST_SEQ
+							, ACC_STATUS_CD
+							, REG_DT
+							, COUNT(*) AS REQ_CNT
+							, SUM(NVL(REQ_AMT, 0)) AS REQ_AMT
+							, SUM(NVL(FIX_AMT, 0)) AS FIX_AMT
+							, ROW_NUMBER() OVER(PARTITION BY TRADE_NO, VMST_SEQ ORDER BY REG_DT) AS REQ_RNUM
+							, ROW_NUMBER() OVER(PARTITION BY TRADE_NO, VMST_SEQ, APRV_YN ORDER BY REG_DT) AS APRV_RNUM
+							, ROW_NUMBER() OVER(PARTITION BY TRADE_NO, VMST_SEQ, PAY_YN ORDER BY REG_DT) AS PAY_RNUM
+						FROM (
+							SELECT
+								TRADE_NO
+								, VMST_SEQ
+								, ACC_STATUS_CD
+								, REG_DT
+								, REQ_AMT
+								, FIX_AMT
+								, (CASE WHEN ACC_STATUS_CD IN ('80', '90') THEN 'Y' ELSE 'N' END) AS APRV_YN
+								, (CASE WHEN ACC_STATUS_CD = '90' THEN 'Y' ELSE 'Y' END) AS PAY_YN
+							FROM VOU0230T
+							WHERE REQ_AMT > 0
+							AND ACC_STATUS_CD IN ('10', '80', '90')
+						)
+						GROUP BY TRADE_NO, VMST_SEQ, ACC_STATUS_CD, REG_DT, APRV_YN, PAY_YN
+					) B
+					ON A.TRADE_NO = B.TRADE_NO
+					AND A.VMST_SEQ = B.VMST_SEQ
+					INNER JOIN VOU0100T C
+					ON A.VMST_SEQ = C.VMST_SEQ
+				WHERE C.BASE_YEAR = '2020'
+			) T2
+				ON T1.CODE = T2.VOUCHER_LEV
+			GROUP BY T1.CODE, T1.CODE_NM
+			ORDER BY (CASE WHEN T1.CODE = 'silver' THEN 1 WHEN T1.CODE = 'gold' THEN 2 WHEN T1.CODE = 'royal' THEN 3 WHEN T1.CODE = 'jumpup' THEN 4 WHEN T1.CODE = 'bang' THEN 5 END) ASC
+		)
+		SELECT
+			VOUCHER_LEV
+			, VOUCHER_LEV_NM
+			, REQ_CORP_CNT
+			, REQ_CNT
+			, REQ_AMT
+			, APRV_CORP_CNT
+			, APRV_CNT
+			, APRV_AMT
+			, PAY_CORP_CNT
+			, PAY_CNT
+			, PAY_AMT
+		FROM (
+			SELECT
+				VOUCHER_LEV
+				, VOUCHER_LEV_NM
+				, REQ_CORP_CNT
+				, REQ_CNT
+				, REQ_AMT
+				, APRV_CORP_CNT
+				, APRV_CNT
+				, APRV_AMT
+				, PAY_CORP_CNT
+				, PAY_CNT
+				, PAY_AMT
+				, SORT_SEQ
+			FROM BASE
+			UNION ALL
+			SELECT
+				'' AS VOUCHER_LEV
+				, '계' AS VOUCHER_LEV_NM
+				, SUM(NVL(REQ_CORP_CNT,0)) AS REQ_CORP_CNT
+				, SUM(NVL(REQ_CNT,0)) AS REQ_CNT
+				, SUM(NVL(REQ_AMT,0)) AS REQ_AMT
+				, SUM(NVL(APRV_CORP_CNT,0)) AS APRV_CORP_CNT
+				, SUM(NVL(APRV_CNT,0)) AS APRV_CNT
+				, SUM(NVL(APRV_AMT,0)) AS APRV_AMT
+				, SUM(NVL(PAY_CORP_CNT,0)) AS PAY_CORP_CNT
+				, SUM(NVL(PAY_CNT,0)) AS PAY_CNT
+				, SUM(NVL(PAY_AMT,0)) AS PAY_AMT
+				, 6 AS SORT_SEQ
+			FROM BASE
+			GROUP BY BASE_YEAR
+		)
+		ORDER BY SORT_SEQ
+ 	</select>
+
+	<select id="selectExcelForMultiList2" resultType="commonMap">
+		/* KmemberSQL.selectExcelForMultiList2 */
+		SELECT
+			B.VOUCHER_NAME
+			, MAX(NVL(C.SILVER_CORP_CNT, 0)) AS SILVER_CORP_CNT
+			, SUM(NVL(C.SILVER_CNT, 0)) AS SILVER_CNT
+			, SUM(NVL(C.SILVER_AMT, 0)) AS SILVER_AMT
+			, MAX(NVL(C.GOLD_CORP_CNT, 0)) AS GOLD_CORP_CNT
+			, SUM(NVL(C.GOLD_CNT, 0)) AS GOLD_CNT
+			, SUM(NVL(C.GOLD_AMT, 0)) AS GOLD_AMT
+			, MAX(NVL(C.ROYAL_CORP_CNT, 0)) AS ROYAL_CORP_CNT
+			, SUM(NVL(C.ROYAL_CNT, 0)) AS ROYAL_CNT
+			, SUM(NVL(C.ROYAL_AMT, 0)) AS ROYAL_AMT
+			, MAX(NVL(C.JUMPUP_CORP_CNT, 0)) AS JUMPUP_CORP_CNT
+			, SUM(NVL(C.JUMPUP_CNT, 0)) AS JUMPUP_CNT
+			, SUM(NVL(C.JUMPUP_AMT, 0)) AS JUMPUP_AMT
+			, MAX(NVL(C.BANG_CORP_CNT, 0)) AS BANG_CORP_CNT
+			, SUM(NVL(C.BANG_CNT, 0)) AS BANG_CNT
+			, SUM(NVL(C.BANG_AMT, 0)) AS BANG_AMT
+			, MAX(NVL(C.SILVER_CORP_CNT, 0)) + MAX(NVL(C.GOLD_CORP_CNT, 0)) + MAX(NVL(C.ROYAL_CORP_CNT, 0)) + MAX(NVL(C.JUMPUP_CORP_CNT, 0)) + MAX(NVL(C.BANG_CORP_CNT, 0)) AS SUM_CORP_CNT
+			, SUM(NVL(C.SILVER_CNT, 0)) + SUM(NVL(C.GOLD_CNT, 0)) + SUM(NVL(C.ROYAL_CNT, 0)) + SUM(NVL(C.JUMPUP_CNT, 0)) + SUM(NVL(C.BANG_CNT, 0)) AS SUM_CNT
+			, SUM(NVL(C.SILVER_AMT, 0)) + SUM(NVL(C.GOLD_AMT, 0)) + SUM(NVL(C.ROYAL_AMT, 0)) + SUM(NVL(C.JUMPUP_AMT, 0)) + SUM(NVL(C.BANG_AMT, 0)) AS SUM_AMT
+		FROM VOU0100T A INNER JOIN VOU0110T B
+			ON A.VMST_SEQ = B.VMST_SEQ
+			LEFT OUTER JOIN (
+				SELECT
+					SB.VOUCHER_CD
+					, SA.VMST_SEQ
+					, SA.REG_DT
+					, (
+						SELECT COUNT(TRADE_NO)
+						FROM (
+							SELECT S1.TRADE_NO, S1.VMST_SEQ, S2.VOUCHER_CD
+							FROM VOU0200T S1 INNER JOIN VOU0230T S2
+								ON S1.VMST_SEQ = S2.VMST_SEQ
+								AND S1.TRADE_NO = S2.TRADE_NO
+							WHERE S1.VOUCHER_LEV = 'silver'
+							AND S2.ACC_STATUS_CD = '90'
+							GROUP BY S1.VMST_SEQ, S1.TRADE_NO, S2.VOUCHER_CD
+						) S3
+						 WHERE S3.VOUCHER_CD = SB.VOUCHER_CD
+						 AND S3.VMST_SEQ = SB.VMST_SEQ
+					) AS SILVER_CORP_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'silver' THEN 1 ELSE 0 END) AS SILVER_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'silver' THEN SB.FIX_AMT ELSE 0 END) AS SILVER_AMT
+					, (
+						SELECT COUNT(TRADE_NO)
+						FROM (
+							SELECT S1.TRADE_NO, S1.VMST_SEQ, S2.VOUCHER_CD
+							FROM VOU0200T S1 INNER JOIN VOU0230T S2
+								ON S1.VMST_SEQ = S2.VMST_SEQ
+								AND S1.TRADE_NO = S2.TRADE_NO
+							WHERE S1.VOUCHER_LEV = 'gold'
+							AND S2.ACC_STATUS_CD = '90'
+							GROUP BY S1.VMST_SEQ, S1.TRADE_NO, S2.VOUCHER_CD
+						) S3
+						WHERE S3.VOUCHER_CD = SB.VOUCHER_CD
+						AND S3.VMST_SEQ = SB.VMST_SEQ
+					) AS GOLD_CORP_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'gold' THEN 1 ELSE 0 END) AS GOLD_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'gold' THEN SB.FIX_AMT ELSE 0 END) AS GOLD_AMT
+					, (
+						SELECT COUNT(TRADE_NO)
+						FROM (
+							SELECT S1.TRADE_NO, S1.VMST_SEQ, S2.VOUCHER_CD
+							FROM VOU0200T S1 INNER JOIN VOU0230T S2
+								ON S1.VMST_SEQ = S2.VMST_SEQ
+								AND S1.TRADE_NO = S2.TRADE_NO
+							WHERE S1.VOUCHER_LEV = 'royal'
+							AND S2.ACC_STATUS_CD = '90'
+							GROUP BY S1.VMST_SEQ, S1.TRADE_NO, S2.VOUCHER_CD
+						) S3
+						WHERE S3.VOUCHER_CD = SB.VOUCHER_CD
+						AND S3.VMST_SEQ = SB.VMST_SEQ
+					) AS ROYAL_CORP_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'royal' THEN 1 ELSE 0 END) AS ROYAL_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'royal' THEN SB.FIX_AMT ELSE 0 END) AS ROYAL_AMT
+					, (
+						SELECT COUNT(TRADE_NO)
+						FROM (
+							SELECT S1.TRADE_NO, S1.VMST_SEQ, S2.VOUCHER_CD
+							FROM VOU0200T S1 INNER JOIN VOU0230T S2
+								ON S1.VMST_SEQ = S2.VMST_SEQ
+								AND S1.TRADE_NO = S2.TRADE_NO
+							WHERE S1.VOUCHER_LEV = 'jumpup'
+							AND S2.ACC_STATUS_CD = '90'
+							GROUP BY S1.VMST_SEQ, S1.TRADE_NO, S2.VOUCHER_CD
+						) S3
+						WHERE S3.VOUCHER_CD = SB.VOUCHER_CD
+						AND S3.VMST_SEQ = SB.VMST_SEQ
+					) AS JUMPUP_CORP_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'jumpup' THEN 1 ELSE 0 END) AS JUMPUP_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'jumpup' THEN SB.FIX_AMT ELSE 0 END) AS JUMPUP_AMT
+					, (
+						SELECT COUNT(TRADE_NO)
+						FROM (
+							SELECT S1.TRADE_NO, S1.VMST_SEQ, S2.VOUCHER_CD
+							FROM VOU0200T S1 INNER JOIN VOU0230T S2
+								ON S1.VMST_SEQ = S2.VMST_SEQ
+								AND S1.TRADE_NO = S2.TRADE_NO
+							WHERE S1.VOUCHER_LEV = 'bang'
+							AND S2.ACC_STATUS_CD = '90'
+							GROUP BY S1.VMST_SEQ, S1.TRADE_NO, S2.VOUCHER_CD
+						) S3
+						WHERE S3.VOUCHER_CD = SB.VOUCHER_CD
+						AND S3.VMST_SEQ = SB.VMST_SEQ
+					) AS BANG_CORP_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'bang' THEN 1 ELSE 0 END) AS BANG_CNT
+					, (CASE WHEN SA.VOUCHER_LEV = 'bang' THEN SB.FIX_AMT ELSE 0 END) AS BANG_AMT
+				FROM VOU0200T SA INNER JOIN VOU0230T SB
+					ON SA.TRADE_NO = SB.TRADE_NO
+					AND SA.VMST_SEQ = SB.VMST_SEQ
+				WHERE SB.ACC_STATUS_CD = '90'
+			) C
+			ON B.VMST_SEQ = C.VMST_SEQ
+			AND B.VOUCHER_CD = C.VOUCHER_CD
+		WHERE A.BASE_YEAR = '2020'
+		GROUP BY B.VOUCHER_CD, VOUCHER_NAME
+		ORDER BY B.VOUCHER_CD
+ 	</select>
+
+</mapper>

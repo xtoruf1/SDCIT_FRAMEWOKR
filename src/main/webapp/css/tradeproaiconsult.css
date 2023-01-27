@@ -1,0 +1,1001 @@
+/* 기존css 덥어쓰기 */
+#mainContainer{z-index:3;}
+#mainContents{min-height:auto;}
+.mt40{margin-top:40px;}
+.mt50{margin-top:50px;}
+
+.aiConsult_searchBox.type2{}
+.aiConsult_searchBox.type2 textarea{width:calc(100% - 246px);}
+.aiConsult_searchBox.type2 .btn_recom{position:absolute; top:24px; right:28px;}
+.aiConsult_searchBox.type2 .btn_recom button{width:100px; height:80px; background:#2B5075; border-radius:8px; font-size:14px; color:#fff; line-height:20px;}
+.aiConsult_searchBox.type2 .btn_recom button:last-child{position:relative; width:125px; padding-left:25px; background:#0099D8;}
+.aiConsult_searchBox.type2 .btn_recom button:last-child:before{content:""; position:absolute; top:50%; left:20px; z-index:2; width:20px; height:10px; margin-top:-5px; background:no-repeat 0 0 url(../../images/aiconsult/arrow_more.png); background-size:100% auto;}
+.aiConsult_searchBox.type2 .btn_recom.on button:last-child:before{transform:rotate(-180deg); transform-origin:center center;}
+.aiConsult_searchBox.type2 .on + .ai_search_box{display:block!important; width:calc(100% + 2px); background:#aecbe4; top:208px; left:-1px; margin-left:0; border:1px solid #e6e6e6; border-top-left-radius:0;  border-top-right-radius:0; background-color:#edeef2;}
+.aiConsult_searchBox.type2 .ai_search_box > li{padding:0 0 27px 106px;}
+.aiConsult_searchBox.type2 .ai_search_box > li:last-child{padding-bottom:0;}
+.aiConsult_searchBox.type2 .ai_search_box > li > label{top:3px; font-size:16px; font-weight:500; color:#1A1915; background-image:url(../../images/aiconsult/arrow_tri_left_bl.png);}
+.aiConsult_searchBox.type2 .ai_search_box > li > input[type=text]{height:35px; padding:0 10px; line-height:35px; font-size:16px; border:1px solid #ccc; border-radius:6px;}
+.aiConsult_searchBox.type2 .ai_search_box .rd_select li label span{min-width:auto; padding:0 15px; height:35px; line-height:35px; font-size:14px; border:1px solid #ccc;}
+.aiConsult_searchBox.type2 .ai_search_box .rd_select li label input[type=checkbox]:checked + span, 
+.aiConsult_searchBox.type2 .ai_search_box .rd_select li label input[type=radio]:checked + span{padding:0 13px; border:1px solid #2168a6; line-height:31px; background-color: #2168a6; color: #fff;}
+.aiConsult_searchBox.type2 .ai_search_box .rd_btn{margin-top:25px; height:35px; line-height:35px; font-size:16px;}
+.aiConsult_searchBox.type2 .ai_search_box .rd_btn.point{background:#2B5075;}
+
+.aiConsult_infoBox.type2 ol > li{background-position:14px 90px;}
+.aiConsult_infoBox.type2 ol > li > div{height:282px; padding:35px 13px;}
+.aiConsult_infoBox.type2 ol > li > div strong{display:block; padding:36px 0 8px; line-height:28px; border-bottom:1px solid #d0d0d0;}
+.aiConsult_infoBox.type2 ol > li:nth-child(2) > div strong{padding-top:8px;}
+
+.aiConsultList.type2 > ol > li dt span{background:no-repeat center center url(../../images/aiconsult/icn_title_q_admin.png); background-size:100% auto;}
+.aiConsultList.type2 > ol > li dd span{background:no-repeat center center url(../../images/aiconsult/icn_title_a_admin.png); background-size:100% auto;}
+
+
+/* Trade Pro 공통 */
+.rd_select{width:calc(100% + 10px); margin-bottom:-10px;}
+.rd_select:after{content:""; display:block; clear:both;}
+.rd_select li{float:left; margin:0 10px 10px 0;}
+.rd_select li label{position:relative; display:block; overflow:hidden;}
+.rd_select li label input[type=checkbox],
+.rd_select li label input[type=radio]{position:absolute; left:-99999em;}
+.rd_select li label span{display:block; height:40px; line-height:40px; padding:0 20px; min-width:100px; text-align:center; border-radius:20px; background:#fff; font-size:18px; font-weight:300; color:#181818; box-sizing:border-box;}
+.rd_select li label input[type=checkbox]:checked + span,
+.rd_select li label input[type=radio]:checked + span{line-height:34px; padding:0 17px; border:3px solid #e03234;}
+.rd_select.box li label span{border-radius:6px;}
+
+.rd_btn{display:block; height:40px; line-height:40px; padding:0 30px; border-radius:20px; background:#9C9C9C; font-size:18px; font-weight:300; color:#fff; box-sizing:border-box;}
+.rd_btn.point{background:#e03234;}
+.rd_btn.small{min-width:100px; padding:0 10px; height:30px; line-height:30px; border-radius:10px; font-size:14px;}
+.btn_last_go a{position:relative; display:inline-block; height:40px; line-height:40px; padding:0 86px 0 20px; border-radius:20px; background:#0389a7; font-size:18px; font-weight:400; color:#fff;}
+.btn_last_go a:after{content:""; display:block; position:absolute; top:50%; right:8px; width:24px; height:24px; margin-top:-12px; background:no-repeat center center url(../../images/aiconsult/arrow_white_circle.png); background-size:100% auto;}
+
+/* Trade Pro 메인 */
+#mainExperthub1,
+#mainExperthub2,
+#mainExperthub3{position:relative; width:1px; height:1px; margin:-1px;}
+#mainExperthub1{top:-100px;}
+#mainExperthub2{top:-190px;}
+#mainExperthub3{top:-120px;}
+
+.quick_ind{position:fixed; top:40%; right:50px;}
+.quick_ind li{padding:12px 0;}
+.quick_ind li a{display:block; width:8px; height:8px; margin:3px; text-indent:-999em; overflow:hidden; box-sizing:border-box; background:#999; border-radius:4px;}
+.quick_ind li.on a{width:14px; height:14px; background:#0389a7; border-radius:7px; margin:0;}
+.quick_ind li:nth-child(2).on a{background:#fff;}
+
+.mainExperthub{max-width:100%; overflow:hidden; background:#f5f7fb;}
+.mainExperthub > h2{width:300px; padding-top:101px; margin:auto; text-align:center; font-weight:300; font-size:18px; color:#636569;}
+.mainExperthub > h2 span{display:block; width:300px; height:58px; margin:-7px auto 0; text-indent:-9999em; overflow:hidden; background:no-repeat center center url(../../images/aiconsult/TradePro_logo_l.png); background-size:100% auto;}
+.mainExperthub .search_top{position:relative; max-width:1240px; margin:67px auto 0;}
+.mainExperthub .search_top .m_search{position:relative; width:698px; margin:auto;}
+.mainExperthub .search_top .m_search input[type=text]{width:698px; height:38px; border:0 none; background:none; border-bottom:3px solid #0389a7; font-weight:300; font-size:22px; text-align:center;}
+.mainExperthub .search_top .m_search button{position:absolute; top:-3px; right:-7px; z-index:9; width:38px; height:38px; text-indent:-9999em; overflow:hidden; background:no-repeat center center url(../../images/aiconsult/icn_search.png); background-size:18px auto;}
+.mainExperthub .search_top .add{display:block; position:absolute; left:50%; top:5px; margin-left:360px;}
+.mainExperthub .search_top .add span{width:19px; height:19px; text-indent:-9999em; overflow:hidden; background:none; font-size:1px; color:#f5f7fb;}
+.mainExperthub .search_top .add span:before,
+.mainExperthub .search_top .add span:after{content:""; display:block; position:absolute; background:#0389a7;}
+.mainExperthub .search_top .add span:before{top:10px; left:0; width:19px; height:1px; margin-top:-1px;}
+.mainExperthub .search_top .add span:after{top:0; left:10px; width:1px; height:19px; margin-left:-1px;}
+.mainExperthub .search_top .add .more{display:none; position:absolute; left:0; bottom:0; padding-left:44px; width:130px; height:50px; text-align:left; background:#0389a7; border-radius:25px; color:#fff; font-size:14px; line-height:20px; font-weight:300; box-sizing:border-box;}
+.mainExperthub .search_top .add:hover .more{display:block;}
+.mainExperthub .search_top .add .more:before{content:""; position:absolute; top:20px; left:12px; z-index:2; width:20px; height:10px; background:no-repeat 0 0 url(../../images/aiconsult/arrow_more.png); background-size:100% auto;}
+.mainExperthub .search_top .add .more.on:before{transform:rotate(-180deg); transform-origin:center center;}
+.ai_search_box{position:absolute; top:38px; left:50%; z-index:10; width:1046px; padding:24px; margin-left:-523px; background:#7CBFCE; border-radius:18px; box-sizing:border-box;}
+.ai_search_box > li{position:relative; padding:0 0 30px 123px; text-align:right;}
+.ai_search_box > li:last-child{padding-bottom:0;}
+.ai_search_box > li:after{content:""; display:block; clear:both;}
+.ai_search_box > li > label{position:absolute; top:5px; left:0; text-align:left; padding-left:25px; font-size:20px; font-weight:300; color:#fff; line-height:28px; background:no-repeat 0 4px url(../../images/aiconsult/arrow_tri_left.png); background-size:15px auto;}
+.ai_search_box > li > input[type=text]{width:100%; height:40px; padding:0 24px; line-height:40px; background:#fff; border:0 none; font-size:18px; font-weight:300; color:#666; box-sizing:border-box;}
+.ai_search_box > li > ul + button{clear:both;} 
+.ai_search_box > li > button{float:right; margin-left:12px;}
+
+.mainExperthub .top_links{display:flex; justify-content:space-between; align-items:center; width:780px; margin:auto; padding:140px 0 105px 0; text-align:center;}
+.mainExperthub .top_links li{display:flex; width:180px; overflow:hidden; transition:all 0.5s ease;}
+.mainExperthub .top_links li:hover{width:380px;}
+.mainExperthub .top_links li a{position:relative; display:block;}
+.mainExperthub .top_links li a strong{display:block; font-size:24px; font-weight:500; color:#0389A7;}
+.mainExperthub .top_links li a strong:before{content:""; display:block; width:180px; height:180px; margin:0 auto 15px;}
+.mainExperthub .top_links li.link1 a strong:before{background:no-repeat center 0 url(../../images/aiconsult/top_links1.png); background-size:100% auto;}
+.mainExperthub .top_links li.link2 a strong:before{background:no-repeat center 0 url(../../images/aiconsult/top_links2.png); background-size:100% auto;}
+.mainExperthub .top_links li.link3 a strong:before{background:no-repeat center 0 url(../../images/aiconsult/top_links3.png); background-size:100% auto;}
+.mainExperthub .top_links li a p{position:absolute; top:65px; left:50%; z-index:2; margin-left:90px; display:table; width:200px; height:100px; background:#fff; border-radius:12px; text-align:center;}
+.mainExperthub .top_links li a p span{display:table-cell; font-size:18px; line-height:26px; color:#0389A7; vertical-align:middle;}
+
+.mainExperthub .point_bg{padding:16px 0 20px; background:#0389a7;}
+.mainExperthub .point_bg .sc_arrow{position:relative; text-align:center;}
+.mainExperthub .point_bg .sc_arrow:after{content:""; display:block; position:absolute; top:-77px; left:50%; width:25px; height:33px; margin-left:-13px; background:no-repeat center center url(../../images/aiconsult/arrow_point.png); background-size:100% auto;}
+.mainExperthub .point_bg .sc_arrow a{display:inline-block; height:26px; line-height:26px; margin:0 auto 37px; padding-right:28px; font-size:18px; font-weight:400; color:#fff; background:no-repeat 100% center url(../../images/aiconsult/arrow_more.png); background-size:20px auto; text-align:center;}
+
+.mainExperthub .point_bg .counsel{position:relative; max-width:1240px; height:342px; padding:16px 460px 20px 20px; margin:0 auto 20px; background:#fff; border-radius:18px; box-sizing:border-box; overflow:hidden; box-shadow: 4px 4px 6px 1px rgba(0, 0, 0, 0.1);}
+.mainExperthub .point_bg .counsel h3{margin-bottom:16px; font-size:20px; line-height:30px; color:#181818; font-weight:500;}
+.mainExperthub .point_bg .counsel .cou_type > p{display:none;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons{display:flex; flex-wrap:wrap; margin-top:-10px; height:180px; overflow:hidden;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li{width:25%; margin:10px 0;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a{display:block; width:100%; height:160px; padding-top:20px; box-sizing:border-box;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span{display:block; text-align:center; font-size:16px; color:#686868; font-weight:500; line-height:24px;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span:first-child{width:80px; height:80px; margin:0 auto 20px;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon1{background:no-repeat center center url(../../images/aiconsult/icn_coun1.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon2{background:no-repeat center center url(../../images/aiconsult/icn_coun2.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon3{background:no-repeat center center url(../../images/aiconsult/icn_coun3.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon4{background:no-repeat center center url(../../images/aiconsult/icn_coun4.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon5{background:no-repeat center center url(../../images/aiconsult/icn_coun5.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon6{background:no-repeat center center url(../../images/aiconsult/icn_coun6.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon7{background:no-repeat center center url(../../images/aiconsult/icn_coun7.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon8{background:no-repeat center center url(../../images/aiconsult/icn_coun8.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon9{background:no-repeat center center url(../../images/aiconsult/icn_coun9.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon10{background:no-repeat center center url(../../images/aiconsult/icn_coun10.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon11{background:no-repeat center center url(../../images/aiconsult/icn_coun11.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon12{background:no-repeat center center url(../../images/aiconsult/icn_coun12.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon13{background:no-repeat center center url(../../images/aiconsult/icn_coun13.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon14{background:no-repeat center center url(../../images/aiconsult/icn_coun14.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon15{background:no-repeat center center url(../../images/aiconsult/icn_coun15.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a span.icon16{background:no-repeat center center url(../../images/aiconsult/icn_coun16.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus{background:#0389a7; border-radius:16px;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span{color:#fff;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon1{background:no-repeat center center url(../../images/aiconsult/icn_coun1_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon2{background:no-repeat center center url(../../images/aiconsult/icn_coun2_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon3{background:no-repeat center center url(../../images/aiconsult/icn_coun3_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon4{background:no-repeat center center url(../../images/aiconsult/icn_coun4_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon5{background:no-repeat center center url(../../images/aiconsult/icn_coun5_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon6{background:no-repeat center center url(../../images/aiconsult/icn_coun6_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon7{background:no-repeat center center url(../../images/aiconsult/icn_coun7_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon8{background:no-repeat center center url(../../images/aiconsult/icn_coun8_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon9{background:no-repeat center center url(../../images/aiconsult/icn_coun9_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon10{background:no-repeat center center url(../../images/aiconsult/icn_coun10_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon11{background:no-repeat center center url(../../images/aiconsult/icn_coun11_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon12{background:no-repeat center center url(../../images/aiconsult/icn_coun12_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon13{background:no-repeat center center url(../../images/aiconsult/icn_coun13_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon14{background:no-repeat center center url(../../images/aiconsult/icn_coun14_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon15{background:no-repeat center center url(../../images/aiconsult/icn_coun15_on.png); background-size:100% auto;}
+.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon16{background:no-repeat center center url(../../images/aiconsult/icn_coun16_on.png); background-size:100% auto;}
+
+.mainExperthub .point_bg .counsel .cou_type > button{position:absolute; bottom:20px; left:20px; width:calc(100% - 500px); height:50px; line-height:50px; color:#fff; font-size:18px; font-weight:400; border-radius:16px; background:#0389a7;}
+.mainExperthub .point_bg .counsel .cou_type > button span{position:relative; padding-left:23px;}
+.mainExperthub .point_bg .counsel .cou_type > button span:first-child:before,
+.mainExperthub .point_bg .counsel .cou_type > button span:first-child:after{content:""; display:block; background:#fff; position:absolute;}
+.mainExperthub .point_bg .counsel .cou_type > button span:first-child:before{top:50%; left:0; width:11px; height:1px;}
+.mainExperthub .point_bg .counsel .cou_type > button span:first-child:after{top:50%; left:5px; width:1px; height:11px; margin-top:-5px;}
+.mainExperthub .point_bg .counsel .cou_type > button span:last-child{display:none;}
+.mainExperthub .point_bg .counsel .cou_type > button span:last-child:before{content:""; display:block; position:absolute; top:50%; left:0; width:11px; height:1px; background:#0389A7;}
+.mainExperthub .point_bg .counsel .cou_fast{position:absolute; top:16px; right:20px; width:410px; height:calc(100% - 16px);}
+.mainExperthub .point_bg .counsel .cou_fast_in{height:261px; padding:20px; background:#F9FAFC; border-radius:16px;}
+.mainExperthub .point_bg .counsel .cou_fast_in > p:first-child{padding-bottom:6px; font-size:18px; font-weight:300; line-height:26px; color:#181818;}
+.mainExperthub .point_bg .counsel .cou_fast_in > p:first-child span{font-weight:700;}
+.mainExperthub .point_bg .counsel .cou_fast_in > p:first-child span.point{color:#0389a7;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list{display:block!important;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div{position:relative; padding:20px 20px 20px 140px; margin:13px 0; background:#fff; border-radius:12px; overflow:hidden;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic{position:absolute; top:20px; left:20px;  width:112px; height:0; padding-bottom:100%;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic span:first-child{display:flex; justify-content:center; width:112px; height:112px; border-radius:56px; position:relative; overflow:hidden; box-shadow:0 0 5px 3px rgba(0,0,0,0.03);}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic span:first-child img{position:absolute; top:0; left:0; max-width:100%;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic .name{display:block; padding-top:8px; text-align:center; font-size:16px; font-weight:500; line-height:24px; color:#181818;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p{padding-left:10px; line-height:24px;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p span{display:inline-block; margin:0 3px; font-size:15px; font-weight:300; line-height:24px; color:#686868;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p span.star_rating{margin:3px 0 0 8px; width:90px; height:16px; background:repeat 0 0 url(../../images/aiconsult/star_off.png); background-size:18px 16px;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p span.star_rating em{display:block; height:16px; background:repeat 0 0 url(../../images/aiconsult/star_on.png); background-size:18px 16px; text-indent:-999em; overflow:hidden;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p.time span{color:#E03234; font-weight:400;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p.btns{padding:15px 0 0 0;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p.btns:after{content:""; display:block; clear:both;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p.btns button{float:right;}
+.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p.btns button:first-child{float:left;}
+.mainExperthub .point_bg .counsel .cou_fast_in .more a{position:relative; display:block; height:90px; line-height:90px; padding-left:90px; font-size:18px; font-weight:300; color:#181818; background:#fff no-repeat 20px center url(../../images/aiconsult/icn_time.png); background-size:50px auto; border-radius:12px;}
+.mainExperthub .point_bg .counsel .cou_fast_in .more a:after{content:""; display:block; position:absolute; top:50%; right:20px; width:30px; height:30px; margin-top:-15px; background:no-repeat center center url(../../images/aiconsult/arrow_point_circle.png); background-size:100% auto;}
+
+.mainExperthub .point_bg .counsel.on{height:auto; padding-bottom:167px;}
+.mainExperthub .point_bg .counsel.on .cou_type .type_icons{height:auto;}
+.mainExperthub .point_bg .counsel.on .cou_fast_in{height:auto;}
+.mainExperthub .point_bg .counsel.on .cou_type > button{width:calc(100% - 40px); background:#F9FAFC; color:#0389A7;}
+.mainExperthub .point_bg .counsel.on .cou_type > button span:first-child{display:none;}
+.mainExperthub .point_bg .counsel.on .cou_type > button span:last-child{display:inline-block;}
+
+.mainExperthub .point_bg .trend{position:relative; max-width:1240px; padding:16px 20px 20px; margin:auto; background:#fff; border-radius:18px; box-sizing:border-box; overflow:hidden; box-shadow: 4px 4px 6px 1px rgba(0, 0, 0, 0.1);}
+.mainExperthub .point_bg .trend:after{content:""; display:block; clear:both;}
+.mainExperthub .point_bg .trend h3{margin-bottom:16px; font-size:20px; line-height:30px; color:#181818; font-weight:500;}
+.mainExperthub .trend .rd_select{float:left; width:auto; margin-bottom:3px;}
+.mainExperthub .trend .rd_select li label span{line-height:38px; padding:0 19px; border:1px solid #C0C0C0; font-size:16px;}
+.mainExperthub .trend .rd_select li label input[type=checkbox]:checked + span, 
+.mainExperthub .trend .rd_select li label input[type=radio]:checked + span{border:3px solid #0389a7; background:#0389a7; color:#fff;}
+.mainExperthub .trend > p{float:right; padding-top:19px; font-size:14px; line-height:20px; color:#686868; fomt-weight:400;}
+.mainExperthub .trend .key_word{position:relative; clear:both; float:left; width:calc(100% - 504px); padding:12px 148px 20px 20px; background:#f9fafc; border-radius:16px;}
+.mainExperthub .trend .mon_word{float:right; width:484px; padding:12px 20px 20px; background:#f9fafc; border-radius:16px; box-sizing:border-box;}
+.mainExperthub .trend .mon_word:after{content:""; display:block; clear:both;}
+.mainExperthub .trend .key_word h4,
+.mainExperthub .trend .mon_word h4{padding-bottom:11px; font-size:18px; font-weight:400; color:#181818; line-height:26px;}
+.mainExperthub .trend .key_word .api_wrap{width:100%; height:224px; background:#fff; border-radius:12px; text-align:center;}
+.mainExperthub .trend .key_word .api_wrap img{max-width:100%;}
+.mainExperthub .trend .key_word > dl{position:absolute; top:50px; right:20px; width:116px;}
+.mainExperthub .trend .key_word > dl dt{line-height:32px; background:#ECECEC; text-align:center; font-size:15px; font-weight:400; color:#181818; border-radius:12px 12px 0 0;}
+.mainExperthub .trend .key_word > dl dd{padding:3px 13px 10px; background:#fff; border-radius:0 0 12px 12px;}
+.mainExperthub .trend .key_word > dl dt:first-child + dd{margin-bottom:12px;}
+.mainExperthub .trend .key_word > dl dd button{display:block; font-size:14px; height:20px; line-height:20px;}
+.mainExperthub .trend .mon_word > dl{float:left; width:140px; padding:2px 12px 12px; background:#fff; border-radius:12px; box-sizing:border-box;}
+.mainExperthub .trend .mon_word > dl:nth-child(2){margin-right:12px;}
+.mainExperthub .trend .mon_word > dl:last-child{float:right;}
+.mainExperthub .trend .mon_word > dl dt{padding:0 13px; font-size:20px; color:#181818; font-weight:600; line-height:50px; border-bottom:1px solid #c0c0c0;}
+.mainExperthub .trend .mon_word > dl dd{padding:13px 0 6px 0;}
+.mainExperthub .trend .mon_word > dl dd button{display:block; font-size:16px; font-weight:300; color:#181818; line-height:28px;}
+
+.mainExperthub .choice{padding:20px 0 30px; background:#f5f7fb;}
+.mainExperthub .choice .choice_in{position:relative; max-width:1240px; margin:auto;}
+.mainExperthub .choice .choice_in h3{padding:0 18px; margin-bottom:16px; font-size:20px; font-weight:400; color:#181818; line-height:28px;}
+.mainExperthub .choice .choice_in .best_cou{padding:18px 20px 20px; background:#fff; box-shadow: 4px 4px 6px 1px rgba(0, 0, 0, 0.1); border-radius: 18px;}
+.mainExperthub .choice .choice_in .best_cou:after{content:""; display:block; clear:both;}
+.mainExperthub .choice .choice_in .best_cou h4{padding-bottom:15px; font-size:20px; font-weight:400; color:#181818; line-height:28px;}
+.mainExperthub .choice .choice_in .best_cou .best_box{float:left; width:calc(50% - 10px); padding:16px 20px 20px; background: #F9FAFC; border-radius: 16px;}
+.mainExperthub .choice .choice_in .best_cou .best_box:nth-child(3){float:right;}
+.mainExperthub .choice .choice_in .best_cou .best_box > p:first-child{padding-bottom:6px; font-size:16px; line-height:24px; color:#181818; font-weight:400;}
+.mainExperthub .choice .choice_in .best_cou .best_box > strong{display:block; padding-bottom:19px; font-size:18px; line-height:26px; color:#181818; font-weight:400; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ing,
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ans{position:relative; padding:16px 20px 16px 84px; background:#fff; border-radius:12px;}
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ing{margin-bottom:12px;}
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ing span:last-child,
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ans span:last-child{font-size:15px; line-height:24px; color:#181818; font-weight:300; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ing span:first-child,
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ans span:first-child{position:absolute; top:50%; left:20px; margin-top:-24px; width:48px; height:48px; line-height:48px; font-size:15px; font-weight:400; border-radius:24px; text-align:center; background:#636569; color:#fff;}
+.mainExperthub .choice .choice_in .best_cou .best_box > p.ing span:first-child{background:#FFCC00; color:#181818;}
+.mainExperthub .choice .choice_in .best_cou .btn_last_go{clear:both; float:right;}
+.mainExperthub .choice .choice_in .best_cou .btn_last_go{padding-top:20px;}
+.mainExperthub .choice .choice_in .last_recru{margin-top:20px; padding:18px 20px 20px 630px; background:#fff no-repeat 76px center url(../../images/aiconsult/bg_trade_pro.png); background-size:459px auto; box-shadow: 4px 4px 6px 1px rgba(0, 0, 0, 0.1); border-radius: 18px;}
+.mainExperthub .choice .choice_in .last_recru:after{content:""; display:block; clear:both;}
+.mainExperthub .choice .choice_in .last_recru strong{font-size:24px; line-height:34px; font-weight:400; color:#181818;}
+.mainExperthub .choice .choice_in .last_recru strong span{color:#0389a7;}
+.mainExperthub .choice .choice_in .last_recru dl{padding:24px 0 30px 0;}
+.mainExperthub .choice .choice_in .last_recru dl dt{padding-bottom:8px; font-size:20px; line-height:28px; font-weight:400; color:#181818;}
+.mainExperthub .choice .choice_in .last_recru dl dd{font-size:18px; line-height:26px; font-weight:300; color:#686868;}
+.mainExperthub .choice .choice_in .last_recru .btn_last_go{float:right;}
+.mainExperthub .m_banners{display:none;}
+
+/* 팝업 */
+.exp_pop{position:fixed; z-index:99; top:50%; background:#fff; border-radius:10px; padding:25px 30px 30px; box-sizing:border-box;}
+.exp_pop .close{position:absolute; top:27px; right:27px;}
+.exp_pop .close a{display:block; width:24px; height:24px; text-indent:-999em; overflow:hidden; background:no-repeat center center url(../../images/aiconsult/pop_close.png); background-size:100% auto;}
+.exp_pop .close.type2{position:relative; top:0; right:0; padding-top:26px;}
+.exp_pop .close.type2:after{content:""; display:block; clear:both;}
+.exp_pop .close.type2 a{display:inline-block; float:right; width:auto; padding:0 20px; min-width:40px; height:36px; text-indent:0; background:#666; line-height:36px; color:#fff; font-size:14px; font-weight:600; text-align:center; border-radius:4px;} 
+.exp_pop strong{display:block; font-size:20px; line-height:1.5; font-weight:600; color:#333;}
+.exp_pop strong.solo{padding-right:30px; font-size:22px; padding-bottom:14px;}
+
+.exp_alert{top:30%; left:50%; width:550px;}
+.exp_alert dl{padding:22px 0 0 0;}
+.exp_alert dl dt{position:relative; padding:0 0 15px 18px; font-size:18px; line-height:1.5; color:#333; font-weight:300;}
+.exp_alert dl dt:before{content:""; position:absolute; top:9px; left:0; display:block; width:11px; height:11px; background:#fff; border-radius:5.5px; border:1px solid #0050a5; box-sizing:border-box;}
+.exp_alert dl dt:after{content:""; position:absolute; top:12px; left:3px; display:block; width:5px; height:5px; background:#0050a5; border-radius:2.5px;}
+.exp_alert dl dd{position:relative; padding:0 0 11px 31px; font-size:14px; line-height:1.5; font-weight:300;}
+.exp_alert dl dd:before{content:""; position:absolute; top:8px; left:20px; display:block; width:4px; height:4px; background:#0050a5; border-radius:2px;}
+
+.exp_board{width:852px; left:50%; margin-left:-426px; margin-top:-323px;}
+.exp_pop_cont{max-height:550px; overflow-y:auto; overflow-x:hidden;}
+
+/* 게시판 */
+.exp_sub_title{padding:0 0 11px 0; font-size:18px; line-height:1.5; font-weight:300; color:#333;}
+.exp_div_side{padding-bottom:13px;}
+.exp_div_side:after{content:""; display:block; clear:both;}
+.exp_div_side > li{float:left; font-size:14px; color:#333; font-weight:300;}
+.exp_div_side > li:last-child{float:right;}
+
+.exp_list_table table{border-top:1px solid #333;}
+.exp_list_table table thead th{padding:13px 0; border-bottom:1px solid #999; border-left:1px solid #999; font-size:13px; font-weight:600; color:#333; line-height:1.5; background:#f4f5f7;}
+.exp_list_table table thead th:first-child{border-left:0 none;}
+.exp_list_table table tbody td{padding:16px 20px; border-bottom:1px solid #999; border-left:1px solid #999;}
+.exp_list_table table tbody tr td:first-child{border-left:0 none;}
+.exp_list_table table tbody tr td a,
+.exp_list_table table tbody tr td p{display:block; font-size:13px; font-weight:300; line-height:20px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.exp_list_table table tbody tr td a{text-decoration:underline;}
+.exp_list_table .td_center{padding:16px 0; text-align:center;}
+
+.exp_pag{padding-top:22px; text-align:center;}
+.exp_pag > p,
+.exp_pag > ol,
+.exp_pag > ol > li{display:inline-block; vertical-align:top;}
+.exp_pag > ol > li{margin:0 6px;}
+.exp_pag > ol > li a{display:block; font-size:16px; font-weight:300; line-height:1.5;}
+.exp_pag > ol > li.on a{text-decoration:underline; font-weight:600; color:#333;}
+.exp_pag > p{margin:0 6px;}
+.exp_pag > p a{display:block; text-indent:-9999em; overflow:hidden; width:24px; height:24px;}
+.exp_pag > p.prev a{background:no-repeat center center url(../../images/aiconsult/pag_prev.png); background-size:16px auto;}
+.exp_pag > p.next a{background:no-repeat center center url(../../images/aiconsult/pag_next.png); background-size:16px auto;}
+
+.exp_view_table table{border-top:1px solid #333;}
+.exp_view_table table tbody th{padding:11px 20px; text-align:left; border-bottom:1px solid #999; background:#f4f5f7; font-size:13px; font-weight:600; color:#333;}
+.exp_view_table table tbody td{padding:11px 26px 11px 10px; border-bottom:1px solid #999;}
+.exp_view_table table tbody td p{font-size:13px; line-height:24px; font-weight:300;}
+
+/* 기존 서브css 덥어쓰기 */
+.btnMore .type2{color:#333!important;}
+.btnAreaConsult.type2 a:first-child,
+.btnAreaConsult.type2 a:last-child{padding:14px 24px 24px; border:1px solid #E6E6E6; border-radius:18px;  box-shadow: 4px 4px 6px 1px rgba(0, 0, 0, 0.1);}
+.btnAreaConsult.type2 a:first-child{background:#fff no-repeat right bottom url(../../images/aiconsult/bg_trade_pro2.png); background-size:278px auto;}
+.btnAreaConsult.type2 a:last-child{background:#fff no-repeat right bottom url(../../images/aiconsult/bg_trade_pro3.png); background-size:156px auto;}
+.btnAreaConsult.type2 a > em, 
+.btnAreaConsult.type2 button > em{font-size:17px;}
+.btnAreaConsult.type2 a > p{padding-top:9px; font-size:15px; line-height:21px;}
+.btnAreaConsult.type2 .bnr_btn{position:relative; display:inline-block; width:auto; height:40px; line-height:40px; margin-top:28px; padding:0 56px 0 20px; border-radius:20px; background:#0389a7; font-size:18px; font-weight:400; color:#fff;}
+.btnAreaConsult.type2 .bnr_btn:after{content:""; display:block; position:absolute; top:50%; right:8px; width:24px; height:24px; margin-top:-12px; background:no-repeat center center url(../../images/aiconsult/arrow_white_circle.png); background-size:100% auto;}
+.btnAreaConsult.type2 a:last-child .bnr_btn{background:#0050a5;}
+.btnAreaConsult a > p > span.textGreen,
+.btnAreaConsult a > p > span.textBlue{margin-top:17px;}
+.aiConsultDetail ul.type2 li .label{width:140px;}
+.aiConsultDetail ul.type2 li.pcTitle .form{font-weight:600;}
+
+/* Trade Pro 서브 */
+.secTit2 .exp_sub{position:relative; top:-1px; margin-left:12px; text-indent:-14px; padding-left:14px; display:inline-block; font-size:13px; color:#666; font-weight:300;}
+.secTit2 .exp_total{position:relative; top:-1px; float:right; font-size:14px; color:#666; font-weight:600;}
+.openConsult.type2 a{padding-right:175px;}
+.openConsult.type2 a .fr{right:0;}
+.openConsult.type2 a > .pic{position:absolute; top:0; right:0; width:148px; height:100%; text-align:center;}
+.openConsult.type2 a > .pic:before{content:""; display:block; position:absolute; top:10px; left:0; width:1px; height:calc(100% - 20px); background:#c0c0c0;}
+.openConsult.type2 a > .pic > .pic_inner{position:absolute; top:50%; left:0; width:100%; margin-top:-57px;}
+.openConsult.type2 a > .pic .img{width:70px; height:70px; margin:0 auto;}
+.openConsult.type2 a > .pic .img span:first-child{display:flex; justify-content:center; width:70px; height:70px; border-radius:35px; position:relative; overflow:hidden; box-shadow:0 0 5px 3px rgba(0,0,0,0.03);}
+.openConsult.type2 a > .pic .img span:first-child img{position:absolute; top:0; left:0; max-width:100%;}
+.openConsult.type2 a > .pic .class{padding-top:5px; font-size:13px; font-weight:300; line-height:20px;}
+.openConsult.type2 a > .pic .name{font-size:15px; font-weight:300; line-height:20px; color:#181818;}
+
+.peo_list2 > div{position:relative; width:295px; background:#fff; border:1px solid #C0C0C0; overflow:hidden; box-sizing:border-box;}
+.peo_list2 > div .pic{position:absolute; top:28px; left:12px;  width:88px; height:88px;}
+.peo_list2 > div .pic span{display:flex; justify-content:center; width:88px; height:88px; border-radius:44px; position:relative; overflow:hidden; box-shadow:0 0 5px 3px rgba(0,0,0,0.03);}
+.peo_list2 > div .pic span img{position:absolute; top:0; left:0; max-width:100%;}
+.peo_list2 > div .infos{padding:15px 20px 16px 115px;}
+.peo_list2 > div .infos p.name{font-size:16px; color:#181818; line-height:22px; font-weight:400;}
+.peo_list2 > div .infos p{font-size:14px; line-height:20px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+.peo_list2 > div .infos p span{display:inline-block; font-size:14px; font-weight:300; line-height:22px; color:#686868;}
+.peo_list2 > div .infos p span.star_rating{position:relative; top:1px; margin:3px 0 0 8px; width:90px; height:16px; background:repeat 0 0 url(../../images/aiconsult/star_off_blue.png); background-size:18px 16px;}
+.peo_list2 > div .infos p span.star_rating em{display:block; height:16px; background:repeat 0 0 url(../../images/aiconsult/star_on_blue.png); background-size:18px 16px; text-indent:-999em; overflow:hidden;}
+.peo_list2 > div .infos p.sp{margin-left:-3px;}
+.peo_list2 > div .infos p.sp span{margin:0 3px;}
+.peo_list2 > div .infos p.time{color:#181818; font-weight:400;}
+.peo_list2 > div .infos p.time span{color:#E03234;}
+.peo_list2 > div .tags{position:relative; left:12px; width:calc(100% - 24px); padding:16px 0 10px 0; box-sizing:border; border-top:1px solid #c0c0c0;}
+.peo_list2 > div .tags:after{content:""; display:block; clear:both;}
+.peo_list2 > div .tags > li{float:left; margin:0 8px 10px 0;}
+.peo_list2 > div .tags > li p{height:20px; line-height:18px; padding:0 10px; border:1px solid #c2d1ea; border-radius:10px; font-size:13px; font-weight:300; color:#0050A5;}
+.peo_list2 > div .btns:after{content:""; display:block; clear:both;}
+.peo_list2 > div .btns button{float:right; width:60%; height:40px; line-height:40px; background:#0050A5; color:#fff; font-size:14px; font-weight:400; border-radius:0;}
+.peo_list2 > div .btns button:first-child{float:left; width:40%; background:#636569;}
+
+.peo_list2.type_list{display:flex; flex-wrap: wrap; justify-content:space-between; align-items:center; margin-bottom:-20px;}
+.peo_list2.type_list > div{margin-bottom:20px;}
+.peo_list2.type_list > div .infos{padding-bottom:21px;}
+.peo_list2.type_list > div .pic{top:22px; left:6px; width:85px; height:85px;}
+.peo_list2.type_list > div .pic span{width:85px; height:85px;}
+.title_sub_border{padding:17px 0 12px 16px; font-size:15px; color:#333; font-weight:600; border-top:1px solid #333;}
+
+.peo_solo{padding:30px; margin-top:30px; background:#fff;}
+.peo_solo:after{content:""; display:block; clear:both;}
+.peo_solo .pic{float:left; width:88px; height:88px;}
+.peo_solo .pic span{display:flex; justify-content:center; width:88px; height:88px; border-radius:44px; position:relative; overflow:hidden; box-shadow:0 0 5px 3px rgba(0,0,0,0.03);}
+.peo_solo .pic span img{position:absolute; top:0; left:0; max-width:100%;}
+.peo_solo .infos{float:left; padding-top:2px; margin-left:15px;}
+.peo_solo .infos p.name{font-size:16px; color:#181818; line-height:22px; font-weight:400;}
+.peo_solo .infos p{font-size:14px; line-height:20px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+.peo_solo .infos p span{display:inline-block; font-size:14px; font-weight:300; line-height:22px; color:#686868;}
+.peo_solo .infos p span.star_rating{position:relative; top:1px; margin:3px 0 0 8px; width:90px; height:16px; background:repeat 0 0 url(../../images/aiconsult/star_off_blue.png); background-size:18px 16px;}
+.peo_solo .infos p span.star_rating em{display:block; height:16px; background:repeat 0 0 url(../../images/aiconsult/star_on_blue.png); background-size:18px 16px; text-indent:-999em; overflow:hidden;}
+.peo_solo .infos p.sp{margin-left:-3px;}
+.peo_solo .infos p.sp span{margin:0 3px;}
+.peo_solo .btns{float:right; padding-top:26px; text-align:center;}
+.peo_solo .btns button{display:inline-block; width:116px; text-align:center; height:40px; line-height:40px; margin-left:13px; background:#0050A5; color:#fff; font-size:14px; font-weight:400; border-radius:20px;}
+.peo_solo .btns button:first-child{margin-left:0; background:#636569;}
+
+/*
+.fake_tap_wrap ul{height:37px; border-bottom:1px solid #999;}
+.fake_tap_wrap ul:after{content:""; display:block; clear:both;}
+.fake_tap_wrap ul li{float:left;}
+.fake_tap_wrap ul li a{display:block; min-width:100px; padding:0 20px; height:36px; line-height:36px; background:#f7f7f7; border-top:1px solid #999; border-right:1px solid #999; font-size:16px; font-weight:600; color:#333; text-align:center;}
+.fake_tap_wrap ul li:first-child a{border-left:1px solid #999;}
+.fake_tap_wrap ul li.on a{background:#0050A5; color:#fff;}
+*/
+
+.fake_tap_wrap ul{display:flex; align-items:flex-end; height:48px; border-bottom:1px solid #254F58;}
+.fake_tap_wrap li a{display:inline-flex; justify-content:center; align-items:center; height:35px; padding:0 25px; font-size:15px; font-weight:500; color:#5C5F68; border:solid #ccc; border-width:2px 2px 0 2px;}
+.fake_tap_wrap li:first-child a{border-top-left-radius:15px;}
+.fake_tap_wrap li:last-child a{border-top-right-radius:15px;}
+.fake_tap_wrap li+li a{border-left:0;}
+.fake_tap_wrap li.on a{height:46px; font-size:16px; font-weight:500; color:#fff; border:0; border-top-left-radius:15px; border-top-right-radius:15px; background-color:#254F58;}
+
+.more_list{display:block; width:160px; height:38px; line-height:36px; border:1px solid #999; margin:30px auto 0; box-sizing:border-box; font-size:16px; color:#333; font-weight:600; border-radius:19px;}
+.more_list:after{content:""; position:relative; top:-1px; display:inline-block; width:10px; height:15px; margin-left:20px; background:repeat 0 0 url(../../images/aiconsult/arrow_right_black.png); background-size:100% auto; vertical-align:middle;}
+
+
+@media all and (max-width:1240px) {
+	/* Trade Pro 메인 */
+	.mainExperthub > h2{padding-top:50px;}
+	.mainExperthub .top_links{padding-top:70px;}
+	.mainExperthub .search_top .ai_search{left:20px; margin-left:0; width:calc(100% - 40px);}
+	.mainExperthub .point_bg{padding:16px 20px 20px}
+	.mainExperthub .point_bg .counsel{max-width:100%;}
+	.mainExperthub .choice{padding:20px 20px 30px}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li{width:33.333333%;}
+	.mainExperthub .choice .choice_in .last_recru{padding-left:380px; background:#fff no-repeat 20px center url(../../images/aiconsult/bg_trade_pro.png); background-size:306px auto;}
+	
+	.quick_ind{right:5px;}
+}
+@media all and (max-width:1024px) {
+	/* Trade Pro 메인 */
+	.mainExperthub > h2{padding-top:11px; font-size:10px;}
+	.mainExperthub > h2 span{width:160px; height:38px; margin-top:-9px;}
+	.mainExperthub .search_top{width:100%; padding:0 20px 15px 20px; margin-top:5px;}
+	.mainExperthub .search_top .m_search{max-width:332px;}
+	.mainExperthub .search_top .m_search input[type=text]{width:100%; height:28px; line-height:28px; font-size:13px; border-bottom:1px solid #0389a7}
+	.mainExperthub .search_top .m_search button{top:2px; width:28px; height:28px; background:no-repeat center center url(../../images/aiconsult/icn_m_link.png); background-size:17px auto;}
+	.mainExperthub .point_bg{padding:0; background:none;}
+	.mainExperthub .point_bg .counsel{padding:0; height:auto; margin-bottom:0; background:none; box-shadow:none; border-radius:0;}
+	.mainExperthub .point_bg .counsel.on{padding-bottom:0;}
+	.mainExperthub .point_bg .counsel .cou_type{position:relative; padding:15px 14px 80px 14px; background:#0389a7;}
+	.mainExperthub .point_bg .counsel .cou_type > p{display:block; text-align:center; color:#fff; font-size:16px; line-height:24px; font-weight:400;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons{height:170px; background:#fff; margin-top:14px; border-radius:8px;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li{width:20%; margin:0 0 5px 0;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a{height:80px; padding-top:10px;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a span{font-size:11px; line-height:16px;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a span:first-child{width:40px; height:40px; margin:0 auto 7px;}
+	
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span{color:#0389a7;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon1{background:no-repeat center center url(../../images/aiconsult/icn_coun1_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon2{background:no-repeat center center url(../../images/aiconsult/icn_coun2_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon3{background:no-repeat center center url(../../images/aiconsult/icn_coun3_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon4{background:no-repeat center center url(../../images/aiconsult/icn_coun4_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon5{background:no-repeat center center url(../../images/aiconsult/icn_coun5_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon6{background:no-repeat center center url(../../images/aiconsult/icn_coun6_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon7{background:no-repeat center center url(../../images/aiconsult/icn_coun7_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon8{background:no-repeat center center url(../../images/aiconsult/icn_coun8_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon9{background:no-repeat center center url(../../images/aiconsult/icn_coun9_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon10{background:no-repeat center center url(../../images/aiconsult/icn_coun10_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon11{background:no-repeat center center url(../../images/aiconsult/icn_coun11_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon12{background:no-repeat center center url(../../images/aiconsult/icn_coun12_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon13{background:no-repeat center center url(../../images/aiconsult/icn_coun13_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon14{background:no-repeat center center url(../../images/aiconsult/icn_coun14_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon15{background:no-repeat center center url(../../images/aiconsult/icn_coun15_on_m.png); background-size:100% auto;}
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li a:focus span.icon16{background:no-repeat center center url(../../images/aiconsult/icn_coun16_on_m.png); background-size:100% auto;}
+	
+	.mainExperthub .point_bg .counsel .cou_type > button{left:14px; width:calc(100% - 28px); height:40px; line-height:40px; border-radius:9px; background:#fff; font-size:15px; color:#0389A7;}
+	.mainExperthub .point_bg .counsel .cou_type > button span{padding-left:15px;}
+	.mainExperthub .point_bg .counsel .cou_type > button span:first-child:before, 
+	.mainExperthub .point_bg .counsel .cou_type > button span:first-child:after{background:#0389A7;}
+	.mainExperthub .point_bg .counsel .cou_type > button span:first-child:before{width:7px;}
+	.mainExperthub .point_bg .counsel .cou_type > button span:first-child:after{height:7px; left:3px; margin-top:-3px;}
+	.mainExperthub .point_bg .counsel .cou_type > button span:last-child:before{width:7px;}
+	.mainExperthub .point_bg .counsel .cou_fast{position:relative; top:0; right:0; width:100%; height:auto; padding:15px 14px; background:#f5f7fb;}
+	.mainExperthub .point_bg .counsel .cou_fast_in{background:#fff; height:auto; padding:15px 10px; border-radius:9px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in > p:first-child{padding-left:12px; padding-bottom:0; font-size:15px; line-height:22px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list{display:flex!important;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list:after{content:""; display:block; clear:both;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div{float:left; width:calc(50% - 10px); margin:10px 0; padding:15px 20px 55px 82px; background:#F9FAFC; border-radius:8px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div:nth-child(even){float:right;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic{top:20px; left:10px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic span:first-child{width:60px; height:60px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .pic .name{position:absolute; top:-4px; left:74px; font-size:15px; line-height:22px; min-width:120px; text-align:left; padding-top:0;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos{padding-top:22px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p{padding-left:0;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p,
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p span{font-size:12px; line-height:18px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p span.star_rating{width:60px; height:12px; background-size:12px auto;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p span.star_rating em{height:12px; background-size:12px auto;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div .infos p.btns{position:absolute; bottom:10px; left:10px; width:calc(100% - 20px); text-align:center; padding-top:16px;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .more a{padding-left:40px; font-size:15px; height:40px; line-height:40px; background:#F9FAFC no-repeat 10px center url(../../images/aiconsult/icn_time.png); background-size:20px auto;}
+	
+	.mainExperthub .rd_btn.small{width:141px; height:35px; line-height:34px; font-size:15px; color:#fff; border-radius:7px; display:inline-block; float:none!important;}
+	.mainExperthub .rd_btn.small:first-child{margin-right:10px;}
+	.mainExperthub .rd_btn.point{background:#0389a7;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .more a:after{width:25px; height:25px; margin-top:-13px; right:8px; background:no-repeat center center url(../../images/aiconsult/arrow_point_right.png); background-size:100% auto;}
+	
+	.mainExperthub .m_banners{display:block; padding:0 14px 10px 14px;}
+	.mainExperthub .m_banners:after{content:""; display:block; clear:both;}
+	.mainExperthub .m_banners li{float:left; width:calc(50% - 10px);margin-bottom:10px; }
+	.mainExperthub .m_banners li:last-child{float:right;}
+	.mainExperthub .m_banners li a{position:relative; display:block; padding:11px 90px 10px 105px; border-radius:9px; box-shadow: 4px 4px 6px 1px rgba(0, 0, 0, 0.1);}
+	.mainExperthub .m_banners li a:after{content:""; display:block; position:absolute; top:50%; right:15px; width:40px; height:40px; margin-top:-20px; background:no-repeat center center url(../../images/aiconsult/arrow_point_circle.png); background-size:100% auto;}
+	.mainExperthub .m_banners li.banner1 a{background:#fff no-repeat 0 0 url(../../images/aiconsult/bg_m_open.png); background-size:90px auto;}
+	.mainExperthub .m_banners li.banner2 a{background:#fff no-repeat 0 0 url(../../images/aiconsult/bg_m_search.png); background-size:90px auto;}
+	.mainExperthub .m_banners li a strong{display:block; padding-bottom:6px; font-size:15px; font-weight:400; color:#181818; line-height:22px;}
+	.mainExperthub .m_banners li a p{font-size:13px; font-weight:300; line-height:18px;}
+	
+	.mainExperthub .top_links,
+	.mainExperthub .point_bg .sc_arrow,
+	.mainExperthub .search_top .add,
+	.mainExperthub .point_bg .counsel h3,
+	.mainExperthub .point_bg .trend,
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list li .infos p:nth-child(3),
+	.mainExperthub .choice,
+	.quick_ind{display:none;}
+	
+	/* 게시판 */
+	.mainExperthub .exp_board{position:fixed; width:100%; top:100px; left:0; margin-top:0; margin-left:0; height:calc(100% - 100px); border-radius:0;}
+}
+@media all and (max-width:986px) {
+	.aiConsult_searchBox.type2 textarea{width:calc(100% - 126px)}
+	.aiConsult_searchBox.type2 .btn_recom button:last-child{display:none;}
+	.aiConsult_infoBox.type2 ol > li{background:none;}
+	.aiConsult_infoBox.type2 ol > li > div{height:auto;}
+	.aiConsult_infoBox.type2 ol > li > div strong{border-bottom:0; line-height:20px; margin-right:10px; padding:0;}
+	.aiConsult_infoBox.type2 ol > li > div p br{display:none;}
+	.aiConsult_infoBox.type2 ol > li > div p br.m{display:block;}
+	
+	/* 기존 css 덥어쓰기 */
+	.btnAreaConsult.type2 .bnr_btn{margin-right:100px;}
+	.btnAreaConsult.type2 a:first-child{background:#fff no-repeat right bottom url(../../images/aiconsult/bg_trade_pro2.png); background-size:185px auto;}
+	.btnAreaConsult.type2 a:last-child{background:#fff no-repeat right bottom url(../../images/aiconsult/bg_trade_pro3.png); background-size:104px auto;}
+	
+	/* 서브 */
+	.peo_list2.type_list > div{width:calc(50% - 10px);}
+}	
+@media all and (max-width:768px) {
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li{width:25%;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div{float:none; width:100%;}
+	.mainExperthub .point_bg .counsel .cou_fast_in .peo_list > div > div:nth-child(even){float:none;}
+	.mainExperthub .m_banners li{float:none; width:100%;}
+	.mainExperthub .m_banners li:last-child{float:none;}
+	.mainExperthub .m_banners li a{padding-left:160px;}
+	.mainExperthub .m_banners li.banner1 a{background:#fff no-repeat 30px 0 url(../../images/aiconsult/bg_m_open.png); background-size:90px auto;}
+	.mainExperthub .m_banners li.banner2 a{background:#fff no-repeat 30px 0 url(../../images/aiconsult/bg_m_search.png); background-size:90px auto;}
+	.hidden_s{display:none!important;}	
+	
+	.mainExperthub .exp_alert{top:20%; width:calc(100% - 40px); left:20px; margin-left:0;}
+	.mainExperthub .board_th{width:105px!important;}
+	
+	/* 기존 css 덥어쓰기 */
+	.btnAreaConsult.type2 a > p > span.textGreen, 
+	.btnAreaConsult.type2 a > p > span.textBlue{margin-top:7px;}
+	.btnAreaConsult.type2 .bnr_btn{margin-right:0; float:left; margin-top:8px; clear:both;}
+	
+	/* Trade Pro 서브 */
+	.infoWrap{padding-top:30px;}
+	.secTit2{position:relative;}
+	.secTit2 .exp_sub{display:block; padding:8px 0 0 0; margin:0;}
+	.secTit2 .exp_total{position:absolute; bottom:0; right:0;}
+	.openConsult.type2 a{padding-right:0;}
+	.openConsult.type2 a .fr{right:0;}
+	.openConsult.type2 a > .pic{position:relative; width:100%; height:auto; margin:10px 0 -10px 0; padding-top:5px;}
+	.openConsult.type2 a > .pic:after{content:""; display:block; clear:both;}
+	.openConsult.type2 a > .pic:before{width:100%; height:1px; top:0; left:0;}
+	.openConsult.type2 a > .pic > .pic_inner{position:relative; top:0; margin-top:0;}
+	.openConsult.type2 a > .pic .img{float:left; width:40px; height:40px;}
+	.openConsult.type2 a > .pic .img span:first-child{width:40px; height:40px;}
+	.openConsult.type2 a > .pic .class{float:left; line-height:40px; padding:0 0 0 10px;}
+	.openConsult.type2 a > .pic .name{float:left; line-height:40px; padding-left:10px; font-size:13px;}
+	
+	.peo_solo{padding:15px; margin-top:15px;}
+}
+@media all and (max-width:720px) {
+	/* 팝업 */
+	.mainExperthub .exp_board{top:54px; height:calc(100% - 54px);}
+	
+	/* 서브  */
+	.fake_tap_wrap ul{height:73px;}
+	.fake_tap_wrap ul li{float:left; width:50%;}
+	.fake_tap_wrap ul li a{width:100%; font-size:14px;}
+	.fake_tap_wrap ul li:nth-child(3) a{border-left:1px solid #999;}
+	.peo_list2.type_list > div{width:100%;}
+	
+	.aiConsultDetail ul.type2 li .label{width:auto;}
+	.aiConsultDetail ul.type2 li.sub_title:after{content:""; display:block; clear:both;}
+	.aiConsultDetail ul.type2 li.sub_title .label{float:left; width:auto; padding:0 20px 0 0; line-height:40px;}
+	.aiConsultDetail ul.type2 li.sub_title .form{float:left; padding:0; line-height:40px;}
+}
+@media all and (max-width:480px) {
+	.mainExperthub .point_bg .counsel .cou_type .type_icons li{width:33.33333%;}
+	.mainExperthub .m_banners li a{padding-left:105px;}
+	.mainExperthub .m_banners li.banner1 a{background:#fff no-repeat 0 0 url(../../images/aiconsult/bg_m_open.png); background-size:90px auto;}
+	.mainExperthub .m_banners li.banner2 a{background:#fff no-repeat 0 0 url(../../images/aiconsult/bg_m_search.png); background-size:90px auto;}
+	
+	/* 팝업 */
+	.mainExperthub .exp_pop{padding:10px;}
+	.exp_pop .close{top:14px; right:10px;}
+	
+	/* 서브 */
+	.peo_solo{padding:10px; margin-top:10px;}
+	.peo_solo .pic,
+	.peo_solo .pic span{width:44px; height:44px;}
+	.peo_solo .infos{width:calc(100% - 59px);}
+	.peo_solo .sp{width:100%;} 
+	.peo_solo .btns{float:none; clear:both; padding-top:15px;}
+	.peo_solo .btns:after{content:""; display:block; clear:both;}
+	.peo_solo .btns button{float:left; width:calc(50% - 5px); margin-left:0;}
+	.peo_solo .btns button:last-child{float:right;}
+}
+@media all and (max-width:370px) {
+	.mainExperthub .rd_btn.small{width:auto;}
+	.mainExperthub .m_banners li a br{display:none;}
+
+}
+
+
+/* AI 자문서비스 2021-08-05 */
+/* AI 자문 검색영역 */
+.aiConsult_searchBox{position:relative;margin-bottom:30px;padding:24px 28px 24px 133px;border-width:1px 1px;border-style:solid;border-color:#e6e6e6;background:#edeef2 url(../../images/aiconsult/icon_aiSearch.png) no-repeat 34px 28px;text-align:center;}
+.aiConsult_searchBox fieldset {text-align:left;}
+.aiConsult_searchBox textarea{width: calc(100% - 90px);height:160px;padding:12px 15px;background:#fff;border:1px solid #d0d0d0;font-size:16px;font-weight:300;line-height:1.7;box-sizing:border-box;}
+/* .aiConsult_searchBox textarea::first-line{font-size:15px;color:#666;font-weight:300;}
+.aiConsult_searchBox textarea.on{padding:26px 20px 0 20px;font-weight:300;font-size:16px;line-height:1.7;color:#2168a6;}
+.aiConsult_searchBox textarea.on::first-line{font-weight:300;font-size:16px;line-height:1.7;color:#2168a6;} */
+.aiConsult_searchBox .btn_aiBtnSearch{position:absolute;right:30px;top:24px;background:#0082fa;font-size:14px;color:#fff;font-weight:300;width:80px;height:80px;box-sizing:border-box;}
+/* 서브페이지 소제목 */
+.info_title{position:relative;margin-bottom:.75em;padding-left:12px;font-size:18px;color:#444;font-weight:300;}
+.info_title:after{display:block;position:absolute;top:50%;left:0;width:4px;height:18px;margin-top:-9px;background-color:#0082fa;content:'';}
+/* AI 자문 안내문구 */
+.info_wrap .desc{display:block;font-size:16px;padding-left:10px;color:#444;line-height:1.6;padding-bottom:5px;}
+.info_wrap .textBlue{color:#2168a6;}
+/* AI 자문 서비스 이용 방법 */
+.aiConsult_infoBox{margin-bottom:35px;}
+.aiConsult_infoBox ol{display:flex;}
+.aiConsult_infoBox ol>li{flex:1;padding-left:70px;background:url(../../images/aiconsult/icon_aiArrow.png) no-repeat 5% 50%;}
+.aiConsult_infoBox ol>li:first-child{padding-left:0;flex:1;background:none;}
+.aiConsult_infoBox ol>li>div .icon_step{position:absolute;left:-1px;top:-1px;display:inline-block;width:70px;height:36px;line-height:34px;border:1px solid #2B5075;border-radius:15px 0 15px 0;background:#2B5075;color:#fff;font-size:16px;font-weight:300;text-align:center;}
+.aiConsult_infoBox ol>li>div{position:relative;width:auto;box-sizing:border-box;height:230px;padding:35px 0 35px;border:1px solid #d0d0d0;border-radius:15px;text-align:center;}
+.aiConsult_infoBox ol>li>div>strong{display:inline-block;font-size:22px;font-weight:bold;margin-bottom:10px;letter-spacing:-1px;}
+.aiConsult_infoBox ol>li>div p{font-size:15px;text-align:center;line-height:1.6;letter-spacing:0px;}
+.aiConsult_infoBox ol>li>div p span{display:block;}
+.aiConsult_infoBox ol>li>div p strong{color:#2168a6;font-weight:100;}
+/* AI 자문 안내문구 하단 파란박스 */
+.info_Btm{font-size:16px;color:#2168a6;font-weight:300;text-align:center;background:#f1f9fe;border:1px solid #bdd6e5;border-radius:6px;}
+.info_Btm p{display:inline-block;padding:20px 0;padding-right:77px;background:url(../../images/aiconsult/bg_aiInfo01.png) no-repeat right bottom;}
+/* AI 자문 검색결과 */
+.aiConsultList{position:relative;}
+.aiConsultList>h4{font-size:22px;color:#333;font-weight:300;width: calc(100% - 210px);}
+/* 정렬버튼 */
+.aiConsultList>.sortBtn{width:200px;text-align:right;position:absolute;right:0;top:3px;}
+.aiConsultList>.sortBtn button{font-size:13px;color:#666;border:1px solid #d0d0d0;background:#fff url(../../images/aiconsult/icon_aiNoCheck.png) no-repeat left 50%;padding:5px 10px 5px 22px;}
+.aiConsultList>.sortBtn button.on{font-size:13px;color:#fff;border:1px solid #035bbb;background:#035bbb url(../../images/aiconsult/icon_aiCheck.png) no-repeat left 50%;padding:5px 10px 5px 22px;}
+/* AI 자문 검색결과 리스트 */
+.aiConsultList>ol{width:100%;border-top:1px solid #333;margin-bottom:20px;}
+.aiConsultList>ol>li{position:relative;padding:24px 0;border-bottom:1px solid #e6e6e6;}
+.aiConsultList>ol>li>a{position:relative;width:100%;display:block;font-size:16px;color:#333;font-weight:300;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+.aiConsultList>ol>li>a>span{margin-right:5px;display:inline-block;border:1px solid #dedede;background:#f5f5f5;color:#0050a5;font-size:13px;padding:0px 10px;border-radius:15px;height:24px;line-height:22px;}
+.aiConsultList>ol>li>a:hover{color:#0050a5;}
+.aiConsultList>ol>li>a:hover>span{margin-right:5px;display:inline-block;background:#0050a5;color:#fff;font-size:13px;padding:0px 10px;border-radius:15px;height:24px;line-height:22px;}
+.aiConsultList>ol>li>span{position:absolute;right:0;top:24px;font-size:12px;color:#999;}
+.aiConsultList>ol>li dl{border-top:2px dashed #e6e6e6;margin-top:15px;}
+.aiConsultList>ol>li dt{margin-top:15px;position:relative;padding-left:40px;box-sizing:border-box;display: inline-block; width: 100%; overflow: hidden; font-size:15px;text-overflow: ellipsis; white-space: normal; line-height: 1.5; height: 42px; text-align: left; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
+.aiConsultList>ol>li dt span{position:absolute;left:10px;top:0px;display:inline-block;text-align:center;width:20px;height:20px;line-height:20px;background:url(../../images/aiconsult/icon_aiQA.png) no-repeat left top;color:#fff;font-size:12px;}
+.aiConsultList>ol>li dd{margin-top:10px;position:relative;padding-left:40px;box-sizing:border-box;display: inline-block; width: 100%; overflow: hidden; font-size:15px;text-overflow: ellipsis; white-space: normal; line-height: 1.5; height: 42px; text-align: left; word-wrap: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
+.aiConsultList>ol>li dd span{position:absolute;left:10px;top:0px;display:inline-block;text-align:center;width:20px;height:20px;line-height:20px;background:url(../../images/aiconsult/icon_aiQA.png) no-repeat left top;color:#fff;font-size:12px;}
+.aiConsultList .consultField{color:#668cb2;font-size:13px;}
+.aiConsultList>ol>li.noData{padding:40px 0;text-align:center;}
+.aiConsultList>ol>li.noData p{background:#fff url(../../images/aiconsult/icon_noData.png) no-repeat 50% top;padding-top:80px;text-align:center;font-size:16px;color:#333;font-weight:300;}
+.openConsult>ol>li.noData{padding:40px 0;text-align:center;}
+.openConsult>ol>li.noData p{background:#fff url(../../images/aiconsult/icon_noData.png) no-repeat 50% top;padding-top:80px;text-align:center;font-size:16px;color:#333;font-weight:300;}
+/* AI 자문 안내문구 텍스트 */
+.info2{margin-top:75px;margin-bottom:40px;}
+.info2>p{text-align:center;font-size:18px;color:#333;margin-bottom:3px;font-weight:300;}
+.info2>p strong{color:#2168a6;text-decoration:underline;}
+/* 상담서비스 바로가기 링크 및 버튼 */
+/* .btnAreaConsult{display:flex;position:relative;}
+.btnAreaConsult a, .btnAreaConsult button{display:block;box-sizing:border-box;padding:30px;margin-top:1px;margin-bottom:1px;display:flex;flex:1;margin-left:20px;margin-right:1px;border:1px solid #bdd6e5;border-radius:6px;background:#f1f9fe url(../../images/aiconsult/icon_aiArrow02.png) no-repeat 95% 50%;text-align:left;}
+.btnAreaConsult a:hover, .btnAreaConsult button:hover{border:2px solid #339bfb;margin-left:19px;margin-top:0;margin-bottom:0;margin-right:0px;}
+.btnAreaConsult a>em, .btnAreaConsult button>em{width:80px;height:115px;background:url(../../images/aiconsult/icon_aiBtn02.png) no-repeat 5px 50px;font-weight:300;font-size:22px;letter-spacing:-1px;}
+.btnAreaConsult a>p{flex:1;padding:5px 0px 0 30px;color:#666;font-size:14px;line-height:150%;}
+.btnAreaConsult a>p>span{display:block;}
+.btnAreaConsult a>p>span.textBlue{color:#2168a6;}
+.btnAreaConsult a:first-child{margin-left:1px;}
+.btnAreaConsult a:first-child>em{width:80px;background:url(../../images/aiconsult/icon_aiBtn01.png) no-repeat 5px 55px;font-weight:300;font-size:22px;letter-spacing:-1px;}
+.btnAreaConsult a:first-child>p{padding:15px 0 0 30px;}
+.btnAreaConsult a:first-child:hover{margin-left:0;}
+.btnAreaConsult button.type01{margin-left:0;}
+.btnAreaConsult button.type01:hover{margin-left:0px;}
+.btnAreaConsult button.type01>em{width:80px;background:url(../../images/aiconsult/icon_aiBtn01.png) no-repeat 5px 55px;font-weight:300;font-size:22px;letter-spacing:-1px;}
+.btnAreaConsult button.type01>strong{padding:15px 0 0 0;}
+.btnAreaConsult button[disabled]:hover{margin-top:1px;margin-bottom:1px;margin-left:20px;margin-right:1px;border:1px solid #bdd6e5;}
+.btnAreaConsult button.type01[disabled]:hover{margin-top:1px;margin-bottom:1px;margin-left:1px;margin-right:1px;border:1px solid #bdd6e5;} */
+
+.btnAreaConsult{display:flex;position:relative;}
+.btnAreaConsult a, 
+.btnAreaConsult button{display:block;box-sizing:border-box;padding:30px;margin-top:1px;margin-bottom:1px;flex:1;margin-left:20px;border-radius:6px;text-align:left;background:#f6f7fb url(../../images/aiconsult/icon_aiBtn04.png) no-repeat 100% 75%;}
+.btnAreaConsult a:first-child, 
+.btnAreaConsult button.type01 {background:#f6f7fb url(../../images/aiconsult/icon_aiBtn03.png) no-repeat 92% 75%;}
+.btnAreaConsult a>em,
+.btnAreaConsult button>em{font-weight:300;font-size:20px;color:#111;letter-spacing:-1px;}
+.btnAreaConsult a>p{flex:1;padding:5px 0px 0 0;color:#666;font-size:14px;line-height:150%;}
+.btnAreaConsult a>p>span{display:block;}
+.btnAreaConsult a>p>span.textBlue{color:#2168a6;}
+.btnAreaConsult a>p>span.textGreen{color:#008a68;}
+.btnAreaConsult button:first-child,
+.btnAreaConsult a:first-child{margin-left:0;}
+.btnAreaConsult .bnr_btn {display:block;width:120px;margin-top:19px;padding:9px 0;color:#fff;font-size:14px;font-weight:300;line-height:2;text-align:center;background-color:#2168a6;border-radius:3px}
+.btnAreaConsult .bnr_btn:after {content:'';display:inline-block;width:16px;height:12px;margin:9px 0 0 15px;background:url(../../images/aiconsult/icon_aiArrow04.png) no-repeat 0 0; vertical-align:top}
+.btnAreaConsult .bnr_btn.bgGreen {background-color:#008a68;}
+.btnAreaConsult button>strong{flex:1;display:block;padding:5px 0px 0 0;color:#666;font-size:14px;line-height:150%;font-weight:100;}
+.btnAreaConsult button>strong>span{display:block;}
+.btnAreaConsult button>strong>span.textBlue{color:#2168a6;}
+.btnAreaConsult button>strong>span.textGreen{color:#008a68;}
+.btnAreaConsult button[disabled]{opacity:0.4;cursor:default;}
+.dimtxt{position:absolute;left:50%;top:50%;margin-left:-130px;margin-top:-26px;display:none;border-radius:30px;background:rgba(0,0,0,0.5);color:#fff;padding:10px 20px;}
+.btnAreaConsult button[disabled]~.dimtxt{display:inline-block;}
+.mt7{margin-top:7px;}
+
+/* AI 자문 상세페이지 */
+.aiConsultDetail{position:relative;margin-bottom:30px;}
+.aiConsultDetail h4{width:0;height:0;overflow:hidden;border:0;background:none;font-size:0;color:transparent;}
+.aiConsultDetail ul{overflow: hidden;display: flex;flex-wrap: wrap;border-top: 1px solid #333333;}
+.aiConsultDetail ul li {width:100%;display: flex;border-bottom: 1px solid #e6e6e6;}
+.aiConsultDetail ul li .label {width: 104px;color: #111111;background: #f7f7f7;align-items: center;display: flex;padding: 10px 20px 10px 20px;font-size:13px !important;}
+.aiConsultDetail ul li .label>span{display:none;}
+.aiConsultDetail ul li .form {flex: 1;padding:5px 10px;display:flex;align-items: center;font-size:13px !important;}
+/* AI 자문 별점주기 및 건의사항 등록 */
+.starRatingArea{background:#edeef2;border:1px solid #e6e6e6;text-align:center;padding:35px 13px;margin-bottom:30px;}
+.starRatingArea p{padding-left:50px;color:#2168a6;font-weight:300;font-size:18px;display:inline-block;background:url(../../images/aiconsult/icon_aiInfo02.png) no-repeat left top;}
+.starRatingArea textarea{width:660px;height:42px;line-height:1.4;font-size:14px;color:#333;display:block;text-align:left;margin:20px auto 30px auto;}
+.starRatingArea textarea::placeholder{font-size:14px;color:#666;line-height:20px;text-align:center;}
+.starRatingArea .starRatingIn{position:relative;padding-right:50px;width:260px;margin:20px auto 0 auto;}
+.starRatingArea .starRatingIn input[type=radio]{opacity:0;position:absolute;z-index:-1;}
+.starRatingArea .starRatingIn input[type=radio]+label{display:inline-block;margin-left:4px;width:30px;height:30px;background:url(../../images/aiconsult/bg_starOff.png) no-repeat left top;}
+.starRatingArea .starRatingIn input[type=radio]:checked+label{background:url(../../images/aiconsult/bg_starOn.png) no-repeat left top;}
+.starRatingArea .starRatingIn input[type=radio]+label>span{position:absolute;right:0;top:0;width:0;height:0;overflow:hidden;border:0;background:none;font-size:0;color:transparent;}
+.starRatingArea .starRatingIn input[type=radio]:checked+label>span{border-left:1px solid #dedede;font-size:20px;color:#333;font-weight:300;width:auto;height:auto;line-height:30px;padding-left:18px;}
+.starRatingArea .starRatingIn label.on{display:inline-block;width:30px;height:30px;background:url(../../images/aiconsult/bg_starOn.png) no-repeat left top !important;}
+/* 국제무역통상연구원 별점주기 */
+/* 홀수점 우선 */
+/*.starRatingArea2{border-top:1px solid #666;text-align:left;padding:10px 0px;margin-top:80px;}
+.starRatingArea2 legend{display:inline-block;padding-left:20px;text-indent:0;font-size:20px;font-weight:300;line-height:30px;height:30px;}
+.starRatingArea2 p{display:block;padding-left:140px;color:#333;font-size:14px;}
+.starRatingArea2 ol{border-top:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6;padding:10px 20px;margin-top:10px;margin-bottom:20px;}
+.starRatingArea2 ol>li{position:relative;padding:3px 0px;vertical-align:top;}
+.starRatingArea2 ol>li>strong{display:inline-block;width: calc( 100% - 260px);line-height:30px;color:#333;font-size:14px;vertical-align:top;}
+.starRatingArea2 .starRatingIn{display:inline-block;position:relative;padding-right:40px;width:250px;height:30px;margin:0px auto 0 auto;}
+.starRatingArea2 .starRatingIn>li{position:relative;display:inline-block;width:30px;height:30px;margin-left:4px;}
+.starRatingArea2 .starRatingIn input[type=radio]{opacity:0;position:absolute;left:0;top:0;z-index:-1;}
+.starRatingArea2 .starRatingIn input[type=radio]+label{position:absolute;left:0px;top:0px;display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOff.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label{position:absolute;left:0;top:0;background:url(/images/icon/bg_starOv.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]+label.ov, .starRatingArea2 .starRatingIn input[type=radio]+label.startHalf.ov{z-index:5;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label.ov, .starRatingArea2 .starRatingIn input[type=radio]:checked+label.startHalf.ov{z-index:5;}
+.starRatingArea2 .starRatingIn input[type=radio]+label.startHalf{position:absolute;left:0;top:0;display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOv.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label.startHalf{position:absolute;left:0;top:0;background:url(/images/icon/bg_starOn.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]+label>span, .starRatingArea2 .starRatingIn input[type=radio]+label.ov>span{position:absolute;right:0px;top:0;border:0;background:none;font-size:14px;color:#333;font-weight:300;width:auto;height:auto;line-height:30px;opacity:0;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn input[type=radio]:checked+label.ov>span{font-size:14px;color:#333;font-weight:300;width:auto;height:auto;line-height:30px;opacity:1;}
+.starRatingArea2 .starRatingIn>li:nth-child(1) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(1) input[type=radio]:checked+label.ov>span{position:absolute;right:-195px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(2) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(2) input[type=radio]:checked+label.ov>span{position:absolute;right:-156px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(3) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(3) input[type=radio]:checked+label.ov>span{position:absolute;right:-117px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(4) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(4) input[type=radio]:checked+label.ov>span{position:absolute;right:-78px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(5) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(5) input[type=radio]:checked+label.ov>span{position:absolute;right:-40px;top:0;}
+.starRatingArea2 .starRatingIn label.on{display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOv.png) no-repeat left top !important;}
+.starRatingArea2 .starRatingIn label.startHalf.on{display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOn.png) no-repeat left top !important;}
+.starRatingArea2 button{border-radius:3px;}
+.starRatingArea2 button.btnBlue{background:#086bd3;}*/
+
+/* 짝수점 우선 */
+.starRatingArea2{border-top:1px solid #666;text-align:left;padding:10px 0px;margin-top:80px;}
+.starRatingArea2 legend{display:inline-block;padding-left:20px;text-indent:0;font-size:20px;font-weight:300;line-height:30px;height:30px;}
+.starRatingArea2 p{display:block;padding-left:140px;color:#333;font-size:14px;}
+.starRatingArea2 ol{border-top:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6;padding:10px 20px;margin-top:10px;margin-bottom:20px;}
+.starRatingArea2 ol>li{position:relative;padding:3px 0px;vertical-align:top;}
+.starRatingArea2 ol>li>strong{display:inline-block;width: calc( 100% - 260px);line-height:30px;color:#333;font-size:14px;vertical-align:top;}
+.starRatingArea2 .starRatingIn{display:inline-block;position:relative;padding-right:40px;width:250px;height:30px;margin:0px auto 0 auto;}
+.starRatingArea2 .starRatingIn>li{position:relative;display:inline-block;width:30px;height:30px;margin-left:4px;}
+.starRatingArea2 .starRatingIn input[type=radio]{opacity:0;position:absolute;left:0;top:0;z-index:-1;}
+.starRatingArea2 .starRatingIn input[type=radio]+label{position:absolute;left:0px;top:0px;display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOff.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]+label.startHalf{position:absolute;left:0;top:0;display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOn.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]+label.ov{z-index:5;}
+.starRatingArea2 .starRatingIn input[type=radio]+label.startHalf.ov{z-index:5;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label{position:absolute;left:0;top:0;background:url(/images/icon/bg_starOv.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label.startHalf{position:absolute;left:0;top:0;background:url(/images/icon/bg_starOn.png) no-repeat left top;z-index:1;}
+.starRatingArea2 .starRatingIn label.on{display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOv.png) no-repeat left top !important;z-index:5;}
+.starRatingArea2 .starRatingIn label.startHalf.on{display:inline-block;width:30px;height:30px;background:url(/images/icon/bg_starOn.png) no-repeat left top !important;z-index:5;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label.ov{z-index:5;} 
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label.startHalf.ov{z-index:5;}
+.starRatingArea2 .starRatingIn input[type=radio]+label>span, .starRatingArea2 .starRatingIn input[type=radio]+label.ov>span{position:absolute;right:0px;top:0;border:0;background:none;font-size:14px;color:#333;font-weight:300;width:auto;height:auto;line-height:30px;opacity:0;}
+.starRatingArea2 .starRatingIn input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn input[type=radio]:checked+label.ov>span{font-size:14px;color:#333;font-weight:300;width:auto;height:auto;line-height:30px;opacity:1;}
+.starRatingArea2 .starRatingIn>li:nth-child(1) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(1) input[type=radio]:checked+label.ov>span{position:absolute;right:-195px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(2) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(2) input[type=radio]:checked+label.ov>span{position:absolute;right:-156px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(3) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(3) input[type=radio]:checked+label.ov>span{position:absolute;right:-117px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(4) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(4) input[type=radio]:checked+label.ov>span{position:absolute;right:-78px;top:0;}
+.starRatingArea2 .starRatingIn>li:nth-child(5) input[type=radio]:checked+label>span, .starRatingArea2 .starRatingIn>li:nth-child(5) input[type=radio]:checked+label.ov>span{position:absolute;right:-40px;top:0;}
+.starRatingArea2 button{border-radius:3px;}
+.starRatingArea2 button.btnBlue{background:#086bd3;}
+
+@media (max-width: 986px) {
+	/* AI 자문 검색영역 */
+	.aiConsult_searchBox{padding:25px 15px;background:#edeef2;margin:0 -15px 30px -15px;}
+	.aiConsult_searchBox textarea{width: 100%;height:82px;padding:12px 10px;font-size:12px;}
+	/* .aiConsult_searchBox textarea::first-line{font-size:13px;} */
+	.aiConsult_searchBox textarea.on{padding:12px 10px;line-height:1.5;font-size:14px;}
+	/* .aiConsult_searchBox textarea.on::first-line{line-height:1.5;font-size:14px;} */
+	.aiConsult_searchBox .btn_aiBtnSearch{position:relative;width:90px;height:36px;right:auto;top:auto;margin:0px auto;display:block;}	
+	/* AI 자문 서비스 이용 방법 */
+	.aiConsult_infoBox ol>li>div .icon_step{position:absolute;left:-1px;top:-1px;display:inline-block;width:50px;height:25px;line-height:23px;border:1px solid #0082fa;border-radius:15px 0 15px 0;background:#339bfb;color:#fff;font-size:12px;font-weight:300;text-align:center;}
+	.aiConsult_infoBox ol{display:block;}
+	.aiConsult_infoBox ol>li{flex:none;padding-left:0px;padding-top:50px;background:url(../../images/aiconsult/icon_aiArrow03.png) no-repeat 4% 50%;background-size:33px;}
+	.aiConsult_infoBox ol>li:first-child{padding-top:0;background:none;}
+	.aiConsult_infoBox ol>li>div{height:auto;padding:17px 0 17px;display:flex;align-items:center;min-height:80px;}
+	.aiConsult_infoBox ol>li>div>strong{font-size:15px;margin-bottom:0;width:130px;line-height:1.5;}
+	.aiConsult_infoBox ol>li>div>strong>span{display:block;}
+	.aiConsult_infoBox ol>li>div>p{font-size:13px;text-align:left;line-height:1.6;flex:1;align-items:center;}
+	.aiConsult_infoBox ol>li>div>p>span{display:inline-block;}	
+	/* AI 자문 안내문구 파란박스 */
+	.info_Btm{border-radius:0;border-left:0;border-right:0;text-align:left;margin:0 -15px 0 -15px;padding:0 20px;}
+	.info_Btm p{display:inline-block;padding:20px 0;padding-right:77px;background:url(../../images/aiconsult/bg_aiInfo01.png) no-repeat right bottom;line-height:1.6;}
+	/* AI 자문 검색결과 리스트 */
+	.aiConsultList>h4{font-size:16px;}
+	.aiConsultList>.sortBtn{top:-3px;}
+	.aiConsultList>ol>li{padding:15px 10px;}
+	.aiConsultList>ol>li>span{position:relative;display:block;text-align:left;right:auto;top:auto;margin-top:3px;}
+	.aiConsultList>ol>li.noData{padding:42px 0;text-align:center;}
+	.aiConsultList>ol>li.noData p{background:#fff url(../../images/aiconsult/icon_noData_m.png) no-repeat 50% top;background-size:56px;padding-top:77px;text-align:center;font-size:15px;color:#333;font-weight:300;}	
+	/* AI 자문 안내문구 텍스트 */
+	.info2{margin-top:45px;margin-bottom:15px;}
+	.info2>p{line-height:1.6;font-size:14px;}
+	.info2>p>span{display:block;}	
+	
+	
+	/* 상담서비스 바로가기 링크 및 버튼 */
+	/* .btnAreaConsult{display:block;margin-bottom:40px;}
+	.btnAreaConsult a, .btnAreaConsult button{box-sizing:border-box;width:100%;padding:20px;margin-top:15px;margin-right:0;margin-bottom:0px;display:flex;flex:none;margin-left:0px;border:1px solid #bdd6e5;border-radius:6px;background:#f1f9fe url(../../images/aiconsult/icon_aiArrow02.png) no-repeat 95% 50%;background-size:32px;text-align:left;}
+	.btnAreaConsult a:hover, .btnAreaConsult button:hover{border:1px solid #bdd6e5;margin-left:0px;margin-right:0;margin-top:15px;margin-bottom:0;}
+	.btnAreaConsult a:first-child, .btnAreaConsult button.type01{margin-top:0;margin-left:0px;}
+	.btnAreaConsult a:first-child:hover{margin-left:0px;}
+	.btnAreaConsult a>em, .btnAreaConsult button>em{font-size:15px;width:80px;text-align:center;height:80px;background:url(../../images/aiconsult/icon_aiBtn02.png) no-repeat 50% 35px;background-size:55px auto;}
+	.btnAreaConsult a:first-child>em, .btnAreaConsult button.type01>em{font-size:15px;text-align:center;width:80px;height:80px;background:url(../../images/aiconsult/icon_aiBtn01.png) no-repeat 50% 35px;background-size:55px auto;}
+	.btnAreaConsult a>p, .btnAreaConsult button>strong{font-size:12px;padding:0 0 0 20px;}
+	.btnAreaConsult a:first-child>p, .btnAreaConsult button.type01>strong{font-size:12px;padding:0 0 0 20px;}
+	.btnAreaConsult button.type01{margin-left:0px;}
+	.btnAreaConsult button[disabled]:hover{margin-top:15px;margin-bottom:0px;margin-left:0px;margin-right:0;border:1px solid #bdd6e5;}
+	.btnAreaConsult button.type01[disabled]:hover{margin-top:0px;margin-bottom:0px;margin-left:0px;margin-right:0;border:1px solid #bdd6e5;}	
+	.btnAreaConsult button[disabled]>p{font-size:12px;padding:0 0 0 20px;}
+	.btnAreaConsult button.type01[disabled]>strong{font-size:12px;padding:0 0 0 20px;}
+	.btnAreaConsult button>em{margin-top:5px;}
+	.btnAreaConsult button.type01>em{margin-top:5px;} */
+	.btnAreaConsult{display:block;margin-bottom:40px;}
+	.btnAreaConsult a, .btnAreaConsult button{overflow:hidden;box-sizing:border-box;width:100%;padding:20px;margin-top:15px;margin-right:0;margin-bottom:0px;margin-left:0px;border-radius:6px;background-color:#f6f7fb;background-image:none}
+	.btnAreaConsult a:first-child, .btnAreaConsult button.type01{margin-top:0;margin-left:0px;background-image:none}
+	.btnAreaConsult a>em, .btnAreaConsult button>em{display:block;font-size:15px;line-height:2}
+	.btnAreaConsult a>p, .btnAreaConsult button>strong{font-size:12px;float:left;}
+	.btnAreaConsult a:first-child>p, .btnAreaConsult button.type01>strong{font-size:12px;}
+	.btnAreaConsult button.type01{margin-left:0px;}	
+	.btnAreaConsult button[disabled]>p{font-size:12px;}
+	.btnAreaConsult button.type01[disabled]>strong{font-size:12px;}
+	.btnAreaConsult .bnr_btn {float:right;font-size:12px;margin:0;}	
+
+	/* 별점주기 및 건의사항 등록 */
+	.starRatingArea{margin-bottom:18px;}
+	.starRatingArea p{padding-left:0px;background:none;font-size:16px;}
+	.starRatingArea textarea{width:100%;height:60px;}
+	.starRatingArea textarea::placeholder{line-height:40px;}
+	/* 국제무역통상연구원 별점주기 */
+	.starRatingArea2 legend{display:block;position:relative;}
+	.starRatingArea2 p{display:block;padding-left:20px;color:#333;font-size:14px;margin-top:0px;}
+	.starRatingArea2 ol>li>strong{display:block;width:100%;line-height:30px;color:#333;font-size:14px;}
+	.starRatingArea2 .starRatingIn{display:block;width:100%;margin-top:5px;}
+
+}
+@media (max-width: 720px) {	
+	/* AI자문 상세페이지 */
+	.aiConsultDetail{position:relative;margin-bottom:30px;}
+	.aiConsultDetail .detailInfo{display:block;background:#edeef2;position:relative;margin:0 -15px;}
+	.aiConsultDetail h4{width:100%;height:auto;overflow:hidden;border:0;background:#edeef2;font-size:14px;color:#333;padding:22px 14px 10px 14px;line-height:1.5;}	
+	.aiConsultDetail ul{overflow: hidden;display:block;;flex-wrap: wrap;border-top: none;}
+	.aiConsultDetail ul li {width:100%;display:block;border-bottom: 1px solid #e6e6e6;}
+	.aiConsultDetail ul li .label {position:relative;width: 100%;color: #111111;background:none;align-items:normal;display: block;padding: 20px 20px 5px 35px;font-size:13px !important;}
+	.aiConsultDetail ul li .label>span{position:absolute;left:10px;top:22px;display:inline-block;text-align:center;width:20px;height:20px;line-height:20px;background:url(../../images/aiconsult/icon_aiQA.png) no-repeat left top;color:#fff;font-size:12px;}
+	.aiConsultDetail ul li .form {flex: none;padding:5px 10px 20px 10px;display:block;align-items:normal;font-size:13px !important;}
+	.aiConsultDetail ul .pcTitle{display:none;}
+	.aiConsultDetail ul.type01{background:#edeef2;padding:0 15px 15px 15px;}
+	.aiConsultDetail ul.type01>li{display:inline-block;border-bottom:0;width:auto;}
+	.aiConsultDetail ul.type01>li:first-child .form{border-right:1px solid #dedede;padding-right:10px;}
+	.aiConsultDetail ul.type01>li .label{padding:0;background:none;width:auto;display:inline-block;margin:0;color:#668cb2;font-size:12px !important;}
+	.aiConsultDetail ul.type01>li .label:after{content:':';display:inline;padding-left:3px;}
+	.aiConsultDetail ul.type01>li .form{padding:0;background:none;width:auto;display:inline-block;margin:0;color:#668cb2;font-size:12px !important;}
+	.aiConsultDetail ul.type01>li:nth-child(3){display:block;text-align:left;border-left:0;}
+	.aiConsultDetail ul.type01>li:nth-child(2) .label{padding-left:3px;}
+	.aiConsultDetail ul.type01>li:nth-child(3) .label{display:none;}
+	.aiConsultDetail ul.type01>li:nth-child(3) .form{display:block;width:100%;color:#666;font-size:12px;}
+	
+	.starRatingArea2 legend{padding-left:10px;}
+	.starRatingArea2 p{padding-left:10px;line-height:1.5;}
+	.starRatingArea2 ol{padding:10px;}
+	.starRatingArea2 button{border-radius:0px;width:49%;float:left;}
+	.starRatingArea2 button.btnBlue{width:49%;float:right;}
+
+}
+
+/* 오픈상담 리스트 */
+.page_openConsult{}
+.page_openConsult .boxButtonSet {justify-content: flex-start;width:100%;}
+.page_openConsult .boxButtonSet label {margin:0 7px 10px;}
+.page_openConsult .boxButtonSet label span{display:block;min-width:110px;padding:9px 20px;border:1px solid #999999;border-radius:18px;text-align:center;font-size:14px;line-height:1.2;color:#586172}
+.page_openConsult .boxButtonSet label:hover span,
+.page_openConsult .boxButtonSet label input[type='checkbox']:checked + span{color:#005bbb;border-color:#005bbb;font-weight: 300;}
+.page_openConsult .boxButtonSet label input[type='checkbox'] {position:absolute;width:0;height:0;opacity:0}
+.page_openConsult .schWrap {text-align:right;margin-top:20px;}
+.page_openConsult .schWrap .schBox {display:inline-block;margin-right:8px}
+.page_openConsult .schWrap .schBox .txt{width:260px;border-radius:3px;border:1px solid #999999;}
+.page_openConsult .schWrap .schBox  input.txt::-webkit-input-placeholder {color:#ccc !important;}
+.page_openConsult .schWrap .schBox  input.txt:-moz-placeholder {color:#ccc !important;}
+.page_openConsult .schWrap .schBox  input.txt::-moz-placeholder {color:#ccc !important;}
+.page_openConsult .schWrap .schBox  input.txt:-ms-input-placeholder {color:#ccc !important;}
+.page_openConsult .schWrap .btnBlue {width:100px;background-color:#005bbb;border-radius:3px;}
+.page_openConsult .selectArea + .openConsultWrap {margin-top:-28px;}
+.page_openConsult .category {display:inline-block;padding:0 12px;margin-right:5px;line-height:20px;font-size:13px;color:#005bbb;border:1px solid #bbcce8;border-radius:11px;}
+.page_openConsult .openConsultWrap .pagination {margin-top:20px;}
+.openConsultWrap + .openConsultWrap {margin-top:47px;}
+.openConsultWrap .openConsult {border-top:1px solid #333;}
+.openConsultWrap .openConsult > a{position:relative;display:block;padding:14px 0 17px;border-bottom:1px solid #999999;}
+.openConsultWrap .openConsult .openTab > a{position:relative;display:block;padding:14px 0 17px;border-bottom:1px solid #999999;}
+.openConsult li {padding:0 15px 20px 0;cursor:pointer;}
+.openConsult li +li  {padding-top:20px;border-top:1px solid #999999}
+.openConsult dt {overflow:hidden; text-overflow:ellipsis; white-space: nowrap; padding-right:120px;}
+.openConsult .ListTit {font-size:16px;color:#000000}
+.openConsult .info {line-height:1.5}
+.openConsult .date,
+.openConsult .hit {font-size:13px;color:#91a0ad}
+.openConsult .hit {margin-left:20px;}
+.openConsult dd {margin-top:16px}
+.openConsult dd>div {display:flex;margin-top:7px;}
+.openConsult .ellipsis {overflow:hidden;height:25px;white-space:nowrap;text-overflow:ellipsis;font-size:15px;line-height:1.5}
+.openConsult .badge {display:block;width:40px;height:22px;line-height:22px;border-radius:3px;font-size:13px;color:#ffffff;text-align:center;}
+.openConsult .badge.gray {background-color:#2B5075}
+.openConsult .badge.blue {background-color:#0099D8}
+.openConsult .badge + p {flex:1;padding-left:8px;}
+.openConsult .fr {position:absolute; right:0; top:16px;} 
+.openConsult .answerBest {position:absolute;top:20px;right:0;display:block;color:#aaaaaa;font-size:14px;font-weight:300;line-height:1.5;background-color:transparent}
+.openConsult .answerBest:before {display:inline-block;width:16px;height:14px;margin-right:5px;content:'';background: url(../../images/aiconsult/ico_best_off.png) no-repeat center;}
+.openConsult .answerBest.on {color:#e31b32;}
+.openConsult .answerBest.on:before {background-image: url(../../images/aiconsult/ico_best_on.png);}
+.openConsultWrap .btnMore {width:100%;height:40px;margin-top:20px;font-size:16px;color:#333333;text-align:center;}
+.openConsultWrap .btnMore span {color:#999999}
+.openConsultWrap .btnMore span:after {display:inline-block;width:14px;height:8px;margin-left:13px;content:'';background:url(../../images/aiconsult/arr_more.png) no-repeat center;}
+.page_openConsult .pagination .boxNum a {width:30px;margin:0 5px;line-height:30px; border:1px solid #666;}
+.page_openConsult .pagination .boxNum a.on {color: #206cab; border-color: #206cab;font-weight:300;}
+
+
+@media (max-width:768px) {
+	.page_openConsult .boxButtonSet label {margin:0 5px 7px;}
+	.page_openConsult .boxButtonSet label span{min-width:80px;padding:9px 7px;}
+}
+@media (max-width:720px) {
+	.page_openConsult .secTit2 {font-size:16px;margin-bottom:14px;}
+	.page_openConsult .boxButtonSet {justify-content:center;}
+	.page_openConsult .schWrap {text-align:right;margin-top:5px;padding-bottom:10px;}
+	.page_openConsult .schWrap .schBox {display:block;margin-right:0;margin-bottom:14px;}
+	.page_openConsult .schWrap .schBox .txt{width:100%;border-radius:0;}
+	.page_openConsult .schWrap .btnBlue {width:100%;}
+	.page_openConsult .infoWrap {margin-top:14px;}
+	.page_openConsult .infoWrap + .openConsultWrap {margin-top:28px;}
+	.openConsultWrap + .openConsultWrap {margin-top:60px;}
+	.openConsult dt {padding-right:0;}
+	.openConsult dd {margin-top:4px}
+	.openConsult dd>div {margin-top:5px}
+	.openConsult .ListTit{display:block;margin:0; overflow:hidden; text-overflow:ellipsis; white-space: nowrap;}
+	.openConsult .fr {display:block;position:inherit}
+	.openConsult .ellipsis {height:44px; white-space: normal; word-wrap:break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;}
+}
+@media (max-width:480px) {
+	.page_openConsult .boxButtonSet label {margin: 0 3px 7px;}
+	.page_openConsult .boxButtonSet label span{min-width:70px;padding:7px 5px;}
+}
+/* 오픈상담 상세 & 신청 */
+.page_openConsult .topArea {padding:19px 205px 19px 0;border-top:1px solid #666666;ine-height:1.5} 
+.page_openConsult .topArea .ListTit {display:inline-block;max-width:540px;vertical-align:top;font-size:16px;color:#333;}
+.page_openConsult .boardArea .infoView {top:22px;padding:0;}
+.page_openConsult .boardArea .btnBlue {background-color:#005bbb;}
+.page_openConsult .openConsultView {padding:30px 20px;border-top:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6;}
+.openConsultView .openConsult .questionTxt {position:relative;margin:0 0 30px 0;padding:0 0 0 50px;cursor:auto;line-height:1.5;font-size:14px;}
+.openConsultView .openConsult .questionTxt .badge.gray {position:absolute;top:0;left:0;}
+.openConsultView .openConsult .questionTxt img {max-width:100%;}
+.openConsultView .openConsult .grayBox {position:relative;padding:24px 30px;margin-bottom:10px;border-radius:5px;background-color:#f5f7fb;cursor:auto;border:0;}
+.openConsultView .openConsult .answerInfo {display:flex;margin-bottom:20px;}
+.openConsultView .openConsult .answerInfo:before {position:absolute;top:24px;left:14px;display:block;width:11px;height:11px;content:'';background: url(../../images/aiconsult/ico_answer_arr.png) no-repeat center;}
+.openConsultView .openConsult .answerInfo .name {margin:0 5px 0 8px;color:#3f68b6;font-size:15px;line-height:1.5;}
+.openConsultView .openConsult .answerInfo .consult {margin:0 5px 0 0px;color:#666;font-size:15px;line-height:1.5;}
+.openConsultView .openConsult .answerInfo .date {color:#91a0ad;font-size:13px;line-height:1.5;}
+.openConsultView .openConsult .answerBest {top:25px;right:30px;}
+.openConsultView .openConsult .grayBox .answerView {font-size:14px;color:#666;line-height:1.7}
+.openConsultView .openConsult .grayBox .answerView img {max-width:100%;display:block;}
+.page_openConsult .boardArea {overflow:hidden;}
+.page_openConsult .moSelFull {width:40%;}
+
+@media (max-width:720px) {
+	.page_openConsult .boardArea {margin:0 -14px;}
+	.page_openConsult .topArea {padding:18px 24px 18px;border:0;background-color:#f4f5f7}
+	.page_openConsult .topArea .ListTit {display:block;margin-bottom:12px;}
+	.page_openConsult .openConsultView {padding:24px;}
+	.openConsultView .openConsult .questionTxt {display:block;margin-bottom:20px;padding:0;}
+	.openConsultView .openConsult .questionTxt .badge.gray {position:static;display:block;margin-bottom:10px;}
+	.openConsultView .openConsult .answerInfo:before {left:8px;}
+	.openConsultView .openConsult .grayBox {padding:24px;}
+	.openConsultView .openConsult .answerBest {position:initial;margin-top:24px;} 
+	.page_openConsult .moSelFull {width:100%;}
+	.page_openConsult .moBtnFull {text-align:center;}
+	.page_openConsult .moBtnFull button{width:45%;text-align:center;}
+}
+.aiConsultDetail ul.type2 li .label{width:140px;}
+.aiConsultDetail ul.type2 li.pcTitle .form{font-weight:600;}
+.page_openConsult .open{display:inline-block;padding:0 12px;margin-right:5px;line-height:20px;font-size:13px;color:#fff; background:#999; border-radius:4px; font-weight:500;}
+
+legend {overflow:hidden; position:absolute; height:0; text-indent:-999999px; font-size:0px; line-height:0;}
+.secTit2 {margin-bottom:18px; padding-left:17px; background:url(../../images/aiconsult/bu_bl.png) no-repeat 0 5px; color:#333; font-weight:550; font-size:17px; line-height:20px;}

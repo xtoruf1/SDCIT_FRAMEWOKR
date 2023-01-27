@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommonCodeSQL">
+
+	<select id="selectCommonCodeList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectCommonCodeList */
+		WITH COMMON_CODE AS (
+			SELECT
+				CODE_ID
+				, GROUP_ID
+				, CODE_ID AS CODE
+				, CODE_NM
+				, CODE_DESC
+				, 1 AS CODE_SORT
+				, NULL AS ATTR1
+				, NULL AS ATTR2
+				, NULL AS ATTR3
+				, NULL AS ATTR4
+				, NULL AS ATTR5
+				, USE_YN
+				, NULL AS PARANT_CODE
+			FROM TB_CODE
+			WHERE 1 = 1
+			<choose>
+				<when test='searchCondition == null or searchCondition == ""'>
+					<if test='searchKeyword != null and searchKeyword != ""'>
+						AND (
+							CODE_ID LIKE '%' || #{searchKeyword} || '%'
+							OR CODE_NM LIKE '%' || #{searchKeyword} || '%'
+						)
+					</if>
+				</when>
+				<otherwise>
+					<if test='searchKeyword != null and searchKeyword != ""'>
+						<if test='searchCondition == "codeId"'>
+							AND CODE_ID LIKE '%' || #{searchKeyword} || '%'
+						</if>
+						<if test='searchCondition == "codeNm"'>
+							AND CODE_NM LIKE '%' || #{searchKeyword} || '%'
+						</if>
+					</if>
+				</otherwise>
+			</choose>
+			UNION ALL
+			SELECT
+				A.CODE_ID
+				, GROUP_ID
+				, A.CODE
+				, A.CODE_NM
+				, A.CODE_DESC
+				, A.CODE_SORT
+				, A.ATTR1
+				, A.ATTR2
+				, A.ATTR3
+				, A.ATTR4
+				, A.ATTR5
+				, A.USE_YN
+				, A.CODE_ID AS PARANT_CODE
+			FROM (
+				SELECT
+					CODE_ID
+					, NULL AS GROUP_ID
+					, CODE
+					, CODE_NM
+					, CODE_DESC
+					, CODE_SORT
+					, ATTR1
+					, ATTR2
+					, ATTR3
+					, ATTR4
+					, ATTR5
+					, USE_YN
+				FROM TB_CODE_DETAIL
+				ORDER BY CODE_SORT ASC
+			) A
+		)
+		SELECT
+			CODE_ID
+			, GROUP_ID
+			, CODE
+			, CODE_NM
+			, CODE_DESC
+			, LEVEL
+			, CODE_SORT
+			, ATTR1
+			, ATTR2
+			, ATTR3
+			, ATTR4
+			, ATTR5
+			, USE_YN
+		FROM COMMON_CODE
+		START WITH PARANT_CODE IS NULL
+		CONNECT BY PRIOR CODE = PARANT_CODE
+		ORDER SIBLINGS BY CODE_SORT ASC
+	</select>
+
+	<select id="selectGroupList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectGroupList */
+		SELECT
+			GROUP_ID
+			, GROUP_NM
+		FROM TB_GROUP
+		ORDER BY GROUP_ID ASC
+	</select>
+
+	<update id="mergeGroupCode" parameterType="searchVO">
+		/* CommonCodeSQL.updateGroupCode */
+		MERGE INTO TB_CODE T USING DUAL
+			ON (T.CODE_ID = #{codeId})
+			WHEN MATCHED THEN
+				UPDATE SET
+					T.GROUP_ID = #{groupId}
+					, T.CODE_NM = #{codeNm}
+					, T.CODE_DESC = #{codeDesc}
+					, T.USE_YN = #{useYn}
+					, T.UPD_ID = #{updId}
+					, T.UPD_DATE = SYSDATE
+			WHEN NOT MATCHED THEN
+				INSERT (
+					CODE_ID
+					, GROUP_ID
+					, CODE_NM
+					, CODE_DESC
+					, USE_YN
+					, REG_ID
+					, UPD_ID
+				) VALUES (
+					#{codeId}
+					, #{groupId}
+					, #{codeNm}
+					, #{codeDesc}
+					, #{useYn}
+					, #{regId}
+					, #{updId}
+				)
+	</update>
+
+	<delete id="deleteGroupCode" parameterType="searchVO">
+		/* CommonCodeSQL.deleteGroupCode */
+		DELETE FROM TB_CODE
+		WHERE CODE_ID = #{codeId}
+	</delete>
+
+	<insert id="insertCodeList" parameterType="searchVO">
+ 		/* CommonCodeSQL.insertCodeList */
+		INSERT ALL
+
+		<foreach item="code" collection="insertCodeList">
+			INTO TB_CODE_DETAIL (
+				CODE_ID
+				, CODE
+				, CODE_NM
+				, CODE_DESC
+				, CODE_SORT
+				, ATTR1
+				, ATTR2
+				, ATTR3
+				, ATTR4
+				, ATTR5
+				, USE_YN
+				, REG_ID
+				, UPD_ID
+			) VALUES (
+				#{codeId}
+				, #{code.code}
+				, #{code.codeNm}
+				, #{code.codeDesc}
+				, #{code.codeSort}
+				, #{code.attr1}
+				, #{code.attr2}
+				, #{code.attr3}
+				, #{code.attr4}
+				, #{code.attr5}
+				, #{code.useYn}
+				, #{regId}
+				, #{updId}
+			)
+		</foreach>
+
+		SELECT *
+		FROM DUAL
+ 	</insert>
+
+ 	<update id="updateCode" parameterType="searchVO">
+		/* CommonCodeSQL.updateCode */
+		UPDATE TB_CODE_DETAIL SET
+			CODE_NM = #{codeNm}
+			, CODE_DESC = #{codeDesc}
+			, CODE_SORT = #{codeSort}
+			, ATTR1 = #{attr1}
+			, ATTR2 = #{attr2}
+			, ATTR3 = #{attr3}
+			, ATTR4 = #{attr4}
+			, ATTR5 = #{attr5}
+			, USE_YN = #{useYn}
+			, UPD_ID = #{updId}
+			, UPD_DATE = SYSDATE
+		WHERE CODE_ID = #{codeId}
+		AND CODE = #{code}
+	</update>
+
+	<delete id="deleteCodeList" parameterType="searchVO">
+		/* CommonCodeSQL.deleteCodeList */
+		DELETE FROM TB_CODE_DETAIL
+		WHERE CODE_ID = #{codeId}
+		<if test='deleteCodeList != null and deleteCodeList.size != 0'>
+			AND CODE IN
+			<foreach item="code" collection="deleteCodeList" open="(" close=")" separator=",">
+				#{code.code}
+			</foreach>
+		</if>
+	</delete>
+
+	<select id="selectCodeDetailList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectCodeDetailList */
+		SELECT
+			CODE_ID
+			, CODE
+			, CODE_NM
+			, CODE_DESC
+			, CODE_SORT
+			, ATTR1
+			, ATTR2
+			, ATTR3
+			, ATTR4
+			, ATTR5
+			, USE_YN
+		FROM TB_CODE_DETAIL
+		WHERE CODE_ID = #{codeId}
+		AND USE_YN = 'Y'
+		ORDER BY
+		<choose>
+			<when test='orderField == null or orderField == ""'>
+				CODE_SORT
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orderField == "CODE_NM"'>
+						CODE_NM
+					</when>
+				</choose>
+				<choose>
+					<when test='orderField == "ATTR1"'>
+						ATTR1
+					</when>
+				</choose>
+				<choose>
+					<when test='orderField == "ATTR2"'>
+						ATTR2
+					</when>
+				</choose>
+			</otherwise>
+		</choose>
+		<choose>
+			<when test='orderDirection == null or orderDirection == ""'>
+				ASC
+			</when>
+			<otherwise>
+				<choose>
+					<when test='orderDirection == "ASC"'>
+						ASC
+					</when>
+					<when test='orderDirection == "DESC"'>
+						DESC
+					</when>
+				</choose>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="selectClassCodeList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectClassCodeList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.CL_CODE
+			, A.CL_CODE_NM
+			, DECODE(A.USE_AT, 'Y', '사용', 'N', '미사용') AS USE_AT_NM
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						CL_CODE
+						, CL_CODE_NM
+						, USE_AT
+					FROM COMTCCMMNCLCODE
+					WHERE 1 = 1
+			 		<if test='searchKeyword != null and searchKeyword != ""'>
+						<if test='searchCondition == "clCode"'>
+							AND CL_CODE LIKE '%' || #{searchKeyword} || '%'
+						</if>
+						<if test='searchCondition == "clCodeNm"'>
+							AND REPLACE(CL_CODE_NM, ' ', '') LIKE '%' || #{searchKeyword} || '%'
+						</if>
+					</if>
+					ORDER BY FRST_REGIST_PNTTM DESC
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectClassCodeTotalCnt" parameterType="searchVO" resultType="int">
+		/* CommonCodeSQL.selectPortalCodeTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM COMTCCMMNCLCODE
+		WHERE 1 = 1
+ 		<if test='searchKeyword != null and searchKeyword != ""'>
+			<if test='searchCondition == "clCode"'>
+				AND CL_CODE LIKE '%' || #{searchKeyword} || '%'
+			</if>
+			<if test='searchCondition == "clCodeNm"'>
+				AND REPLACE(CL_CODE_NM, ' ', '') LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+	</select>
+
+	<select id="selectClassCodeView" resultType="commonMap">
+		/* CommonCodeSQL.selectClassCodeView */
+		SELECT
+			CL_CODE
+			, CL_CODE_NM
+			, CL_CODE_DC
+			, USE_AT
+			, DECODE(USE_AT, 'Y', '사용', 'N', '미사용') AS USE_AT_NM
+		FROM COMTCCMMNCLCODE
+		WHERE CL_CODE = #{clCode}
+	</select>
+
+	<insert id="insertClassCode" parameterType="searchVO">
+		/* CommonCodeSQL.insertClassCode */
+		INSERT INTO COMTCCMMNCLCODE (
+			CL_CODE
+			, CL_CODE_NM
+			, CL_CODE_DC
+			, USE_AT
+			, FRST_REGISTER_ID
+			, FRST_REGIST_PNTTM
+			, LAST_UPDUSR_ID
+			, LAST_UPDT_PNTTM
+		) VALUES (
+			#{clCode}
+			, #{clCodeNm}
+			, #{clCodeDc}
+			, #{useAt}
+			, #{regId}
+			, SYSDATE
+			, #{regId}
+			, SYSDATE
+		)
+	</insert>
+
+	<update id="updateClassCode" parameterType="searchVO">
+		/* CommonCodeSQL.updateClassCode */
+		UPDATE COMTCCMMNCLCODE SET
+			CL_CODE_NM = #{clCodeNm}
+			, CL_CODE_DC = #{clCodeDc}
+			, USE_AT = #{useAt}
+			, LAST_UPDUSR_ID = #{updId}
+			, LAST_UPDT_PNTTM = SYSDATE
+		WHERE CL_CODE = #{clCode}
+	</update>
+
+	<delete id="deleteClassCode" parameterType="searchVO">
+		/* CommonCodeSQL.deleteClassCode */
+		UPDATE COMTCCMMNCLCODE SET
+			USE_AT = 'N'
+		WHERE CL_CODE = #{clCode}
+	</delete>
+
+	<select id="selectSearchClassList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectSearchClassList */
+		SELECT
+			CL_CODE
+			, CL_CODE_NM
+		FROM COMTCCMMNCLCODE
+		WHERE USE_AT = 'Y'
+		ORDER BY CL_CODE_NM ASC
+	</select>
+
+	<select id="selectPortalCodeListOrderByNumber" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectPortalCodeListOrderByNumber */
+		SELECT CODE_ID
+			 , DETAIL_CODE_ID AS CODE
+			 , CODE_NM
+			 , CODE_DESC AS CODE_DC
+		FROM COMMON_CODE_DETAIL
+		WHERE CODE_ID = #{codeId}
+		  AND USE_YN = 'Y'
+		ORDER BY TO_NUMBER(CODE) ASC
+	</select>
+
+	<select id="selectPortalCodeList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectPortalCodeList */
+		SELECT
+			(
+				TOTAL_CNT
+				- ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10))
+				- (RN - ((NVL(#{pageIndex}, 1) - 1) * NVL(#{recordCountPerPage}, 10)) - 1)
+			) AS PAGE_SEQ
+			, A.CL_CODE
+			, A.CL_CODE_NM
+			, A.CODE_ID
+			, A.CODE_ID_NM
+			, A.CODE_ID_DC
+			, DECODE(A.USE_AT, 'Y', '사용', '미사용') AS USE_AT_NM
+		FROM (
+			SELECT
+				*
+			FROM (
+				SELECT
+					COUNT(*) OVER() AS TOTAL_CNT
+					, ROWNUM AS RN
+					, TB.*
+				FROM (
+					SELECT
+						A.CL_CODE
+						, B.CL_CODE_NM
+						, A.CODE_ID
+						, A.CODE_ID_NM
+						, A.CODE_ID_DC
+						, A.USE_AT
+					FROM COMTCCMMNCODE A, COMTCCMMNCLCODE B
+					WHERE A.CL_CODE = B.CL_CODE
+					AND B.USE_AT = 'Y'
+					<if test='searchClCode != null and searchClCode != ""'>
+						AND A.CL_CODE = #{searchClCode}
+					</if>
+					<if test='searchKeyword != null and searchKeyword != ""'>
+						<if test='searchCondition == "codeId"'>
+							AND A.CODE_ID LIKE '%' || #{searchKeyword} || '%'
+						</if>
+						<if test='searchCondition == "codeIdNm"'>
+							AND REPLACE(A.CODE_ID_NM, ' ', '') LIKE '%' || #{searchKeyword} || '%'
+						</if>
+					</if>
+					ORDER BY B.CL_CODE_NM, A.CODE_ID
+				) TB
+			)
+			WHERE RN BETWEEN #{firstIndex} + 1
+			AND #{firstIndex} + #{recordCountPerPage}
+		) A
+	</select>
+
+	<select id="selectPortalCodeTotalCnt" parameterType="searchVO" resultType="int">
+		/* CommonCodeSQL.selectPortalCodeTotalCnt */
+		SELECT COUNT(*) AS TOTAL_CNT
+		FROM COMTCCMMNCODE A, COMTCCMMNCLCODE B
+		WHERE A.CL_CODE = B.CL_CODE
+		AND B.USE_AT = 'Y'
+		<if test='searchClCode != null and searchClCode != ""'>
+			AND A.CL_CODE = #{searchClCode}
+		</if>
+		<if test='searchKeyword != null and searchKeyword != ""'>
+			<if test='searchCondition == "codeId"'>
+				AND A.CODE_ID LIKE '%' || #{searchKeyword} || '%'
+			</if>
+			<if test='searchCondition == "codeIdNm"'>
+				AND REPLACE(A.CODE_ID_NM, ' ', '') LIKE '%' || #{searchKeyword} || '%'
+			</if>
+		</if>
+	</select>
+
+	<select id="selectPortalCodeView" resultType="commonMap">
+		/* CommonCodeSQL.selectPortalCodeView */
+		SELECT
+			CL_CODE
+			, CODE_ID
+			, CODE_ID_NM
+			, CODE_ID_DC
+			, USE_AT
+		FROM COMTCCMMNCODE
+		WHERE CODE_ID = #{codeId}
+ 	</select>
+
+ 	<select id="selectPortalCodeDetailAllList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectPortalCodeDetailAllList */
+		SELECT
+			CODE_ID
+			, CODE
+			, CODE_NM
+			, CODE_DC
+			, USE_AT
+		FROM COMTCCMMNDETAILCODE
+		WHERE CODE_ID = #{codeId}
+		ORDER BY CODE ASC, FRST_REGIST_PNTTM DESC
+	</select>
+
+ 	<select id="selectPortalCodeDetailList" parameterType="searchVO" resultType="commonMap">
+		/* CommonCodeSQL.selectPortalCodeDetailList */
+		SELECT
+			CODE_ID
+			, CODE
+			, CODE_NM
+			, CODE_DC
+			, USE_AT
+		FROM COMTCCMMNDETAILCODE
+		WHERE CODE_ID = #{codeId}
+		AND USE_AT = 'Y'
+		ORDER BY CODE ASC, FRST_REGIST_PNTTM DESC
+	</select>
+
+	<update id="mergePortalCode" parameterType="searchVO">
+		/* CommonCodeSQL.mergePortalCode */
+		MERGE INTO COMTCCMMNCODE A
+			USING (
+				SELECT #{codeId} AS CODE_ID
+				FROM DUAL
+			) B
+			ON (A.CODE_ID = B.CODE_ID)
+			WHEN NOT MATCHED THEN
+				INSERT (
+					CODE_ID
+					, CODE_ID_NM
+					, CODE_ID_DC
+					, USE_AT
+					, CL_CODE
+					, FRST_REGISTER_ID
+					, FRST_REGIST_PNTTM
+				) VALUES (
+					#{codeId}
+					, #{codeIdNm}
+					, #{codeIdDc}
+					, #{useAt}
+					, #{clCode}
+					, #{regId}
+					, SYSDATE
+				)
+			WHEN MATCHED THEN
+				UPDATE SET
+					CODE_ID_NM = #{codeIdNm}
+					, CODE_ID_DC = #{codeIdDc}
+					, USE_AT = #{useAt}
+					, LAST_UPDUSR_ID = #{updId}
+					, LAST_UPDT_PNTTM = SYSDATE
+	</update>
+
+	<update id="mergePortalCodeDetail" parameterType="searchVO">
+		/* CommonCodeSQL.mergePortalCodeDetail */
+		MERGE INTO COMTCCMMNDETAILCODE A
+			USING (
+				SELECT
+					#{codeId} AS CODE_ID
+					, #{code} AS CODE
+				FROM DUAL
+			) B
+			ON (
+				A.CODE_ID = B.CODE_ID
+				AND A.CODE = B.CODE
+			)
+			WHEN NOT MATCHED THEN
+				INSERT (
+					CODE_ID
+					, CODE
+					, CODE_NM
+					, CODE_DC
+					, USE_AT
+					, FRST_REGISTER_ID
+					, FRST_REGIST_PNTTM
+				) VALUES (
+					#{codeId}
+					, #{code}
+					, #{codeNm}
+					, #{codeDc}
+					, 'Y'
+					, #{regId}
+					, SYSDATE
+				)
+			WHEN MATCHED THEN
+				UPDATE SET
+					CODE_NM = #{codeNm}
+					, CODE_DC = #{codeDc}
+					, USE_AT = #{useAt}
+					, LAST_UPDUSR_ID = #{updId}
+					, LAST_UPDT_PNTTM = SYSDATE
+	</update>
+
+</mapper>

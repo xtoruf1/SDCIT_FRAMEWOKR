@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+			<!-- 
+            <PatternLayout charset="UTF-8" pattern="%d %5p [%c] %m%n" />
+			-->
+			<PatternLayout charset="UTF-8" pattern="%d [%-5p] [%file] - %msg %n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+    	<Logger name="jdbc" level="OFF" additivity="false">
+	        <AppenderRef ref="console" />
+	    </Logger>
+	    <Logger name="jdbc.connection" level="OFF" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
+	    <Logger name="java.sql" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+		<Logger name="java.sqlonly" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+		<Logger name="jdbc.audit" level="OFF" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
+		<Logger name="jdbc.resultset" level="OFF" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
+		<Logger name="jdbc.resultsettable" level="OFF" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
+		<Logger name="egovframework.common.bean" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+		<Logger name="egovframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+		<Logger name="org.egovframe" level="DEBUG" additivity="false">
+			<AppenderRef ref="console" />
+		</Logger>
+		<Logger name="org.springframework" level="ERROR" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="org.mybatis" level="ERROR" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Root level="INFO">
+            <AppenderRef ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>

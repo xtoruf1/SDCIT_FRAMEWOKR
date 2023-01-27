@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+*, *:before, *:after {margin:0; padding:0; -webkit-tap-highlight-color:rgba(0,0,0,0);box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+fieldset{border:0 none}
+img{border:0 none; vertical-align: top;}
+dl,ul,ol,menu,li{list-style:none}
+blockquote,q{quotes:none}
+blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}
+i{font-style: normal;}
+input,select,textarea{vertical-align:middle; font-family: 'Noto Sans KR', sans-serif;}
+button{font-size:100%;vertical-align:middle; cursor:pointer; border:0 none; background-color:transparent; outline:none; text-align:left; font-family: 'Noto Sans KR', sans-serif;}
+table{width:100%;border-collapse:collapse;border-spacing:0;table-layout: fixed;}
+table caption{width:0; height:0; font-size:0; line-height: 0; opacity:0;}
+textarea{resize:none;}
+input{/*border:0; border-radius:0; outline:none; -webkit-appearance:none; -webkit-border-radius:0;*/}
+select{/*-webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; appearance: none; outline: none;*/}
+select::-ms-expand {display: none;}
+
+a, a:active{text-decoration:none;}
+address,caption,cite,code,dfn,em,var{font-style:normal;font-weight:normal}
+
+body{font-family: 'Noto Sans KR', sans-serif; font-size:15px ; word-break: keep-all; line-height:1.5; color:#5C5F68;}
+
+.cf:after{content:""; display:block; clear: both;}
+
+.hidden{position:absolute; top:0; left:0; width:0; height:0; font-size:0; opacity:0; text-indent:-999999px;}
+
+.ellipsis{text-overflow:ellipsis; white-space:nowrap; word-wrap:normal; overflow:hidden;}

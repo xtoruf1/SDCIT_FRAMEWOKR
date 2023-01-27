@@ -1,0 +1,166 @@
+KITA 프레임워크 구성요소 명명법
+
+가. 비지니스 로직
+
+	1. 패키지 구조
+	
+		- egovframework
+		
+			패키지 : 전체 소문자
+				web : 첫글자 포험 의미있는 앞글자 대문자 Controller
+				service : 첫글자 포험 의미있는 앞글자 대문자 Service
+				dao : 첫글자 포험 의미있는 앞글자 대문자 DAO
+				vo : 첫글자 포험 의미있는 앞글자 대문자 VO
+				
+		- 패키지 역할
+		
+			attach : 첨부파일 관련 패키지
+			common : 공통 관련 패키지
+			common.bean : 공통 빈 관련 패키지
+			common.dao : 공통 DAO 관련 패키지
+			common.exception : Exception 관련 패키지
+			common.filter : 필터 관련 패키지(예 : XSS)
+			common.hndlr : Handler 관련 패키지
+			common.logger : Logger 관련 패키지
+			common.login : 로그인, 세션 관련 패키지
+			common.pagenation : 패이징 관련 패키지
+			common.service : 공통 Service 관련 패키지
+			common.util : 공통 유틸 관련 패키지
+			common.vo : VO, Map 등 Value 변수 관련 패키지
+			common.web : 공통 Controller 관련 패키지
+			common.context : Context Listner 관련 패키지
+	
+	2. Controller
+	
+		* : 소문자로 시작 의미있는 앞글자 대문자(카멜케이스)
+		역할 : 요청 URI에 맞는 메소드를 매핑하고 데이터 처리결과를 뷰화면 또는 데이터 결과로 포워딩
+		
+		list : 목록 화면 - /**/*List.do, /**/*List로 포워딩(화면)
+		view : 조회 화면 - /**/*View.do, /**/*View로 포워딩(화면)
+		write : 등록/수정 화면 - /**/*Write.do, /**/*Write로 포워딩(화면)
+		insert : 등록 액션 - /**/insert*.do, json으로 결과값 포워딩(행위)
+		update : 수정 액션 - /**/update*.do, json으로 결과값 포워딩(행위)
+		delete : 삭제 액션 - /**/delete*.do, json으로 결과값 포워딩(행위)
+		
+		※ ** : 상위 여러 DEPTH, * : 상황에 맞는 용어
+	
+	3. Service
+	
+		역할 : 데이터베이스(DB)에 가기전 또는 가져와서의 데이터를 처리한다.(비지니스 로직)
+	
+	4. DAO
+	
+		역할 : 데이터베이스(DB)에서 질의를 하고 데이터를 가져온다.
+	
+	5. VO
+	
+		역할 : 뷰화면과 비지니스 로직을 교류하는 변수를 getter, setter
+		
+나. 뷰화면
+
+	1. 디렉토리 구조
+	
+		- webapp
+		
+			디렉토리 : 전체 소문자
+				목록 : 소문자로 시작 의미있는 앞글자 대문자 list
+				조회 : 소문자로 시작 의미있는 앞글자 대문자 view
+				등록/수정 : 소문자로 시작 의미있는 앞글자 대문자 write
+		
+		- 디렉토리 역할
+		
+			webapp/css : CSS 관련 디렉토리
+			webapp/font : 폰트 관련 디렉토리
+			webapp/images : 이미지 관련 디렉토리
+			webapp/js : 이미지 관련 디렉토리
+			webapp/lib : 외부 라이브러리 관련 디렉토리
+		
+			jsp/common : 공통 관련 디렉토리
+			jsp/layouts : 타일즈 레이아웃 관련 디렉토리
+			
+	2. list	
+	
+		역할 : 목록 화면에서 목록에 관련된 스크립트를 가지고 있고 목록을 호출한다.
+		스크립트 : 소문자로 시작 의미있는 앞글자 대문자(행동(do, get, go) + 주체(Page, List))
+		
+		공통예약 함수
+		
+		$(document).ready : 폼변수 또는 ibsheet를 초기화한다.
+		doSearch() : 검색을 실행한다.
+		goPage(pageIndex) : 페이지를 이동한다.
+		getList() : 목록 데이터을 가져온다.
+		goWrite() : 등록페이지로 이동한다.
+		goView(시퀀스) : 해당 내용의 조회페이지로 이동한다.
+		doExcelDownload() : 엑셀을 다운로드한다.
+		
+		go : 이동
+		do : 실행
+		get : 얻기
+				
+		공통예약 변수
+		
+		searchCondition : 검색조건
+		searchKeyword : 검색어
+		pageIndex : 페이지 번호
+			
+	3. view
+
+		역할 : 목록 화면에서 내용을 확인한다.
+		스크립트 : 소문자로 시작 의미있는 앞글자 대문자(행동(do, get, go) + 주체(Page, List))
+		
+		공통예약 함수
+		
+		$(document).ready : 폼변수 또는 사전에 준비할 것을 초기화한다.
+		goWrite() : 수정페이지로 이동한다.
+		doDelete() : 해당 내용을 삭제한다.
+		goList() : 목록 화면으로 이동한다.
+		doDownloadFile(시퀀스) : 파일을 다운로드한다.
+		
+		go : 이동
+		do : 실행
+		
+	4. write
+
+		역할 : 등록/수정화면으로 이동한다.
+		스크립트 : 소문자로 시작 의미있는 앞글자 대문자(행동(do, get, go) + 주체(Page, List))
+		
+		공통예약 함수
+		
+		$(document).ready : 폼변수 또는 사전에 준비할 것을 초기화한다.
+		isValid() : 입력폼에 필수값을 확인한다.
+		doInsert() : 내용을 등록한다.
+		doUpdate() : 내용을 수정한다.
+		doCancel() : 취소하고 다른 화면으로 이동한다.
+		goList() : 목록 화면으로 이동한다.
+		doDownloadFile(시퀀스) : 파일을 다운로드한다.
+		doDeleteFile(시퀀스) : 파일을 삭제한다.
+		
+		is : 존재여부
+		go : 이동
+		do : 실행
+		
+다. 설정
+
+	1. java resource
+	
+		egovframework.logger : log4j2 관련 설정(prod : 운영, dev : 개발, local : 로컬)
+		egovframework.message : 메세지 관련 설정
+		egovframework.mybatis.config : Mybatis 맵퍼 관련 설정
+		egovframework.mybatis.mapper : 쿼리
+		egovframework.properties.grobals.properties : 전역 변수 설정
+		egovframework.properties.variables.properties : 서버마다 다른변수 설정(prod : 운영, dev : 개발, local : 로컬)
+		egovframework.properties.db.properties : 디비 연결 정보 설정
+		egovframework.spring : 프레임워크 관련 설정
+		
+	2.WEB
+	
+		config/springmvc/dispatcher-servlet.xml : 서블릿 디스패쳐 설정
+		web.xml
+		
+라. 프로그램 작성 사항
+	
+	1. Indent(다음줄 구분 사항 : Tab 키)은 space 4줄로 한다.
+	2. 쿼리는 변수, 조건절 제외 모두 대문자
+	4. 쿼리에 열명은 100자(?)이상 넘어가지 않는 이상 리턴 구분값으로 쓴다.
+	5. 상기(上記) 룰을 참고 하되 sample모듈을 참고
+	99. sample모듈을 참고하되 벗어나거나 추가될 룰은 이승준 차장과 상의

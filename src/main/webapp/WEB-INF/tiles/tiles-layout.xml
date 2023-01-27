@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+	<!-- 레이아웃 -->
+
+    <definition name="baseTiles" template="/WEB-INF/jsp/layouts/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+		<put-attribute name="leftMenu" value="/WEB-INF/jsp/layouts/leftMenu.jsp" />
+		<put-attribute name="body" value="" />
+    </definition>
+
+    <!-- 대시보드 레이아웃 -->
+
+    <definition name="dashboardTiles" template="/WEB-INF/jsp/layouts/dashboardLayout.jsp">
+		<put-attribute name="header" value="/WEB-INF/jsp/layouts/header.jsp" />
+		<put-attribute name="leftMenu" value="/WEB-INF/jsp/layouts/leftMenu.jsp" />
+		<put-attribute name="body" value="" />
+    </definition>
+
+	<!-- 빈 타일즈 -->
+
+    <definition name="emptyTiles" template="/WEB-INF/jsp/layouts/commonLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- Common 타일즈 -->
+
+    <definition name="commonTiles" template="/WEB-INF/jsp/layouts/commonLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- 팝업 타일즈 -->
+
+    <definition name="popupTiles" template="/WEB-INF/jsp/layouts/popupLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- 레이어 타일즈 -->
+
+    <definition name="layerTiles" template="/WEB-INF/jsp/layouts/layerLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- XML 타일즈 -->
+
+    <definition name="xmlTiles" template="/WEB-INF/jsp/layouts/xmlLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- 워드 타일즈 -->
+
+    <definition name="wordTiles" template="/WEB-INF/jsp/layouts/wordLayout.jsp">
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- 새창 타일즈 -->
+
+    <definition name="tradeDayTiles" template="/WEB-INF/jsp/layouts/newWindowLayout.jsp">
+		<put-attribute name="header" value="" />
+		<put-attribute name="body" value="" />
+	</definition>
+
+	<!-- 빈 타일즈(1단) -->
+
+	<definition name="empty/*" extends="emptyTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
+	</definition>
+
+	<!-- 빈 타일즈(2단) -->
+
+	<definition name="empty/*/*" extends="emptyTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 빈 타일즈(3단) -->
+
+	<definition name="empty/*/*/*" extends="emptyTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- 빈 타일즈(4단) -->
+
+	<definition name="empty/*/*/*/*" extends="emptyTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- Common 타일즈(1단) -->
+
+	<definition name="common/*" extends="commonTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/common/{1}.jsp" />
+	</definition>
+
+	<!-- Common 타일즈(2단) -->
+
+	<definition name="common/*/*" extends="commonTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/common/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 팝업 타일즈(2단) -->
+
+	<definition name="popup/*/*" extends="popupTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 팝업 타일즈(3단) -->
+
+	<definition name="popup/*/*/*" extends="popupTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- 팝업 타일즈(4단) -->
+
+	<definition name="popup/*/*/*/*" extends="popupTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- 레이어 타일즈(2단) -->
+
+	<definition name="layer/*/*" extends="layerTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 레이어 타일즈(3단) -->
+
+	<definition name="layer/*/*/*" extends="layerTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- 레이어 타일즈(4단) -->
+
+	<definition name="layer/*/*/*/*" extends="layerTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- 레이어 타일즈(5단) -->
+	<definition name="layer/*/*/*/*/*" extends="layerTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}/{5}.jsp" />
+	</definition>
+
+	<!-- 무역의날 기념식 타일즈(2단) -->
+
+	<definition name="newWindow/*/*" extends="tradeDayTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 무역의날 기념식 타일즈(3단) -->
+
+	<definition name="newWindow/*/*/*" extends="tradeDayTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- 무역의날 기념식 타일즈(4단) -->
+
+	<definition name="newWindow/*/*/*/*" extends="tradeDayTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- JSP Excel 타일즈(2단) -->
+
+	<definition name="excel/*/*/" template="/WEB-INF/jsp/{1}/{2}.jsp" />
+
+	<!-- JSP Excel 타일즈(3단) -->
+
+	<definition name="excel/*/*/*" template="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+
+	<!-- JSP Excel 타일즈(4단) -->
+
+	<definition name="excel/*/*/*/*" template="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+
+	<!-- JSP Excel 타일즈(4단) -->
+
+	<definition name="excel/*/*/*/*/*" template="/WEB-INF/jsp/{1}/{2}/{3}/{4}/{5}.jsp" />
+
+	<!-- 대시보드 타일즈(2단) -->
+
+    <definition name="dashboard/*/*" extends="dashboardTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 대시보드 타일즈(3단) -->
+
+    <definition name="dashboard/*/*/*" extends="dashboardTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+    <!-- 대시보드 타일즈(4단) -->
+
+    <definition name="dashboard/*/*/*/*" extends="dashboardTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- 2단 타일즈 -->
+
+    <definition name="*/*" extends="baseTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 3단 타일즈 -->
+
+    <definition name="*/*/*" extends="baseTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+    <!-- 4단 타일즈 -->
+
+    <definition name="*/*/*/*" extends="baseTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- xml 타일즈(1단) -->
+
+	<definition name="xml/*" extends="xmlTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
+	</definition>
+
+	<!-- xml 타일즈(2단) -->
+
+	<definition name="xml/*/*" extends="xmlTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- xml 타일즈(3단) -->
+
+	<definition name="xml/*/*/*" extends="xmlTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- xml 타일즈(4단) -->
+
+	<definition name="xml/*/*/*/*" extends="xmlTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+	<!-- 워드 타일즈(1단) -->
+
+	<definition name="word/*" extends="wordTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}.jsp" />
+	</definition>
+
+	<!-- 워드 타일즈(2단) -->
+
+	<definition name="word/*/*" extends="wordTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />
+	</definition>
+
+	<!-- 워드 타일즈(3단) -->
+
+	<definition name="word/*/*/*" extends="wordTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}.jsp" />
+	</definition>
+
+	<!-- 워드 타일즈(4단) -->
+
+	<definition name="word/*/*/*/*" extends="wordTiles">
+		<put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+
+</tiles-definitions>
